@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Educativo | Ing. Santiago Martínez González — CONALEP Extensión Nuevo Progreso</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0e1a;--surface:#111827;--card:#1a2235;--border:#1e3a5f;
+      --accent:#00d4ff;--accent2:#00ff9d;--accent3:#ff6b35;--warn:#ffd60a;
+      --text:#e2e8f0;--muted:#64748b;
+    }
+    body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
+    svg{display:inline-block;vertical-align:middle}
+
+    header{
+      background:linear-gradient(135deg,#0d1b2a 0%,#111827 100%);
+      border-bottom:1px solid var(--border);
+      padding:44px 24px 36px;text-align:center;position:relative;overflow:hidden;
+    }
+    header::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 0%,#00d4ff09 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .badge-plantel{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid #00d4ff33;border-radius:100px;
+      padding:5px 16px;margin-bottom:18px;
+      font-size:11px;font-weight:700;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--accent);background:#00d4ff0d;
+    }
+    header h1{font-size:clamp(22px,4vw,32px);font-weight:800;margin-bottom:8px}
+    header h1 span{color:var(--accent)}
+    .docente{color:var(--text);font-size:15px;font-weight:600;margin-bottom:4px}
+    .sub{color:var(--muted);font-size:12px;margin-top:4px}
+    .ciclo-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:#ffd60a15;border:1px solid #ffd60a33;
+      color:var(--warn);border-radius:100px;
+      padding:4px 14px;font-size:11px;font-weight:700;
+      letter-spacing:.08em;margin-top:14px;
+    }
+    .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent2);margin:0 8px;vertical-align:middle;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+    main{max-width:980px;margin:0 auto;padding:40px 20px}
+
+    .section-title{
+      font-size:11px;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--muted);
+      margin-bottom:20px;display:flex;align-items:center;gap:10px;
+    }
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-bottom:48px}
+
+    .materia-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:24px;
+      text-decoration:none;display:block;
+      transition:all .2s;position:relative;overflow:hidden;
+    }
+    .materia-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--c,var(--accent));
+    }
+    .materia-card:hover{transform:translateY(-3px);border-color:var(--c,var(--accent));box-shadow:0 8px 32px #00000044}
+
+    .card-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+    .card-icon{font-size:30px;flex-shrink:0;margin-top:2px}
+    .materia-nombre{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .grupos-row{display:flex;gap:6px;flex-wrap:wrap}
+    .grupo-chip{
+      background:color-mix(in srgb,var(--c,var(--accent)) 15%,transparent);
+      border:1px solid color-mix(in srgb,var(--c,var(--accent)) 35%,transparent);
+      color:var(--c,var(--accent));
+      font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
+    }
+    .materia-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+    .divider{height:1px;background:var(--border);margin-bottom:14px}
+
+    .temas-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    .temas{display:flex;flex-direction:column;gap:6px}
+    .tema-item{
+      display:flex;align-items:center;gap:8px;
+      font-size:12px;padding:8px 10px;border-radius:7px;
+      text-decoration:none;transition:all .15s;
+    }
+    .tema-item.disponible{
+      background:color-mix(in srgb,var(--c,var(--accent)) 10%,transparent);
+      border:1px solid color-mix(in srgb,var(--c,var(--accent)) 28%,transparent);
+      color:var(--c,var(--accent));font-weight:600;
+    }
+    .tema-item.disponible:hover{background:color-mix(in srgb,var(--c,var(--accent)) 20%,transparent)}
+    .tema-item.proximamente{background:#1e3a5f1a;border:1px dashed #1e3a5f;color:var(--muted)}
+    .dot-status{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .tema-item.disponible .dot-status{background:var(--c,var(--accent))}
+    .tema-item.proximamente .dot-status{background:#1e3a5f}
+
+    .new-badge{
+      margin-left:auto;background:#00ff9d18;
+      border:1px solid #00ff9d33;color:var(--accent2);
+      font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
+      text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
+    }
+    .soon-badge{
+      margin-left:auto;background:#ffd60a12;
+      border:1px solid #ffd60a30;color:var(--warn);
+      font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
+      text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
+    }
+
+    .prev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:48px}
+    .prev-card{
+      background:#111827;border:1px solid #1e3a5f44;
+      border-radius:10px;padding:16px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .prev-icon{font-size:22px;opacity:.5}
+    .prev-nombre{font-size:13px;font-weight:600;color:var(--muted)}
+    .prev-ciclo{font-size:11px;color:#1e3a5f;margin-top:2px}
+
+    .how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:48px}
+    .how-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+    .how-num{font-size:22px;margin-bottom:8px}
+    .how-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px}
+    .how-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+    footer{
+      text-align:center;padding:32px 20px;
+      border-top:1px solid var(--border);
+      color:var(--muted);font-size:12px;line-height:2.2;
+    }
+    footer a{color:var(--accent);text-decoration:none}
+    footer a:hover{text-decoration:underline}
+
+    @media(max-width:600px){
+      .grid{grid-template-columns:1fr}
+      .prev-grid{grid-template-columns:1fr 1fr}
+      .how-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-plantel">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      CONALEP Extensión Nuevo Progreso — Tamaulipas
+    </div>
+    <h1>Portal de <span>Material Didáctico</span></h1>
+    <p class="docente">Ing. Santiago Martínez González</p>
+    <p class="sub">Docente de la Carrera de Informática <span class="dot"></span> Ciclo Escolar 2 — 2025/2026</p>
+    <div class="ciclo-badge">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Ciclo 2 — 2025/2026
+    </div>
+  </header>
+
+  <main>
+
+    <!-- MATERIAS CICLO ACTUAL -->
+    <div class="section-title">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Materias — Ciclo 2 · 2025/2026
+    </div>
+    <div class="grid">
+
+      <!-- MANEJO DE REDES -->
+      <div class="materia-card" style="--c:#00d4ff">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div>
+            <div class="materia-nombre">Manejo de Redes</div>
+            <div class="grupos-row"><span class="grupo-chip">Grupo 611</span></div>
+          </div>
+        </div>
+        <p class="materia-desc">Fundamentos de redes, configuración de dispositivos Cisco, protocolos y administración de infraestructura de red.</p>
+        <div class="divider"></div>
+
+        <div class="temas-label">Unidad 1 — Redes Inalámbricas</div>
+        <div class="temas" style="margin-bottom:12px">
+          <div class="tema-item proximamente" style="--c:#00d4ff">
+            <span class="dot-status"></span>RA 1.1 — Infraestructura WLAN
+            <span class="soon-badge">Próx.</span>
+          </div>
+          <div class="tema-item proximamente" style="--c:#00d4ff">
+            <span class="dot-status"></span>RA 1.2 — Seguridad Inalámbrica
+            <span class="soon-badge">Próx.</span>
+          </div>
+        </div>
+
+        <div class="temas-label">Unidad 2 — Ruteo y Conmutación</div>
+        <div class="temas">
+          <a href="manejo-de-redes/ra2-1-a/index.html" class="tema-item disponible" style="--c:#00d4ff">
+            <span class="dot-status"></span>RA 2.1 — Inciso A · Comandos IOS
+            <span class="new-badge">Nuevo</span>
+          </a>
+          <a href="manejo-de-redes/ra2-1-b/index.html" class="tema-item disponible" style="--c:#00d4ff">
+            <span class="dot-status"></span>RA 2.1 — Inciso B · Config. básica
+            <span class="new-badge">Nuevo</span>
+          </a>
+          <div class="tema-item proximamente" style="--c:#00d4ff">
+            <span class="dot-status"></span>RA 2.1 — Inciso C · Conectividad
+            <span class="soon-badge">Próx.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BASES DE DATOS -->
+      <div class="materia-card" style="--c:#a78bfa">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <div>
+            <div class="materia-nombre">Construcción de Bases de Datos</div>
+            <div class="grupos-row">
+              <span class="grupo-chip">Grupo 410</span>
+              <span class="grupo-chip">Grupo 411</span>
+            </div>
+          </div>
+        </div>
+        <p class="materia-desc">Diseño de modelos relacionales, SQL, normalización, integridad de datos y administración de sistemas de bases de datos.</p>
+        <div class="divider"></div>
+        <div class="temas-label">Contenido</div>
+        <div class="temas">
+          <div class="tema-item proximamente">
+            <span class="dot-status"></span>Material en preparación
+            <span class="soon-badge">Próx.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- POO -->
+      <div class="materia-card" style="--c:#00ff9d">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff9d" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div>
+            <div class="materia-nombre">Programación Orientada a Objetos</div>
+            <div class="grupos-row"><span class="grupo-chip">Grupo 411</span></div>
+          </div>
+        </div>
+        <p class="materia-desc">Clases, objetos, herencia, polimorfismo, encapsulamiento y desarrollo de aplicaciones orientadas a objetos.</p>
+        <div class="divider"></div>
+        <div class="temas-label">Contenido</div>
+        <div class="temas">
+          <div class="tema-item proximamente">
+            <span class="dot-status"></span>Material en preparación
+            <span class="soon-badge">Próx.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CÓMO USAR -->
+    <div class="section-title">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      ¿Cómo usar este portal?
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        </div>
+        <div class="how-title">Regístrate</div>
+        <div class="how-desc">Crea tu cuenta con tu correo y contraseña la primera vez que ingreses.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="how-title">Estudia el material</div>
+        <div class="how-desc">Lee los apuntes y sigue las prácticas paso a paso en Packet Tracer.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+        </div>
+        <div class="how-title">Anota en tu cuaderno</div>
+        <div class="how-desc">Las preguntas de reflexión de cada práctica debes contestarlas en tu cuaderno.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        </div>
+        <div class="how-title">Solo un intento</div>
+        <div class="how-desc">La evaluación se registra una sola vez. Estudia bien antes de contestar.</div>
+      </div>
+    </div>
+
+    <!-- CICLOS ANTERIORES -->
+    <div class="section-title">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Ciclos anteriores
+    </div>
+    <div class="prev-grid">
+      <div class="prev-card">
+        <div class="prev-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div><div class="prev-nombre">Desarrollo Web</div><div class="prev-ciclo">Ciclo anterior</div></div>
+      </div>
+      <div class="prev-card">
+        <div class="prev-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div><div class="prev-nombre">Programación</div><div class="prev-ciclo">Ciclo anterior</div></div>
+      </div>
+      <div class="prev-card">
+        <div class="prev-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div><div class="prev-nombre">Proyectos</div><div class="prev-ciclo">Ciclo anterior</div></div>
+      </div>
+      <div class="prev-card">
+        <div class="prev-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div><div class="prev-nombre">Seguridad Informática</div><div class="prev-ciclo">Ciclo anterior</div></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" style="margin-right:4px"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <a href="mailto:profesantiagomtzglez@gmail.com">profesantiagomtzglez@gmail.com</a>
+    </div>
+    <div>CONALEP Extensión Nuevo Progreso, Tamaulipas &nbsp;·&nbsp; Ing. Santiago Martínez González</div>
+    <div style="color:#1e3a5f">Material didáctico digital · Ciclo 2 — 2025/2026</div>
+  </footer>
+
+</body>
+</html>
