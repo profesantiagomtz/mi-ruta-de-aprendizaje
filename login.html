@@ -12,343 +12,214 @@
     :root{
       --bg:#0a0e1a;--surface:#0d1520;--card:#111f35;--card2:#152844;
       --border:#1a3050;--accent:#00d4ff;--accent2:#00ff9d;--accent3:#ff6b35;
-      --warn:#ffd60a;--purple:#a78bfa;--text:#e2e8f0;--muted:#64748b;
-      --red:#ff4757;--green:#2ed573;
+      --warn:#ffd60a;--text:#e2e8f0;--muted:#64748b;--red:#ff4757;--green:#2ed573;
     }
     body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
     svg{display:inline-block;vertical-align:middle}
     @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-    /* ── LAYOUT ── */
-    .page{display:none;animation:fadeIn .3s ease}
-    .page.active{display:block}
+    /* ── LOADING ── */
+    #loading{
+      position:fixed;inset:0;background:var(--bg);z-index:999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    }
+    .spinner-lg{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    .spinner-sm{width:16px;height:16px;border:2px solid #00000033;border-top-color:#050d1a;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 
-    /* ══════════════ LOGIN / REGISTER ══════════════ */
-    #page-auth{
-      min-height:100vh;display:flex;align-items:center;
-      justify-content:center;padding:20px;
-    }
-    .auth-wrap{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:20px;padding:40px;width:100%;max-width:420px;
-    }
-    .auth-logo{
-      display:flex;flex-direction:column;align-items:center;
-      margin-bottom:28px;
-    }
-    .auth-logo-icon{
-      background:linear-gradient(135deg,#00d4ff22,#00ff9d22);
-      border:1px solid var(--accent)44;border-radius:16px;
-      padding:14px;margin-bottom:12px;
-    }
-    .auth-logo h1{color:var(--text);font-size:18px;font-weight:800;margin-bottom:2px}
-    .auth-logo p{color:var(--muted);font-size:12px}
-
-    .auth-tabs{display:flex;background:var(--surface);border-radius:10px;padding:4px;margin-bottom:24px}
-    .auth-tab{
-      flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;
-      border-radius:7px;cursor:pointer;transition:all .2s;border:none;background:transparent;
-      color:var(--muted);
-    }
-    .auth-tab.active{background:var(--card2);color:var(--accent);box-shadow:0 2px 8px #00000033}
-
-    .form-group{margin-bottom:14px}
-    label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase}
-    .input-wrap{position:relative}
-    .input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
-    input,select{
-      width:100%;background:var(--surface);border:1px solid var(--border);
-      border-radius:8px;padding:11px 12px 11px 38px;
-      color:var(--text);font-size:13px;outline:none;transition:border-color .2s;
-    }
+    /* ── AUTH ── */
+    #screen-auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px}
+    .auth-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px}
+    .auth-logo{text-align:center;margin-bottom:24px}
+    .auth-logo-icon{display:inline-flex;background:linear-gradient(135deg,#00d4ff22,#00ff9d22);border:1px solid #00d4ff44;border-radius:14px;padding:14px;margin-bottom:10px}
+    .auth-logo h1{font-size:17px;font-weight:800;margin-bottom:2px}
+    .auth-logo p{color:var(--muted);font-size:11px}
+    .tabs{display:flex;background:var(--surface);border-radius:10px;padding:4px;margin-bottom:22px;gap:4px}
+    .tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;border-radius:7px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s}
+    .tab.active{background:var(--card2);color:var(--accent)}
+    .fg{margin-bottom:13px}
+    label{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:.06em;text-transform:uppercase}
+    .iw{position:relative}
+    .ii{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+    input,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 10px 10px 36px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
     input:focus,select:focus{border-color:var(--accent)}
     select option{background:var(--surface)}
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn{width:100%;background:linear-gradient(135deg,var(--accent),#0099cc);color:#050d1a;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:opacity .2s}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .err{background:#ff475711;border:1px solid #ff475733;border-radius:8px;padding:10px 13px;color:var(--red);font-size:12px;margin-bottom:12px;display:none;gap:8px;align-items:center}
+    .err.show{display:flex}
 
-    .btn-primary{
-      width:100%;background:linear-gradient(135deg,var(--accent),#0099cc);
-      color:#050d1a;border:none;border-radius:8px;padding:13px;
-      font-size:14px;font-weight:800;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;gap:8px;
-      transition:opacity .2s;margin-top:6px;
-    }
-    .btn-primary:hover{opacity:.9}
-    .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-    .spinner{width:16px;height:16px;border:2px solid #05080a44;border-top-color:#050d1a;border-radius:50%;animation:spin .7s linear infinite}
+    /* ── DASHBOARD ── */
+    #screen-dash{display:none;min-height:100vh}
+    .topbar{background:linear-gradient(135deg,#070f1f,#0a1628);border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100}
+    .tl{display:flex;align-items:center;gap:10px}
+    .ti{background:#00d4ff22;border:1px solid #00d4ff44;border-radius:8px;padding:7px}
+    .th1{font-size:13px;font-weight:700}
+    .th2{font-size:11px;color:var(--muted)}
+    .tr{display:flex;align-items:center;gap:10px}
+    .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#050d1a;flex-shrink:0}
+    .un{font-size:13px;font-weight:700}
+    .ug{font-size:11px;color:var(--muted)}
+    .lob{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;transition:all .15s}
+    .lob:hover{border-color:var(--red);color:var(--red)}
 
-    .auth-error{
-      background:#ff475711;border:1px solid #ff475733;
-      border-radius:8px;padding:10px 14px;
-      color:var(--red);font-size:12px;margin-bottom:14px;
-      display:none;align-items:center;gap:8px;
-    }
-    .auth-error.show{display:flex}
+    .content{max-width:960px;margin:0 auto;padding:26px 18px}
 
-    .divider-text{
-      text-align:center;font-size:11px;color:var(--muted);
-      margin:16px 0;position:relative;
-    }
-    .divider-text::before,.divider-text::after{
-      content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border);
-    }
-    .divider-text::before{left:0}
-    .divider-text::after{right:0}
+    /* greeting */
+    .greet{background:linear-gradient(135deg,#00d4ff15 0%,var(--card) 100%);border:1px solid #00d4ff33;border-radius:14px;padding:22px 26px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    .greet-txt h2{font-size:19px;font-weight:800;margin-bottom:3px}
+    .greet-txt p{color:var(--muted);font-size:12px}
+    .greet-stats{display:flex;gap:20px;margin-left:auto;flex-wrap:wrap}
+    .gs{text-align:center}
+    .gsv{font-size:22px;font-weight:800;font-family:monospace;color:var(--accent)}
+    .gsl{font-size:10px;color:var(--muted)}
 
-    /* ══════════════ DASHBOARD ALUMNO ══════════════ */
-    #page-dashboard{min-height:100vh}
+    /* progress */
+    .prog{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:22px}
+    .prog-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+    .prog-t{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+    .prog-p{font-size:20px;font-weight:800;font-family:monospace;color:var(--accent2)}
+    .pb{background:var(--border);border-radius:100px;height:9px;overflow:hidden}
+    .pbf{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .7s ease}
+    .prog-sub{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--muted)}
 
-    .topbar{
-      background:linear-gradient(135deg,#070f1f,#0a1628);
-      border-bottom:1px solid var(--border);
-      padding:14px 24px;display:flex;align-items:center;
-      justify-content:space-between;position:sticky;top:0;z-index:100;
-    }
-    .topbar-left{display:flex;align-items:center;gap:12px}
-    .topbar-icon{background:var(--accent)22;border:1px solid var(--accent)44;border-radius:8px;padding:8px}
-    .topbar h1{font-size:14px;font-weight:700}
-    .topbar p{font-size:11px;color:var(--muted)}
-    .user-info{display:flex;align-items:center;gap:10px}
-    .user-avatar{
-      width:34px;height:34px;border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      display:flex;align-items:center;justify-content:center;
-      font-size:14px;font-weight:800;color:#050d1a;
-    }
-    .user-name{font-size:13px;font-weight:700}
-    .user-group{font-size:11px;color:var(--muted)}
-    .logout-btn{
-      background:transparent;border:1px solid var(--border);
-      color:var(--muted);padding:7px 12px;border-radius:8px;
-      cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;transition:all .15s;
-    }
-    .logout-btn:hover{border-color:var(--red);color:var(--red)}
+    /* section title */
+    .st{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:13px;display:flex;align-items:center;gap:10px}
+    .st::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    .content{max-width:980px;margin:0 auto;padding:28px 20px}
+    /* mat grid */
+    .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:11px;margin-bottom:26px}
+    .mc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;position:relative}
+    .mc.av-card{border-left:4px solid var(--accent)}
+    .mc.done-card{border-left:4px solid var(--green)}
+    .mc.lock-card{border-left:4px solid var(--border);opacity:.55}
+    .mc.soon-card{border-left:4px solid var(--warn);opacity:.7}
+    .mc.av-card:hover,.mc.done-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px #00000044}
+    .mch{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+    .mci{font-size:18px;flex-shrink:0}
+    .mcn{font-size:13px;font-weight:700}
+    .mcs{font-size:11px;color:var(--muted);margin-top:1px}
+    .mcu{font-size:10px;color:var(--muted);margin-bottom:9px}
+    .mcf{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px}
+    .chip-av{background:#00d4ff15;color:var(--accent);border:1px solid #00d4ff33}
+    .chip-done{background:#2ed57315;color:var(--green);border:1px solid #2ed57333}
+    .chip-lock{background:var(--border);color:var(--muted)}
+    .chip-soon{background:#ffd60a15;color:var(--warn);border:1px solid #ffd60a33}
+    .cal-val{font-size:20px;font-weight:800;font-family:monospace}
+    .cv-g{color:var(--green)} .cv-y{color:var(--warn)} .cv-r{color:var(--red)}
+    .mbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:all .15s}
+    .mbtn-go{background:#00d4ff22;color:var(--accent);border:1px solid #00d4ff44}
+    .mbtn-go:hover{background:#00d4ff44}
+    .mbtn-rep{background:#2ed57322;color:var(--green);border:1px solid #2ed57344}
+    .mbtn-rep:hover{background:#2ed57344}
+    .mbtn-lock{background:#1a305033;color:var(--muted);cursor:not-allowed}
 
-    /* Saludo */
-    .greeting{
-      background:linear-gradient(135deg,var(--accent)18 0%,var(--card) 100%);
-      border:1px solid var(--accent)33;border-radius:14px;
-      padding:24px 28px;margin-bottom:28px;
-      display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-    }
-    .greeting-text h2{font-size:20px;font-weight:800;margin-bottom:4px}
-    .greeting-text p{color:var(--muted);font-size:13px}
-    .greeting-stats{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap}
-    .g-stat{text-align:center}
-    .g-stat-val{font-size:24px;font-weight:800;font-family:monospace;color:var(--accent)}
-    .g-stat-lbl{font-size:10px;color:var(--muted)}
-
-    /* Progreso general */
-    .prog-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px}
-    .prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-    .prog-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
-    .prog-pct{font-size:20px;font-weight:800;font-family:monospace;color:var(--accent2)}
-    .prog-bar-bg{background:var(--border);border-radius:100px;height:10px;overflow:hidden}
-    .prog-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease}
-
-    /* Sección title */
-    .section-title{
-      font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-      color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;
-    }
-    .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
-
-    /* Materiales grid */
-    .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:28px}
-    .mat-card{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:12px;padding:18px;position:relative;overflow:hidden;
-      transition:all .2s;
-    }
-    .mat-card.available{border-left:4px solid var(--accent)}
-    .mat-card.completed{border-left:4px solid var(--green)}
-    .mat-card.locked{border-left:4px solid var(--border);opacity:.6}
-    .mat-card.available:hover,.mat-card.completed:hover{transform:translateY(-2px);box-shadow:0 6px 24px #00000044}
-    .mat-card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .mat-icon{font-size:20px;flex-shrink:0}
-    .mat-name{font-size:13px;font-weight:700;color:var(--text)}
-    .mat-sub{font-size:11px;color:var(--muted);margin-top:2px}
-    .mat-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px}
-    .mat-cal{
-      font-size:22px;font-weight:800;font-family:monospace;
-    }
-    .cal-green{color:var(--green)}
-    .cal-yellow{color:var(--warn)}
-    .cal-red{color:var(--red)}
-    .cal-na{color:var(--muted);font-size:14px}
-    .mat-btn{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;
-      text-decoration:none;cursor:pointer;border:none;transition:all .15s;
-    }
-    .mat-btn.go{background:var(--accent)22;color:var(--accent);border:1px solid var(--accent)44}
-    .mat-btn.go:hover{background:var(--accent)44}
-    .mat-btn.done{background:var(--green)22;color:var(--green);border:1px solid var(--green)44}
-    .mat-btn.locked-btn{background:var(--border)44;color:var(--muted);border:1px solid var(--border);cursor:not-allowed}
-
-    .status-chip{
-      display:inline-flex;align-items:center;gap:5px;
-      font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;
-    }
-    .chip-new{background:var(--accent)15;color:var(--accent);border:1px solid var(--accent)33}
-    .chip-done{background:var(--green)15;color:var(--green);border:1px solid var(--green)33}
-    .chip-locked{background:var(--border);color:var(--muted)}
-    .chip-soon{background:var(--warn)15;color:var(--warn);border:1px solid var(--warn)33}
-
-    /* Calificaciones tabla */
-    .cal-table{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px}
-    .cal-table-header{padding:14px 18px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+    /* cal table */
+    .ctable{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px}
+    .cth{padding:13px 17px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
     table{width:100%;border-collapse:collapse}
-    th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surface);border-bottom:1px solid var(--border)}
-    td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border)22}
+    th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--surface);border-bottom:1px solid var(--border)}
+    td{padding:11px 13px;font-size:13px;border-bottom:1px solid #1a305022}
     tr:last-child td{border-bottom:none}
     tr:hover td{background:#ffffff04}
-
-    /* Loading */
-    .loading-overlay{
-      position:fixed;inset:0;background:var(--bg);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap:16px;z-index:200;
-    }
-    .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-    .loading-text{color:var(--muted);font-size:13px}
+    .empty-row{text-align:center;color:var(--muted);padding:28px!important}
 
     @media(max-width:600px){
-      .auth-wrap{padding:28px 20px}
-      .form-row{grid-template-columns:1fr}
-      .greeting{flex-direction:column}
-      .greeting-stats{margin-left:0}
-      .mat-grid{grid-template-columns:1fr}
+      .auth-box{padding:24px 18px}
+      .row2{grid-template-columns:1fr}
+      .greet{flex-direction:column}
+      .greet-stats{margin-left:0}
+      .mgrid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
 
 <!-- LOADING -->
-<div class="loading-overlay" id="loading">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">Cargando portal...</div>
+<div id="loading">
+  <div class="spinner-lg"></div>
+  <div style="color:var(--muted);font-size:13px">Verificando sesión...</div>
 </div>
 
-<!-- ══════════════ PÁGINA: AUTH ══════════════ -->
-<div class="page" id="page-auth">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
-    <div class="auth-wrap">
-      <div class="auth-logo">
-        <div class="auth-logo-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <h1>CONALEP Nuevo Progreso</h1>
-        <p>Ing. Santiago Martínez González · Manejo de Redes</p>
+<!-- ══════ AUTH ══════ -->
+<div id="screen-auth" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
       </div>
+      <h1>CONALEP Nuevo Progreso</h1>
+      <p>Ing. Santiago Martínez González · Manejo de Redes</p>
+    </div>
 
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="switchAuth('login',this)">Iniciar sesión</button>
-        <button class="auth-tab" onclick="switchAuth('register',this)">Crear cuenta</button>
+    <div class="tabs">
+      <button class="tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="tab" id="tab-reg" onclick="switchTab('reg')">Crear cuenta</button>
+    </div>
+
+    <div class="err" id="auth-err">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+      <span id="auth-err-msg"></span>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="form-login">
+      <div class="fg"><label>Correo electrónico</label>
+        <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+        <input type="email" id="li-email" placeholder="tucorreo@gmail.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       </div>
-
-      <!-- Error -->
-      <div class="auth-error" id="auth-error">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-        <span id="auth-error-msg"></span>
+      <div class="fg"><label>Contraseña</label>
+        <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <input type="password" id="li-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       </div>
+      <button class="btn" id="btn-li" onclick="doLogin()">
+        <span id="btn-li-txt">Entrar al portal</span>
+      </button>
+    </div>
 
-      <!-- LOGIN FORM -->
-      <div id="form-login">
-        <div class="form-group">
-          <label>Correo electrónico</label>
-          <div class="input-wrap">
-            <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-            <input type="email" id="login-email" placeholder="tucorreo@gmail.com" onkeydown="if(event.key==='Enter')doLogin()"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Contraseña</label>
-          <div class="input-wrap">
-            <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-            <input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"/>
-          </div>
-        </div>
-        <button class="btn-primary" id="btn-login" onclick="doLogin()">
-          <span id="btn-login-text">Entrar al portal</span>
-        </button>
+    <!-- REGISTRO -->
+    <div id="form-reg" style="display:none">
+      <div class="fg"><label>Nombre completo *</label>
+        <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <input type="text" id="rg-nombre" placeholder="Ej. Juan Pérez López"/></div>
       </div>
-
-      <!-- REGISTER FORM -->
-      <div id="form-register" style="display:none">
-        <div class="form-group">
-          <label>Nombre completo *</label>
-          <div class="input-wrap">
-            <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-            <input type="text" id="reg-nombre" placeholder="Ej. Juan Pérez López"/>
-          </div>
+      <div class="row2">
+        <div class="fg"><label>Grupo *</label>
+          <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+          <input type="text" id="rg-grupo" placeholder="Ej. 611"/></div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Grupo *</label>
-            <div class="input-wrap">
-              <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-              <input type="text" id="reg-grupo" placeholder="Ej. 611"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Turno *</label>
-            <div class="input-wrap">
-              <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-              <select id="reg-turno">
-                <option value="" disabled selected>Selecciona</option>
-                <option value="Matutino">Matutino</option>
-                <option value="Vespertino">Vespertino</option>
-              </select>
-            </div>
-          </div>
+        <div class="fg"><label>Turno *</label>
+          <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <select id="rg-turno"><option value="" disabled selected>Selecciona</option><option value="Matutino">Matutino</option><option value="Vespertino">Vespertino</option></select></div>
         </div>
-        <div class="form-group">
-          <label>Correo electrónico *</label>
-          <div class="input-wrap">
-            <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-            <input type="email" id="reg-email" placeholder="tucorreo@gmail.com"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Contraseña * <span style="color:var(--muted);font-size:10px;text-transform:none;letter-spacing:0">(mínimo 6 caracteres)</span></label>
-          <div class="input-wrap">
-            <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-            <input type="password" id="reg-pass" placeholder="Crea una contraseña segura"/>
-          </div>
-        </div>
-        <button class="btn-primary" id="btn-register" onclick="doRegister()">
-          <span id="btn-register-text">Crear mi cuenta</span>
-        </button>
       </div>
-
+      <div class="fg"><label>Correo electrónico *</label>
+        <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+        <input type="email" id="rg-email" placeholder="tucorreo@gmail.com"/></div>
+      </div>
+      <div class="fg"><label>Contraseña * <span style="text-transform:none;letter-spacing:0;font-weight:400">(mínimo 6 caracteres)</span></label>
+        <div class="iw"><span class="ii"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <input type="password" id="rg-pass" placeholder="Crea una contraseña"/></div>
+      </div>
+      <button class="btn" id="btn-rg" onclick="doRegister()">
+        <span id="btn-rg-txt">Crear mi cuenta</span>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ PÁGINA: DASHBOARD ALUMNO ══════════════ -->
-<div class="page" id="page-dashboard">
+<!-- ══════ DASHBOARD ALUMNO ══════ -->
+<div id="screen-dash" style="display:none">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      </div>
-      <div>
-        <h1 class="topbar">CONALEP Ext. Nuevo Progreso — Manejo de Redes</h1>
-        <p>Ciclo 2 · 2025/2026 · Ing. Santiago Martínez González</p>
-      </div>
+    <div class="tl">
+      <div class="ti"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div><div class="th1">CONALEP Ext. Nuevo Progreso — Manejo de Redes</div><div class="th2">Ciclo 2 · 2025/2026 · Ing. Santiago Martínez González</div></div>
     </div>
-    <div class="user-info">
-      <div class="user-avatar" id="avatar-letter">?</div>
-      <div>
-        <div class="user-name" id="user-display-name">Cargando...</div>
-        <div class="user-group" id="user-display-group">–</div>
-      </div>
-      <button class="logout-btn" onclick="doLogout()">
+    <div class="tr">
+      <div class="av" id="d-av">?</div>
+      <div><div class="un" id="d-nombre">–</div><div class="ug" id="d-grupo">–</div></div>
+      <button class="lob" onclick="doLogout()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         Salir
       </button>
@@ -356,404 +227,262 @@
   </div>
 
   <div class="content">
-    <!-- Saludo -->
-    <div class="greeting">
-      <div>
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    <div class="greet">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <div class="greet-txt">
+        <h2 id="d-greeting">¡Hola!</h2>
+        <p id="d-subgreeting">Bienvenido a tu portal de aprendizaje</p>
       </div>
-      <div class="greeting-text">
-        <h2 id="greeting-name">¡Hola!</h2>
-        <p>Bienvenido a tu portal de aprendizaje · <span id="greeting-info">–</span></p>
-      </div>
-      <div class="greeting-stats">
-        <div class="g-stat">
-          <div class="g-stat-val" id="gs-completados">0</div>
-          <div class="g-stat-lbl">Completados</div>
-        </div>
-        <div class="g-stat">
-          <div class="g-stat-val" id="gs-promedio">–</div>
-          <div class="g-stat-lbl">Promedio</div>
-        </div>
-        <div class="g-stat">
-          <div class="g-stat-val" id="gs-disponibles">0</div>
-          <div class="g-stat-lbl">Disponibles</div>
-        </div>
+      <div class="greet-stats">
+        <div class="gs"><div class="gsv" id="gs-comp">0</div><div class="gsl">Completados</div></div>
+        <div class="gs"><div class="gsv" id="gs-prom">–</div><div class="gsl">Promedio</div></div>
+        <div class="gs"><div class="gsv" id="gs-disp">0</div><div class="gsl">Disponibles</div></div>
       </div>
     </div>
 
-    <!-- Progreso -->
-    <div class="prog-section">
-      <div class="prog-header">
-        <div class="prog-title">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff9d" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Progreso del semestre
-        </div>
-        <div class="prog-pct" id="prog-pct">0%</div>
+    <div class="prog">
+      <div class="prog-h">
+        <div class="prog-t"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00ff9d" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Progreso del semestre</div>
+        <div class="prog-p" id="d-pct">0%</div>
       </div>
-      <div class="prog-bar-bg">
-        <div class="prog-bar-fill" id="prog-bar" style="width:0%"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)">
-        <span id="prog-label">0 de 15 materiales completados</span>
-        <span>Manejo de Redes · Ciclo 2</span>
-      </div>
+      <div class="pb"><div class="pbf" id="d-pbar" style="width:0%"></div></div>
+      <div class="prog-sub"><span id="d-prog-lbl">0 de 15 materiales completados</span><span>Manejo de Redes · Ciclo 2</span></div>
     </div>
 
-    <!-- Materiales disponibles -->
-    <div class="section-title">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      Unidad 2 · RA 2.1 — Disponibles ahora
-    </div>
-    <div class="mat-grid" id="mat-disponibles"></div>
+    <div class="st"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Materiales disponibles</div>
+    <div class="mgrid" id="d-mats-disp"></div>
 
-    <div class="section-title">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      Próximamente
-    </div>
-    <div class="mat-grid" id="mat-proximos"></div>
+    <div class="st"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Próximamente</div>
+    <div class="mgrid" id="d-mats-prox"></div>
 
-    <!-- Tabla de calificaciones -->
-    <div class="section-title">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-      Mis calificaciones
+    <div class="st"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>Mis calificaciones</div>
+    <div class="ctable">
+      <div class="cth"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Registro de evaluaciones</div>
+      <table><thead><tr><th>Material</th><th>Unidad</th><th>Calificación</th><th>Fecha</th><th>Estado</th></tr></thead>
+      <tbody id="d-cal-tbody"><tr><td colspan="5" class="empty-row">Sin evaluaciones aún</td></tr></tbody></table>
     </div>
-    <div class="cal-table">
-      <div class="cal-table-header">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-        Registro de evaluaciones
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Material</th><th>Unidad</th><th>Calificación</th><th>Fecha</th><th>Estado</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-cals">
-          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Aún no tienes evaluaciones registradas</td></tr>
-        </tbody>
-      </table>
-    </div>
-
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-//  FIREBASE
-// ══════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyCrDPfb-K-dj0p3StPxr3vl-TPLUhUwjZY",
-  authDomain: "conalep-nuevoprogreso.firebaseapp.com",
-  projectId: "conalep-nuevoprogreso",
-  storageBucket: "conalep-nuevoprogreso.firebasestorage.app",
-  messagingSenderId: "193352951795",
-  appId: "1:193352951795:web:cc186d97a9ce705b985486"
-};
-firebase.initializeApp(firebaseConfig);
+// ─── FIREBASE ───
+firebase.initializeApp({
+  apiKey:"AIzaSyCrDPfb-K-dj0p3StPxr3vl-TPLUhUwjZY",
+  authDomain:"conalep-nuevoprogreso.firebaseapp.com",
+  projectId:"conalep-nuevoprogreso",
+  storageBucket:"conalep-nuevoprogreso.firebasestorage.app",
+  messagingSenderId:"193352951795",
+  appId:"1:193352951795:web:cc186d97a9ce705b985486"
+});
 const auth = firebase.auth();
-const db = firebase.firestore();
+const db   = firebase.firestore();
 
-// ══════════════════════════════════════
-//  MATERIALES
-// ══════════════════════════════════════
-const MATERIALES = [
-  { id:"u2-ra2-1-a", nombre:"RA 2.1 — Inciso A", sub:"Ejecución de comandos IOS", unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-a/index.html" },
-  { id:"u2-ra2-1-b", nombre:"RA 2.1 — Inciso B", sub:"Configuración básica de dispositivos", unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-b/index.html" },
-  { id:"u1-ra1-1-a", nombre:"RA 1.1 — Inciso A", sub:"Infraestructura WLAN", unidad:"Unidad 1", url:"manejo-de-redes/u1-ra1-1-a/index.html" },
-  { id:"u1-ra1-1-b", nombre:"RA 1.1 — Inciso B", sub:"Configuración de acceso WLAN", unidad:"Unidad 1", url:"manejo-de-redes/u1-ra1-1-b/index.html" },
-  { id:"u2-ra2-1-c", nombre:"RA 2.1 — Inciso C", sub:"Verificación de conectividad", unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-c/index.html" },
-  { id:"u2-ra2-2-a", nombre:"RA 2.2 — Inciso A", sub:"Configuración ISR con SDM", unidad:"Unidad 2", url:"manejo-de-redes/ra2-2-a/index.html" },
-  { id:"u3-ra3-1", nombre:"RA 3.1", sub:"VLANs y enlaces troncales", unidad:"Unidad 3", url:"manejo-de-redes/ra3-1/index.html" },
+// ─── ESTADO ───
+let cUser=null, uData={}, uCals={}, cfgMats={}, doingReg=false;
+
+const MATS = [
+  {id:"u2-ra2-1-a", nombre:"RA 2.1 — Inciso A", sub:"Ejecución de comandos IOS",       unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-a/index.html"},
+  {id:"u2-ra2-1-b", nombre:"RA 2.1 — Inciso B", sub:"Configuración básica dispositivos", unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-b/index.html"},
+  {id:"u1-ra1-1-a", nombre:"RA 1.1 — Inciso A", sub:"Infraestructura WLAN",             unidad:"Unidad 1", url:"manejo-de-redes/u1-ra1-1-a/index.html"},
+  {id:"u1-ra1-1-b", nombre:"RA 1.1 — Inciso B", sub:"Configuración acceso WLAN",         unidad:"Unidad 1", url:"manejo-de-redes/u1-ra1-1-b/index.html"},
+  {id:"u1-ra1-2-a", nombre:"RA 1.2 — Inciso A", sub:"Amenazas seguridad inalámbrica",    unidad:"Unidad 1", url:"manejo-de-redes/u1-ra1-2-a/index.html"},
+  {id:"u2-ra2-1-c", nombre:"RA 2.1 — Inciso C", sub:"Verificación de conectividad",      unidad:"Unidad 2", url:"manejo-de-redes/ra2-1-c/index.html"},
+  {id:"u2-ra2-2-a", nombre:"RA 2.2 — Inciso A", sub:"Router ISR con SDM",               unidad:"Unidad 2", url:"manejo-de-redes/ra2-2-a/index.html"},
+  {id:"u3-ra3-1",   nombre:"RA 3.1",             sub:"VLANs y enlaces troncales",         unidad:"Unidad 3", url:"manejo-de-redes/ra3-1/index.html"},
+  {id:"u3-ra3-2",   nombre:"RA 3.2",             sub:"Protocolo VTP",                     unidad:"Unidad 3", url:"manejo-de-redes/ra3-2/index.html"},
+  {id:"u3-ra3-3",   nombre:"RA 3.3",             sub:"Enrutamiento inter-VLAN",           unidad:"Unidad 3", url:"manejo-de-redes/ra3-3/index.html"},
 ];
 
-// ══════════════════════════════════════
-//  AUTH STATE
-// ══════════════════════════════════════
-let currentUser = null;
-let userData = null;
-let userCals = {};
-let configMats = {};
-
-let registering = false; // Flag para evitar el race condition
-
-auth.onAuthStateChanged(async (user) => {
-  if (registering) return;
-  document.getElementById('loading').style.display = 'none';
+// ─── AUTH STATE ───
+auth.onAuthStateChanged(async user => {
+  if (doingReg) return;
+  hide('loading');
   if (user) {
-    currentUser = user;
-    try {
-      await loadUserData(user.uid);
-    } catch(e) {
-      console.error('Error cargando datos:', e);
-      // Si falla Firestore, usar datos mínimos para mostrar el dashboard
-      userData = { nombre: user.email, grupo: '–', turno: '–' };
-      userCals = {};
-      configMats = {};
-      renderDashboard();
-    }
-    showPage('dashboard');
+    cUser = user;
+    await fetchUserData(user.uid);
+    renderDash();
+    show('screen-dash');
   } else {
-    showPage('auth');
+    show('screen-auth');
   }
 });
 
-async function loadUserData(uid) {
+async function fetchUserData(uid) {
   try {
-    const [userDoc, calDoc, configDoc] = await Promise.all([
+    const [ud, cd, cfg] = await Promise.all([
       db.collection('usuarios').doc(uid).get(),
       db.collection('calificaciones').doc(uid).get(),
       db.collection('configuracion').doc('materiales').get(),
     ]);
-    userData = userDoc.exists ? userDoc.data() : {};
-    userCals = calDoc.exists ? calDoc.data() : {};
-    configMats = configDoc.exists ? configDoc.data() : {};
-    renderDashboard();
-  } catch(e) { console.error(e); }
+    uData   = ud.exists  ? ud.data()  : {};
+    uCals   = cd.exists  ? cd.data()  : {};
+    cfgMats = cfg.exists ? cfg.data() : {};
+  } catch(e) {
+    console.warn('Firestore error:', e.message);
+    uData={}; uCals={}; cfgMats={};
+  }
 }
 
-// ══════════════════════════════════════
-//  RENDER DASHBOARD
-// ══════════════════════════════════════
-function renderDashboard() {
-  const nombre = userData.nombre || currentUser.email;
-  const inicial = nombre.charAt(0).toUpperCase();
+// ─── RENDER DASHBOARD ───
+function renderDash() {
+  const nombre   = uData.nombre || cUser.email || '–';
+  const inicial  = nombre.charAt(0).toUpperCase();
+  const grupo    = uData.grupo  || '–';
+  const turno    = uData.turno  || '–';
 
-  document.getElementById('avatar-letter').textContent = inicial;
-  document.getElementById('user-display-name').textContent = nombre;
-  document.getElementById('user-display-group').textContent = `Grupo ${userData.grupo || '–'} · ${userData.turno || ''}`;
-  document.getElementById('greeting-name').textContent = `¡Hola, ${nombre.split(' ')[0]}!`;
-  document.getElementById('greeting-info').textContent = `Grupo ${userData.grupo || '–'} · ${userData.turno || '–'}`;
+  setText('d-av',       inicial);
+  setText('d-nombre',   nombre);
+  setText('d-grupo',    `Grupo ${grupo} · ${turno}`);
+  setText('d-greeting', `¡Hola, ${nombre.split(' ')[0]}!`);
+  setText('d-subgreeting', `Grupo ${grupo} · ${turno} · Manejo de Redes`);
 
   // Stats
-  const completados = Object.keys(userCals).length;
-  const vals = Object.values(userCals).map(c => parseFloat(c.calificacion)).filter(v => !isNaN(v));
-  const promedio = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '–';
-  const disponibles = MATERIALES.filter(m => !configMats[m.id]?.bloqueado).length;
+  const comp = Object.keys(uCals).length;
+  const vals = Object.values(uCals).map(c=>parseFloat(c.calificacion)).filter(v=>!isNaN(v));
+  const prom = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '–';
+  const matTotal = MATS.length;
+  const matDisp  = MATS.filter(m=>!cfgMats[m.id]?.bloqueado).length;
 
-  document.getElementById('gs-completados').textContent = completados;
-  document.getElementById('gs-promedio').textContent = promedio;
-  document.getElementById('gs-disponibles').textContent = disponibles;
+  setText('gs-comp', comp);
+  setText('gs-prom', prom);
+  setText('gs-disp', matDisp);
 
-  // Progreso
-  const totalMats = MATERIALES.length;
-  const pct = Math.round((completados / totalMats) * 100);
-  document.getElementById('prog-pct').textContent = pct + '%';
-  document.getElementById('prog-bar').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = `${completados} de ${totalMats} materiales completados`;
+  const pct = Math.round((comp/matTotal)*100);
+  setText('d-pct', pct+'%');
+  document.getElementById('d-pbar').style.width = pct+'%';
+  setText('d-prog-lbl', `${comp} de ${matTotal} materiales completados`);
 
-  // Materiales disponibles (solo U2 RA2.1 A y B por ahora)
-  const disponiblesArr = MATERIALES.filter(m => !configMats[m.id]?.bloqueado && (m.id === 'u2-ra2-1-a' || m.id === 'u2-ra2-1-b'));
-  const proximosArr = MATERIALES.filter(m => configMats[m.id]?.bloqueado || (m.id !== 'u2-ra2-1-a' && m.id !== 'u2-ra2-1-b'));
+  // Materiales
+  const disp = MATS.filter(m => !cfgMats[m.id]?.bloqueado && (m.id==='u2-ra2-1-a'||m.id==='u2-ra2-1-b'));
+  const prox = MATS.filter(m => cfgMats[m.id]?.bloqueado  || (m.id!=='u2-ra2-1-a'&&m.id!=='u2-ra2-1-b'));
 
-  renderMatGrid('mat-disponibles', disponiblesArr, true);
-  renderMatGrid('mat-proximos', proximosArr.slice(0,4), false);
-
-  // Tabla calificaciones
+  renderMatGrid('d-mats-disp', disp);
+  renderMatGrid('d-mats-prox', prox.slice(0,4));
   renderCalTable();
 }
 
-function renderMatGrid(containerId, mats, isAvailable) {
-  const container = document.getElementById(containerId);
-  if (!mats.length) { container.innerHTML = ''; return; }
+function renderMatGrid(id, mats) {
+  const el = document.getElementById(id);
+  if (!mats.length) { el.innerHTML=''; return; }
+  el.innerHTML = mats.map(m=>{
+    const cal    = uCals[m.id];
+    const locked = cfgMats[m.id]?.bloqueado;
+    const done   = !!cal;
+    const cv     = cal ? parseFloat(cal.calificacion) : null;
+    const cvCls  = !cv ? '' : cv>=8?'cv-g':cv>=6?'cv-y':'cv-r';
+    const cardCls= locked?'lock-card':done?'done-card':m.id!=='u2-ra2-1-a'&&m.id!=='u2-ra2-1-b'?'soon-card':'av-card';
+    const icon   = locked?'🔒':done?'✅':m.id!=='u2-ra2-1-a'&&m.id!=='u2-ra2-1-b'?'📅':'📖';
 
-  container.innerHTML = mats.map(m => {
-    const cal = userCals[m.id];
-    const isLocked = configMats[m.id]?.bloqueado;
-    const isDone = !!cal;
-    const calVal = cal?.calificacion;
-    const calClass = !calVal ? 'cal-na' : parseFloat(calVal) >= 8 ? 'cal-green' : parseFloat(calVal) >= 6 ? 'cal-yellow' : 'cal-red';
+    const chip = locked
+      ? `<span class="chip chip-lock">Bloqueado</span>`
+      : done ? `<span class="chip chip-done">✓ Completado</span>`
+      : m.id==='u2-ra2-1-a'||m.id==='u2-ra2-1-b'
+        ? `<span class="chip chip-av">Disponible</span>`
+        : `<span class="chip chip-soon">Próximamente</span>`;
 
-    let cardClass = isLocked ? 'locked' : isDone ? 'completed' : 'available';
-    let chip = isLocked
-      ? `<span class="status-chip chip-locked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Bloqueado</span>`
-      : isDone
-      ? `<span class="status-chip chip-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Completado</span>`
-      : `<span class="status-chip chip-new"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Disponible</span>`;
+    const btn = locked
+      ? `<span class="mbtn mbtn-lock">No disponible</span>`
+      : done ? `<a href="${m.url}" class="mbtn mbtn-rep">Repasar</a>`
+      : m.id==='u2-ra2-1-a'||m.id==='u2-ra2-1-b'
+        ? `<a href="${m.url}" class="mbtn mbtn-go">Entrar</a>`
+        : `<span class="mbtn mbtn-lock">Próximamente</span>`;
 
-    let btn = isLocked
-      ? `<span class="mat-btn locked-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> No disponible</span>`
-      : isDone
-      ? `<a href="${m.url}" class="mat-btn done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Repasar</a>`
-      : `<a href="${m.url}" class="mat-btn go"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Entrar</a>`;
-
-    return `
-      <div class="mat-card ${cardClass}">
-        <div class="mat-card-header">
-          <div class="mat-icon">${isDone ? '✅' : isLocked ? '🔒' : '📖'}</div>
-          <div>
-            <div class="mat-name">${m.nombre}</div>
-            <div class="mat-sub">${m.sub}</div>
-          </div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${m.unidad}</div>
-        <div class="mat-footer">
-          <div>
-            ${chip}
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            ${calVal ? `<span class="mat-cal ${calClass}">${parseFloat(calVal).toFixed(1)}</span>` : ''}
-            ${btn}
-          </div>
-        </div>
-      </div>`;
+    return `<div class="mc ${cardCls}">
+      <div class="mch"><div class="mci">${icon}</div><div><div class="mcn">${m.nombre}</div><div class="mcs">${m.sub}</div></div></div>
+      <div class="mcu">${m.unidad}</div>
+      <div class="mcf">${chip}<div style="display:flex;align-items:center;gap:8px">${cv?`<span class="cal-val ${cvCls}">${cv.toFixed(1)}</span>`:''} ${btn}</div></div>
+    </div>`;
   }).join('');
 }
 
 function renderCalTable() {
-  const tbody = document.getElementById('tbody-cals');
-  const MAT_NAMES = {
-    'u2-ra2-1-a':'RA 2.1 — Inciso A','u2-ra2-1-b':'RA 2.1 — Inciso B',
-    'u1-ra1-1-a':'RA 1.1 — Inciso A','u1-ra1-1-b':'RA 1.1 — Inciso B',
-    'u2-ra2-1-c':'RA 2.1 — Inciso C',
-  };
-  const entries = Object.entries(userCals);
+  const tbody = document.getElementById('d-cal-tbody');
+  const NAMES = {'u2-ra2-1-a':'RA 2.1-A','u2-ra2-1-b':'RA 2.1-B','u1-ra1-1-a':'RA 1.1-A','u1-ra1-1-b':'RA 1.1-B','u2-ra2-1-c':'RA 2.1-C'};
+  const entries = Object.entries(uCals);
   if (!entries.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Aún no tienes evaluaciones registradas</td></tr>';
+    tbody.innerHTML='<tr><td colspan="5" class="empty-row">Aún no tienes evaluaciones registradas</td></tr>';
     return;
   }
-  tbody.innerHTML = entries.map(([id, data]) => {
-    const cal = parseFloat(data.calificacion);
-    const cls = cal >= 8 ? 'color:#2ed573' : cal >= 6 ? 'color:#ffd60a' : 'color:#ff4757';
-    const estado = cal >= 6 ? '✅ Aprobado' : '❌ No acreditado';
-    const fecha = data.fecha ? new Date(data.fecha).toLocaleDateString('es-MX', {day:'numeric',month:'short',year:'numeric'}) : '–';
-    return `
-      <tr>
-        <td><strong>${MAT_NAMES[id] || id}</strong></td>
-        <td style="color:var(--muted);font-size:12px">Unidad 2</td>
-        <td><span style="font-family:monospace;font-weight:800;font-size:16px;${cls}">${cal.toFixed(1)}</span></td>
-        <td style="color:var(--muted);font-size:12px">${fecha}</td>
-        <td style="font-size:12px">${estado}</td>
-      </tr>`;
+  tbody.innerHTML = entries.map(([id,d])=>{
+    const cal=parseFloat(d.calificacion);
+    const cls=cal>=8?'color:#2ed573':cal>=6?'color:#ffd60a':'color:#ff4757';
+    const fecha=d.fecha?new Date(d.fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'}):'–';
+    return `<tr>
+      <td><strong>${NAMES[id]||id}</strong></td>
+      <td style="color:var(--muted);font-size:12px">Unidad 2</td>
+      <td><span style="font-family:monospace;font-weight:800;font-size:16px;${cls}">${cal.toFixed(1)}</span></td>
+      <td style="color:var(--muted);font-size:12px">${fecha}</td>
+      <td style="font-size:12px">${cal>=6?'✅ Aprobado':'❌ No acreditado'}</td>
+    </tr>`;
   }).join('');
 }
 
-// ══════════════════════════════════════
-//  AUTH ACTIONS
-// ══════════════════════════════════════
+// ─── AUTH ACTIONS ───
 async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  if (!email || !pass) { showError('Completa todos los campos'); return; }
-
-  setBtnLoading('btn-login', 'btn-login-text', true, 'Entrando...');
-  hideError();
+  const email=v('li-email'), pass=v('li-pass');
+  if(!email||!pass){showErr('Completa todos los campos');return}
+  setBtn('btn-li','btn-li-txt',true,'Entrando...');
+  hideErr();
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    await auth.signInWithEmailAndPassword(email,pass);
+    // onAuthStateChanged se encarga del resto
   } catch(e) {
-    setBtnLoading('btn-login', 'btn-login-text', false, 'Entrar al portal');
-    const msgs = {
-      'auth/user-not-found':'No existe una cuenta con ese correo. ¿Necesitas registrarte?',
-      'auth/wrong-password':'Contraseña incorrecta. Intenta de nuevo.',
-      'auth/invalid-email':'El formato del correo no es válido.',
-      'auth/too-many-requests':'Demasiados intentos. Espera unos minutos.',
-    };
-    showError(msgs[e.code] || 'Error al iniciar sesión. Intenta de nuevo.');
+    setBtn('btn-li','btn-li-txt',false,'Entrar al portal');
+    const m={'auth/user-not-found':'No existe cuenta con ese correo. ¿Necesitas registrarte?',
+      'auth/wrong-password':'Contraseña incorrecta.','auth/invalid-email':'Correo no válido.',
+      'auth/invalid-credential':'Correo o contraseña incorrectos.',
+      'auth/too-many-requests':'Demasiados intentos. Espera unos minutos.'};
+    showErr(m[e.code]||'Error al iniciar sesión. Intenta de nuevo.');
   }
 }
 
 async function doRegister() {
-  const nombre = document.getElementById('reg-nombre').value.trim();
-  const grupo = document.getElementById('reg-grupo').value.trim();
-  const turno = document.getElementById('reg-turno').value;
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value;
-
-  if (!nombre || !grupo || !turno || !email || !pass) { showError('Completa todos los campos obligatorios'); return; }
-  if (pass.length < 6) { showError('La contraseña debe tener al menos 6 caracteres'); return; }
-
-  setBtnLoading('btn-register', 'btn-register-text', true, 'Creando cuenta...');
-  hideError();
-  registering = true;
-
+  const nombre=v('rg-nombre'),grupo=v('rg-grupo'),turno=v('rg-turno'),email=v('rg-email'),pass=v('rg-pass');
+  if(!nombre||!grupo||!turno||!email||!pass){showErr('Completa todos los campos');return}
+  if(pass.length<6){showErr('La contraseña debe tener mínimo 6 caracteres');return}
+  setBtn('btn-rg','btn-rg-txt',true,'Creando cuenta...');
+  hideErr(); doingReg=true;
   try {
-    // 1. Crear usuario en Firebase Auth
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-
-    // 2. Guardar datos en Firestore
-    await db.collection('usuarios').doc(cred.user.uid).set({
-      nombre, grupo, turno, correo: email,
-      fechaRegistro: new Date().toISOString(),
-    });
-
-    // 3. Cargar datos y mostrar dashboard manualmente
-    currentUser = cred.user;
-    userData = { nombre, grupo, turno, correo: email };
-    userCals = {};
-    configMats = {};
-
-    // Cargar config de materiales
-    try {
-      const configDoc = await db.collection('configuracion').doc('materiales').get();
-      if (configDoc.exists) configMats = configDoc.data();
-    } catch(e) {}
-
-    registering = false;
-    document.getElementById('loading').style.display = 'none';
-    renderDashboard();
-    showPage('dashboard');
-
+    const cred = await auth.createUserWithEmailAndPassword(email,pass);
+    await db.collection('usuarios').doc(cred.user.uid).set({nombre,grupo,turno,correo:email,fechaRegistro:new Date().toISOString()});
+    cUser=cred.user; uData={nombre,grupo,turno,correo:email}; uCals={}; cfgMats={};
+    try{const c=await db.collection('configuracion').doc('materiales').get();if(c.exists)cfgMats=c.data();}catch{}
+    doingReg=false;
+    hide('loading');
+    renderDash();
+    hide('screen-auth');
+    show('screen-dash');
   } catch(e) {
-    registering = false;
-    setBtnLoading('btn-register', 'btn-register-text', false, 'Crear mi cuenta');
-    const msgs = {
-      'auth/email-already-in-use':'Ya existe una cuenta con ese correo. Inicia sesión en la pestaña "Iniciar sesión".',
-      'auth/invalid-email':'El formato del correo no es válido.',
-      'auth/weak-password':'La contraseña es muy débil. Usa al menos 6 caracteres.',
-      'auth/network-request-failed':'Error de red. Verifica tu conexión a internet.',
-      'permission-denied':'Error de permisos en la base de datos. Contacta al profesor.',
-    };
-    showError(msgs[e.code] || `Error: ${e.message}`);
-    console.error('Error registro:', e.code, e.message);
+    doingReg=false;
+    setBtn('btn-rg','btn-rg-txt',false,'Crear mi cuenta');
+    const m={'auth/email-already-in-use':'Ya existe cuenta con ese correo. Inicia sesión.',
+      'auth/invalid-email':'Formato de correo no válido.','auth/weak-password':'Contraseña muy débil.'};
+    showErr(m[e.code]||`Error: ${e.message}`);
+    console.error(e.code, e.message);
   }
 }
 
 async function doLogout() {
   await auth.signOut();
-  userCals = {};
-  userData = null;
+  uData={}; uCals={}; cfgMats={};
+  hide('screen-dash'); show('screen-auth');
 }
 
-// ══════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  if (page === 'auth') document.getElementById('page-auth').classList.add('active');
-  if (page === 'dashboard') document.getElementById('page-dashboard').classList.add('active');
+// ─── UI UTILS ───
+function show(id){ document.getElementById(id).style.display='flex'; if(id==='screen-dash')document.getElementById(id).style.display='block'; }
+function hide(id){ document.getElementById(id).style.display='none'; }
+function v(id){ return document.getElementById(id).value.trim(); }
+function setText(id,t){ const el=document.getElementById(id); if(el) el.textContent=t; }
+function showErr(msg){ const e=document.getElementById('auth-err'); e.classList.add('show'); document.getElementById('auth-err-msg').textContent=msg; }
+function hideErr(){ document.getElementById('auth-err').classList.remove('show'); }
+function setBtn(bid,tid,dis,txt){ document.getElementById(bid).disabled=dis; document.getElementById(tid).textContent=txt; }
+function switchTab(t){
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-reg').classList.toggle('active',t==='reg');
+  document.getElementById('form-login').style.display=t==='login'?'block':'none';
+  document.getElementById('form-reg').style.display=t==='reg'?'block':'none';
+  hideErr();
 }
-
-function switchAuth(tab, btn) {
-  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
-  hideError();
-}
-
-function showError(msg) {
-  const el = document.getElementById('auth-error');
-  document.getElementById('auth-error-msg').textContent = msg;
-  el.classList.add('show');
-}
-function hideError() { document.getElementById('auth-error').classList.remove('show'); }
-
-function setBtnLoading(btnId, textId, loading, text) {
-  const btn = document.getElementById(btnId);
-  btn.disabled = loading;
-  document.getElementById(textId).textContent = text;
-  if (loading) {
-    const sp = document.createElement('div');
-    sp.className = 'spinner';
-    sp.id = 'btn-spinner';
-    btn.appendChild(sp);
-  } else {
-    document.getElementById('btn-spinner')?.remove();
-  }
-}
-
-// Fix: page-auth is a div inside another div — simplify
-document.getElementById('page-auth').classList.add('page');
-document.getElementById('page-dashboard').classList.add('page');
 </script>
 </body>
 </html>
