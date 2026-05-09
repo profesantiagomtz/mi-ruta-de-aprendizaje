@@ -235,7 +235,7 @@
 
 <!-- ══════════════ PÁGINA: AUTH ══════════════ -->
 <div class="page" id="page-auth">
-  <div id="page-auth" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
     <div class="auth-wrap">
       <div class="auth-logo">
         <div class="auth-logo-icon">
@@ -474,11 +474,23 @@ let userData = null;
 let userCals = {};
 let configMats = {};
 
+let registering = false; // Flag para evitar el race condition
+
 auth.onAuthStateChanged(async (user) => {
+  if (registering) return;
   document.getElementById('loading').style.display = 'none';
   if (user) {
     currentUser = user;
-    await loadUserData(user.uid);
+    try {
+      await loadUserData(user.uid);
+    } catch(e) {
+      console.error('Error cargando datos:', e);
+      // Si falla Firestore, usar datos mínimos para mostrar el dashboard
+      userData = { nombre: user.email, grupo: '–', turno: '–' };
+      userCals = {};
+      configMats = {};
+      renderDashboard();
+    }
     showPage('dashboard');
   } else {
     showPage('auth');
@@ -651,20 +663,47 @@ async function doRegister() {
 
   setBtnLoading('btn-register', 'btn-register-text', true, 'Creando cuenta...');
   hideError();
+  registering = true;
+
   try {
+    // 1. Crear usuario en Firebase Auth
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
+
+    // 2. Guardar datos en Firestore
     await db.collection('usuarios').doc(cred.user.uid).set({
       nombre, grupo, turno, correo: email,
       fechaRegistro: new Date().toISOString(),
     });
+
+    // 3. Cargar datos y mostrar dashboard manualmente
+    currentUser = cred.user;
+    userData = { nombre, grupo, turno, correo: email };
+    userCals = {};
+    configMats = {};
+
+    // Cargar config de materiales
+    try {
+      const configDoc = await db.collection('configuracion').doc('materiales').get();
+      if (configDoc.exists) configMats = configDoc.data();
+    } catch(e) {}
+
+    registering = false;
+    document.getElementById('loading').style.display = 'none';
+    renderDashboard();
+    showPage('dashboard');
+
   } catch(e) {
+    registering = false;
     setBtnLoading('btn-register', 'btn-register-text', false, 'Crear mi cuenta');
     const msgs = {
-      'auth/email-already-in-use':'Ya existe una cuenta con ese correo. Inicia sesión.',
+      'auth/email-already-in-use':'Ya existe una cuenta con ese correo. Inicia sesión en la pestaña "Iniciar sesión".',
       'auth/invalid-email':'El formato del correo no es válido.',
       'auth/weak-password':'La contraseña es muy débil. Usa al menos 6 caracteres.',
+      'auth/network-request-failed':'Error de red. Verifica tu conexión a internet.',
+      'permission-denied':'Error de permisos en la base de datos. Contacta al profesor.',
     };
-    showError(msgs[e.code] || 'Error al crear la cuenta. Intenta de nuevo.');
+    showError(msgs[e.code] || `Error: ${e.message}`);
+    console.error('Error registro:', e.code, e.message);
   }
 }
 
