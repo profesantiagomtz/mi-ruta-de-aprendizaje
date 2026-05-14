@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R.A. 2.1 – A. Herencia en C++ | Programación Orientada a Objetos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,500;0,700;1,300&display=swap');
+
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#1c2230; --border:#30363d;
+    --accent:#00d4aa; --accent2:#ff6b35; --accent3:#7c6fff; --text:#e6edf3;
+    --muted:#8b949e; --green:#3fb950; --yellow:#d29922; --red:#f85149; --blue:#58a6ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+
+  header{background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%);border-bottom:3px solid var(--accent);padding:44px 64px 36px;position:relative;overflow:hidden}
+  header::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;border:70px solid rgba(0,212,170,.05)}
+  header::after{content:'</>';position:absolute;right:90px;bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:74px;font-weight:600;color:rgba(124,111,255,.08)}
+  .htag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;display:block}
+  header h1{font-size:30px;font-weight:700;color:#fff;line-height:1.25;max-width:820px}
+  header h1 span{color:var(--accent)}
+  .header-sub{color:var(--muted);font-size:14px;margin-top:8px;font-weight:300}
+  .hpills{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+  .hpill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+  .hpill b{color:var(--text)}
+
+  .toc{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:6px;margin:32px 64px;padding:22px 30px}
+  .toc-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:14px}
+  .toc-cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;padding-left:20px}
+  .toc-cols li{font-size:13px;margin-bottom:3px}.toc-cols a{color:var(--muted);text-decoration:none}.toc-cols a:hover{color:var(--accent)}
+  .toc-section{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--border);margin-top:12px;margin-bottom:4px;padding-left:20px}
+  main{padding:0 64px 80px}
+
+  .section-title{display:flex;align-items:center;gap:12px;margin:48px 0 20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .section-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);border-radius:4px;padding:2px 8px;white-space:nowrap}
+  .section-title h2{font-size:20px;font-weight:700;color:#fff}
+  p{margin-bottom:12px;color:var(--muted);font-weight:300} p strong,p b{color:var(--text);font-weight:500}
+  ul,ol{padding-left:22px;color:var(--muted);font-size:14px;line-height:2.1;margin-bottom:12px}
+  code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:13px;color:var(--accent)}
+
+  .ib{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:14px 0;font-size:14px}
+
+  .pera-box{background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(0,212,170,.06));border:1px solid rgba(255,107,53,.30);border-left:4px solid var(--accent2);border-radius:10px;padding:18px 22px;margin:16px 0;font-size:14px;box-shadow:0 0 0 1px rgba(255,255,255,.02) inset}
+  .pera-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+  .pera-box p{color:var(--muted);margin:0 0 10px}.pera-box p:last-child{margin-bottom:0}.pera-box b{color:var(--text)}
+  .mini-gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 18px}.mini-term{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}.mini-term code{display:inline-block;margin-bottom:6px}.mini-term span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+  @media(max-width:768px){.mini-gloss{grid-template-columns:1fr}}
+  .ib.tip{border-left:4px solid var(--green)}.ib.warn{border-left:4px solid var(--yellow)}.ib.danger{border-left:4px solid var(--red)}.ib.note{border-left:4px solid var(--accent3)}.ib.info{border-left:4px solid var(--blue)}
+  .ibl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:5px}.ib.tip .ibl{color:var(--green)}.ib.warn .ibl{color:var(--yellow)}.ib.danger .ibl{color:var(--red)}.ib.note .ibl{color:var(--accent3)}.ib.info .ibl{color:var(--blue)}.ib p{color:var(--muted);margin:0}
+  .cb{background:#010409;border:1px solid var(--border);border-top:3px solid var(--accent2);border-radius:0 0 8px 8px;margin:12px 0 20px;overflow:hidden}.ch{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#ff5f57}.dot.y{background:#ffbd2e}.dot.g{background:#28ca41}
+  pre{padding:18px 20px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.9;color:#c9d1d9}.cmd{color:#79c0ff}.val{color:#a5d6ff}.cmt{color:#484f58;font-style:italic}.ok{color:var(--green)}.wc{color:var(--yellow)}.err{color:var(--red)}.pr{color:var(--accent);user-select:none}.kw{color:#ff7b72}.tp{color:#d2a8ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}
+  table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:13px}th{background:var(--surface2);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;border:1px solid var(--border);text-align:left}td{padding:9px 14px;border:1px solid var(--border);color:var(--text)}tr:nth-child(even)td{background:rgba(255,255,255,.02)}
+  .part-divider{margin:64px -64px 0;padding:28px 64px;background:linear-gradient(90deg,rgba(0,212,170,.06) 0%,transparent 100%);border-top:2px solid var(--accent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px}.part-badge{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.35);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:4px;white-space:nowrap}.part-divider h2{font-size:22px;font-weight:700;color:#fff}.part-divider p{font-size:13px;color:var(--muted);margin-top:2px}
+  .uml{background:#010409;border:1px solid var(--border);border-radius:10px;padding:24px;margin:16px 0;font-family:'IBM Plex Mono',monospace}.uml-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}.uml-card{min-width:180px;background:var(--surface2);border:2px solid rgba(0,212,170,.28);border-radius:8px;overflow:hidden}.uml-title{background:rgba(0,212,170,.09);color:var(--accent);padding:8px 12px;text-align:center;font-weight:600}.uml-body{padding:10px 14px;color:var(--muted);font-size:12px;line-height:1.8}.arrow{color:var(--accent3);font-size:30px}
+
+  .warm-block{background:linear-gradient(135deg,#0d1a2e,#0d1117);border:1px solid rgba(91,124,250,.25);border-left:4px solid #5b7cfa;border-radius:8px;margin:28px 0 0;overflow:hidden}.warm-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(91,124,250,.15);background:rgba(91,124,250,.06)}.warm-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5b7cfa;background:rgba(91,124,250,.12);border:1px solid rgba(91,124,250,.3);border-radius:3px;padding:2px 8px}.warm-header span{font-size:13px;color:var(--muted)}.warm-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}.wq{display:flex;flex-direction:column;gap:6px}.wq-text{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}.wq-opts{display:flex;flex-wrap:wrap;gap:8px}.wopt{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:7px 14px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Mono',monospace}.wopt:hover{border-color:rgba(91,124,250,.5);color:var(--text)}.wopt.correct{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);pointer-events:none}.wopt.wrong{border-color:var(--red);background:rgba(249,81,73,.1);color:var(--red);pointer-events:none}.wfb{font-size:12px;padding:6px 10px;border-radius:4px;display:none;line-height:1.5}.wfb.show{display:block}.wfb.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:#86efac}.wfb.bad{background:rgba(249,81,73,.08);border:1px solid rgba(249,81,73,.2);color:#fca5a5}.wfb.hint{background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.2);color:#a5b4fc}.wq-input-row{display:flex;gap:8px;align-items:center}.wq-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none}.wq-input:focus{border-color:#5b7cfa}.wq-input.ok{border-color:var(--green);background:rgba(63,185,80,.05)}.wq-input.bad{border-color:var(--red);background:rgba(249,81,73,.05)}.wbtn{background:#5b7cfa;color:#fff;border:none;border-radius:5px;padding:8px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer;white-space:nowrap}.wbtn:hover{background:#4a6af0}
+  .cli-sim-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between}.cli-sim-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}.cli-sim-hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.2)}.cli-output{padding:14px 16px;min-height:120px;max-height:260px;overflow-y:auto;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.9;color:#c9d1d9;background:#010409}.cli-line-ok{color:var(--green)}.cli-line-err{color:var(--red)}.cli-line-info{color:#5b7cfa}.cli-line-warn{color:var(--yellow)}.cli-line-dim{color:#484f58}.cli-input-row{border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;background:rgba(0,212,170,.02)}.cli-prompt-label{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--accent);white-space:nowrap;padding:10px 8px 10px 0}.cli-input{flex:1;background:transparent;border:none;outline:none;padding:10px 0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text);caret-color:var(--accent)}
+
+  .v30-topbar{position:sticky;top:0;z-index:999;background:rgba(13,17,23,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;gap:16px}.v30-left,.v30-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.v30-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.08);border-radius:999px;padding:4px 10px}.v30-student{font-size:12px;color:var(--muted)}.v30-student b{color:var(--text);font-weight:600}.v30-progress-wrap{width:220px;height:8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);overflow:hidden}.v30-progress{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));transition:width .35s ease}.v30-score{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}.v30-btn{background:var(--accent);color:#06110f;border:none;border-radius:7px;padding:8px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s}.v30-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.v30-btn.secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.v30-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}.v30-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:34px 0}.v30-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.v30-result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}.v30-result-card span{display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}.v30-result-card b{font-size:22px;color:#fff}.v30-modal{position:fixed;inset:0;z-index:2000;background:rgba(1,4,9,.78);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}.v30-modal.show{display:flex}.v30-card{width:min(560px,100%);background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);padding:28px}.v30-card h2{color:#fff;font-size:24px;margin-bottom:8px}.v30-card p{color:var(--muted);font-size:14px}.v30-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.v30-field.full{grid-column:1/-1}.v30-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}.v30-field input,.v30-field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}.v30-field input:focus,.v30-field select:focus{border-color:var(--accent)}.v30-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}.v30-lock-msg{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:#fca5a5;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;display:none}.v30-lock-msg.show{display:block}body.v30-locked main,body.v30-locked .toc{filter:blur(4px);pointer-events:none;user-select:none}body.v30-completed main,body.v30-completed .toc{opacity:.72}body.v30-completed .wopt,body.v30-completed .wq-input,body.v30-completed .wbtn,body.v30-completed .cli-input{pointer-events:none!important;opacity:.65}
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:20px 64px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;gap:12px;flex-wrap:wrap}
+  @media(max-width:768px){header,main,footer{padding-left:20px;padding-right:20px}.toc{margin-left:20px;margin-right:20px}.toc-cols{grid-template-columns:1fr}.part-divider{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}.v30-topbar{padding:10px 20px;align-items:flex-start;flex-direction:column}.v30-progress-wrap{width:100%}.v30-result-grid{grid-template-columns:1fr 1fr}.v30-form{grid-template-columns:1fr}.wq-input-row{flex-direction:column;align-items:stretch}}
+
+  /* ══ CÓDIGO EXPLICADO LÍNEA POR LÍNEA ══ */
+  .line-doc{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;margin:-8px 0 24px;overflow:hidden}
+  .line-doc-title{background:rgba(0,212,170,.06);border-bottom:1px solid var(--border);padding:10px 16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .line-doc-row{display:grid;grid-template-columns:minmax(210px,310px) 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);align-items:start}
+  .line-doc-row:last-child{border-bottom:none}
+  .line-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c9d1d9;background:#010409;border:1px solid var(--border);border-radius:6px;padding:9px 10px;overflow-x:auto;white-space:pre}
+  .line-explain{font-size:13px;color:var(--muted);line-height:1.7}
+  .line-explain b,.line-explain code{color:var(--text)}
+  .line-explain code{font-family:'IBM Plex Mono',monospace;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.15);border-radius:3px;padding:1px 6px;font-size:12px;color:var(--accent)}
+  @media(max-width:768px){.line-doc-row{grid-template-columns:1fr}.line-code{font-size:11px}}
+
+
+/* ══ CANDADOS PEDAGÓGICOS ANTI-TRAMPA ══ */
+.v30-guard-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--yellow);border:1px solid rgba(210,153,34,.35);background:rgba(210,153,34,.08);border-radius:999px;padding:4px 10px}
+.v30-guard-pill b{color:#f5d58b}.v30-timer{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.06);border-radius:999px;padding:4px 10px}.v30-warning-toast{position:fixed;right:18px;bottom:18px;z-index:3000;max-width:360px;background:linear-gradient(145deg,#24180a,#0d1117);border:1px solid rgba(210,153,34,.45);border-left:4px solid var(--yellow);box-shadow:0 20px 50px rgba(0,0,0,.45);border-radius:14px;padding:14px 16px;display:none}.v30-warning-toast.show{display:block;animation:v30pop .22s ease}.v30-warning-toast h4{font-size:14px;color:#fff;margin-bottom:4px}.v30-warning-toast p{font-size:12px;color:var(--muted);margin:0}@keyframes v30pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}.v30-security-list{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.v30-security-item{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--muted)}.v30-security-item b{color:var(--text)}@media(max-width:768px){.v30-security-list{grid-template-columns:1fr}.v30-warning-toast{left:14px;right:14px;bottom:14px}}
+
+
+  /* ══ BLOQUEO PEDAGÓGICO DE EJERCICIOS ══ */
+  .v30-start-exam-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:28px 0;box-shadow:0 16px 45px rgba(0,0,0,.18)}
+  .v30-start-exam-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-start-exam-panel p{color:var(--muted);font-size:14px;margin-bottom:10px}
+  .v30-exam-status{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);border:1px solid rgba(210,153,34,.3);background:rgba(210,153,34,.08);border-radius:999px;padding:4px 10px;display:inline-block;margin-bottom:10px}
+  body.v30-exercises-locked .warm-block, body.v30-exercises-locked #v30FinalPanel{filter:blur(3px);opacity:.55;pointer-events:none;user-select:none}
+  body.v30-exercises-locked .v30-start-exam-panel{filter:none;opacity:1;pointer-events:auto;user-select:auto}
+
+
+  /* Tooltip visible para RESET del simulador */
+  .cli-reset-help {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,.28);
+    background: rgba(0,212,170,.08);
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: help;
+    box-shadow: 0 0 0 rgba(0,212,170,0);
+    transition: all .18s ease;
+  }
+  .cli-reset-help:hover {
+    color: #06110f;
+    background: var(--accent);
+    box-shadow: 0 0 18px rgba(0,212,170,.25);
+  }
+  .cli-reset-help code {
+    color: inherit;
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.18);
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  .cli-reset-help::after {
+    content: "¿Te equivocaste?\A\AEscribe: RESET\A\Apara borrar este ejercicio y volver a comenzar.";
+    white-space: pre-line;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 285px;
+    background: linear-gradient(145deg, #161b22, #0d1117);
+    color: var(--text);
+    border: 1px solid rgba(0,212,170,.35);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    box-shadow: 0 18px 45px rgba(0,0,0,.45);
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 50;
+  }
+  .cli-reset-help:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media(max-width:768px){
+    .cli-reset-help::after{ right:auto; left:0; width:260px; }
+  }
+
+
+
+  /* ══ BOTÓN PDF DE APUNTES ══ */
+  .notes-download-panel{margin:26px 64px 0;background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(88,166,255,.05));border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:10px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .notes-download-panel h3{font-size:16px;color:#fff;margin:0 0 3px}.notes-download-panel p{font-size:13px;color:var(--muted);margin:0}.notes-download-panel .v30-btn{font-size:12px;padding:10px 16px}
+  .pdf-export-area{background:#0d1117;color:#e6edf3;font-family:'IBM Plex Sans',sans-serif;padding:24px;max-width:900px;line-height:1.65}
+  .pdf-export-area header{margin:-24px -24px 22px;padding:34px 42px 28px;position:relative;border-bottom:3px solid #00d4aa;background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%)}
+  .pdf-export-area .toc{margin:18px 0 22px}.pdf-export-area main{padding:0}.pdf-export-area .part-divider,.pdf-export-area #v30StartExamPanel,.pdf-export-area #v30FinalPanel{display:none!important}
+  .pdf-export-area .section-title{break-inside:avoid;page-break-inside:avoid}.pdf-export-area .cb,.pdf-export-area .ib,.pdf-export-area .line-doc,.pdf-export-area .pera-box,.pdf-export-area .uml,.pdf-export-area table{break-inside:avoid;page-break-inside:avoid}
+  .pdf-export-area pre{white-space:pre-wrap;word-break:break-word}.pdf-export-status{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;display:none}.pdf-export-status.show{display:block}
+  @media(max-width:768px){.notes-download-panel{margin-left:20px;margin-right:20px;align-items:flex-start}.notes-download-panel .v30-btn{width:100%}}
+
+
+  /* ══ PDF COMPACTO · BAJO CONSUMO DE TINTA ══ */
+  .pdf-export-area.pdf-lite{
+    background:#ffffff!important;
+    color:#000000!important;
+    font-family:Arial, Helvetica, sans-serif!important;
+    padding:18px!important;
+    max-width:820px!important;
+    line-height:1.34!important;
+    font-size:10.8px!important;
+  }
+  .pdf-lite *{box-shadow:none!important;text-shadow:none!important;}
+  .pdf-lite .pdf-cover{
+    border:1.6px solid #1f2937;
+    border-left:7px solid #00a889;
+    padding:12px 15px 11px;
+    margin-bottom:11px;
+    background:#ffffff!important;
+    break-inside:avoid;
+  }
+  .pdf-lite h1{font-size:20px;margin:0 0 8px;color:#0f172a!important;line-height:1.12;letter-spacing:.1px;}
+  .pdf-lite .pdf-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;margin:0 0 5px;}
+  .pdf-lite .pdf-meta-grid .full{grid-column:1/-1;}
+  .pdf-lite .pdf-meta{font-size:10px;color:#000!important;margin:0;line-height:1.25;}
+  .pdf-lite .pdf-meta b{color:#0f766e!important;}
+  .pdf-lite .pdf-purpose{border-top:1px solid #cbd5e1;margin-top:6px;padding-top:5px;font-size:10.2px;color:#000!important;line-height:1.28;}
+  .pdf-lite .pdf-purpose b{color:#0f766e!important;}
+  .pdf-lite h2{font-size:14.5px;margin:13px 0 6px;color:#0f172a!important;border-bottom:1.5px solid #00a889;padding-bottom:3px;break-after:avoid;}
+  .pdf-lite h3{font-size:11.5px;margin:8px 0 4px;color:#0f172a!important;break-after:avoid;}
+  .pdf-lite p,.pdf-lite li{color:#000!important;margin:3px 0;}
+  .pdf-lite ul,.pdf-lite ol{margin:4px 0 6px 18px;padding:0;color:#000!important;line-height:1.34;}
+  .pdf-lite .pdf-note{border:1px solid #94a3b8;border-left:5px solid #0ea5e9;background:#f8fafc!important;padding:7px 9px;margin:7px 0;break-inside:avoid;color:#000!important;}
+  .pdf-lite .pdf-note.important{border-left-color:#00a889;background:#ecfdf5!important;}
+  .pdf-lite .pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0;}
+  .pdf-lite .pdf-card{border:1px solid #cbd5e1;border-top:3px solid #0ea5e9;background:#fff!important;padding:7px 8px;break-inside:avoid;color:#000!important;}
+  .pdf-lite .pdf-card b{color:#0f172a!important;}
+  .pdf-lite .codebox{border:1px solid #334155;background:#f8fafc!important;margin:7px 0 8px;break-inside:avoid;}
+  .pdf-lite .code-title{background:#e0f2fe!important;color:#0f172a!important;border-bottom:1px solid #94a3b8;font-weight:bold;font-size:9.8px;padding:4px 8px;}
+  .pdf-lite pre{margin:0;padding:8px;font-size:9.2px;line-height:1.28;white-space:pre-wrap;word-break:break-word;color:#000!important;font-family:'Courier New',monospace!important;background:#f8fafc!important;}
+  .pdf-lite code{font-family:'Courier New',monospace!important;background:#f1f5f9!important;color:#000!important;border:1px solid #cbd5e1;padding:0 3px;border-radius:2px;font-size:9.8px;}
+  .pdf-lite table{width:100%;border-collapse:collapse;margin:7px 0;font-size:9.8px;break-inside:avoid;color:#000!important;}
+  .pdf-lite th{background:#e0f2fe!important;color:#0f172a!important;border:1px solid #94a3b8;padding:4px 5px;text-align:left;}
+  .pdf-lite td{border:1px solid #94a3b8;padding:4px 5px;color:#000!important;}
+  .pdf-lite .mini{font-size:9.8px;color:#000!important;}
+  .pdf-lite .page-cut{page-break-before:always;}
+
+  .pdf-lite .pdf-topic{
+    break-inside:avoid;
+    page-break-inside:avoid;
+    margin:0 0 8px;
+  }
+  .pdf-lite .pdf-topic h2{margin-top:8px;}
+  .pdf-lite .pdf-topic.compact{break-inside:avoid;page-break-inside:avoid;}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+<div class="v30-topbar">
+  <div class="v30-left"><span class="v30-badge">Actividad 3.0</span><span class="v30-student" id="v30StudentLabel">Alumno: <b>No registrado</b></span></div>
+  <div class="v30-right"><div class="v30-progress-wrap" title="Progreso de ejercicios"><div class="v30-progress" id="v30Progress"></div></div><span class="v30-timer" id="v30Timer">Sin iniciar</span><span class="v30-guard-pill" id="v30GuardLabel">Alertas: <b>0</b></span><span class="v30-score" id="v30ScoreLabel">0/18 · 0%</span><button class="v30-btn secondary" onclick="v30OpenUnlock()">Desbloquear</button></div>
+</div>
+
+<div class="v30-modal" id="v30StartModal">
+  <div class="v30-card">
+    <h2>Registro del alumno</h2>
+    <p>Antes de iniciar, captura tus datos. Usa tu <b>correo institucional</b>. Esta actividad solo permite <b>un intento</b>. Al finalizar, tu calificación será enviada al docente.</p>
+    <div class="v30-lock-msg" id="v30LockedMessage">Esta actividad ya fue enviada desde este navegador. Si necesitas una segunda oportunidad, solicita autorización al docente.</div>
+    <div class="v30-form" id="v30StudentForm">
+      <div class="v30-field full"><label>Nombre completo</label><input id="v30Name" autocomplete="name" placeholder="Ej. Juan Pérez López"></div>
+      <div class="v30-field"><label>Grupo</label><input id="v30Group" placeholder="Ej. 411"></div>
+      <div class="v30-field"><label>Turno</label><select id="v30Shift"><option value="">Selecciona...</option><option>Matutino</option><option>Vespertino</option></select></div>
+      <div class="v30-field full"><label>Correo institucional del alumno</label><input id="v30Email" type="email" autocomplete="email" placeholder="ej. alumno@tam.conalep.edu.mx"></div>
+    </div>
+    <div class="v30-actions"><button class="v30-btn secondary" onclick="v30OpenUnlock()">Tengo permiso para segunda oportunidad</button><button class="v30-btn" id="v30StartBtn" onclick="v30StartActivity()">Iniciar actividad</button></div>
+  </div>
+</div>
+
+<div class="v30-modal" id="v30UnlockModal">
+  <div class="v30-card"><h2>Desbloqueo docente</h2><p>Solo el docente puede autorizar una segunda oportunidad. Ingresa la clave proporcionada.</p><div class="v30-form"><div class="v30-field full"><label>Clave de desbloqueo</label><input id="v30UnlockKey" type="password" placeholder="Clave del docente"></div></div><div class="v30-lock-msg" id="v30UnlockMsg"></div><div class="v30-actions"><button class="v30-btn secondary" onclick="v30CloseUnlock()">Cancelar</button><button class="v30-btn" onclick="v30UnlockAttempt()">Desbloquear intento</button></div></div>
+</div>
+
+<header>
+  <span class="htag">Recurso de Aprendizaje 2.1 · Sección A</span>
+  <h1>Herencia en <span>Programación Orientada a Objetos</span><br>con C++</h1>
+  <p class="header-sub">Material didáctico elaborado por el Ing. Santiago Martínez González</p>
+  <div class="hpills"><div class="hpill">Materia: <b>Programación Orientada a Objetos</b></div><div class="hpill">Unidad: <b>2</b></div><div class="hpill">Lenguaje: <b>C++</b></div><div class="hpill">Tema: <b>Herencia</b></div></div>
+</header>
+
+<div class="notes-download-panel" id="notesDownloadPanel">
+  <div>
+    <h3>📘 Apuntes de estudio</h3>
+    <p>Descarga únicamente la parte teórica del material en PDF para repasar o imprimir.</p>
+    <div class="pdf-export-status" id="pdfExportStatus">Preparando PDF...</div>
+  </div>
+  <button class="v30-btn" onclick="downloadApuntesPDF()">Descargar apuntes PDF</button>
+</div>
+
+
+<div class="toc">
+  <div class="toc-title">Contenido del material</div>
+  <div class="toc-section">── Apuntes teóricos ──</div>
+  <ol class="toc-cols"><li><a href="#s1">¿Qué es la herencia?</a></li><li><a href="#s2">Clase padre y clase hija</a></li><li><a href="#s3">Reutilización de código</a></li><li><a href="#s4">Extensibilidad</a></li><li><a href="#s5">Herencia simple</a></li><li><a href="#s6">Herencia múltiple</a></li><li><a href="#s7">Ambigüedad</a></li></ol>
+  <div class="toc-section">── Ejercicios y simulador ──</div>
+  <ol class="toc-cols" start="8"><li><a href="#ejercicios">Identificación de conceptos</a></li><li><a href="#ejercicios">Completar código</a></li><li><a href="#ejercicios">Herencia simple</a></li><li><a href="#ejercicios">Herencia múltiple</a></li><li><a href="#simulador">Simulador C++</a></li><li><a href="#v30FinalPanel">Entrega final</a></li></ol>
+</div>
+
+<main>
+<div class="section-title" id="s1"><span class="section-num">01</span><h2>¿Qué es la Herencia?</h2></div>
+<p>La <strong>herencia</strong> es una propiedad de la Programación Orientada a Objetos que permite crear una clase nueva a partir de otra que ya existe. La nueva clase aprovecha lo que la clase anterior ya sabe hacer y, además, puede agregar sus propias acciones.</p>
+<div class="pera-box"><div class="pera-title">💡 Explicación clara</div><p>Imagina que ya tienes una clase llamada <b>Animal</b>. Esa clase ya sabe hacer cosas generales como <b>respirar</b> y <b>comer</b>.</p><p>Ahora quieres crear una clase <b>Perro</b>. ¿Tiene sentido volver a escribir otra vez que el perro respira y come? ❌ No. Mejor hacemos que <b>Perro herede de Animal</b>. Así el perro ya trae lo básico y solo agregamos lo propio: por ejemplo, <b>ladrar</b>.</p></div>
+<div class="ib note"><div class="ibl">Idea clave</div><p>La herencia responde a la frase: <b>“es un tipo de”</b>. Si la frase tiene sentido, probablemente hay herencia. Ejemplo: un <b>Perro</b> es un tipo de <b>Animal</b>; una <b>Moto</b> es un tipo de <b>Vehículo</b>.</p></div>
+<div class="mini-gloss"><div class="mini-term"><code>class</code><span>Sirve para crear un molde. Ese molde define cómo será un objeto.</span></div><div class="mini-term"><code>public</code><span>Significa “esto se puede usar desde afuera”. Es como dejar una puerta abierta.</span></div><div class="mini-term"><code>: public</code><span>En C++ indica que una clase está heredando de otra.</span></div></div>
+<div class="uml"><div class="uml-row"><div class="uml-card"><div class="uml-title">Animal</div><div class="uml-body">+ respirar()<br>+ comer()</div></div><div class="arrow">⟶</div><div class="uml-card"><div class="uml-title">Perro</div><div class="uml-body">+ ladrar()<br><span style="color:var(--green)">hereda respirar()</span></div></div></div></div>
+<div class="cb"><div class="ch"><span>C++ · Herencia básica</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">class</span> <span class="tp">Animal</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">respirar</span>() {
+        cout &lt;&lt; <span class="str">"Respirando..."</span>;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Perro</span> : <span class="kw">public</span> <span class="tp">Animal</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">ladrar</span>() {
+        cout &lt;&lt; <span class="str">"Guau!"</span>;
+    }
+};</pre></div>
+<div class="line-doc">
+  <div class="line-doc-title">Código explicado línea por línea</div>
+  <div class="line-doc-row"><div class="line-code">class Animal {</div><div class="line-explain"><code>class</code> indica que se va a crear una clase. <code>Animal</code> es el nombre de la clase padre. La llave <code>{</code> abre el bloque donde se escribirán sus miembros.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain"><code>public</code> es un modificador de acceso. Significa que lo que se escriba debajo podrá usarse desde fuera de la clase, por ejemplo desde un objeto.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void respirar() {</div><div class="line-explain"><code>void</code> significa que el método no regresa ningún valor. <code>respirar()</code> es el nombre del método. Los paréntesis indican que es una función y la llave abre sus instrucciones.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Respirando...";</div><div class="line-explain"><code>cout</code> muestra información en pantalla. <code>&lt;&lt;</code> envía el texto hacia la consola. El mensaje entre comillas es lo que verá el usuario. El punto y coma <code>;</code> termina la instrucción.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Esta llave cierra el método <code>respirar()</code>. Todo lo que estaba dentro pertenece a ese método.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">La llave <code>}</code> cierra la clase <code>Animal</code>. En C++, al terminar una clase se debe escribir punto y coma <code>;</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">class Perro : public Animal {</div><div class="line-explain"><code>Perro</code> es la clase hija. Los dos puntos <code>:</code> indican herencia. <code>public Animal</code> significa que <code>Perro</code> hereda públicamente de <code>Animal</code>, por eso podrá usar <code>respirar()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Hace públicos los elementos propios de la clase <code>Perro</code>, como el método <code>ladrar()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void ladrar() {</div><div class="line-explain">Declara un método nuevo de la clase hija. <code>void</code> indica que no devuelve nada y <code>ladrar()</code> será una acción propia del perro.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Guau!";</div><div class="line-explain">Muestra en pantalla el texto <code>Guau!</code>. El punto y coma finaliza la instrucción.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Cierra el método <code>ladrar()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Perro</code>. El punto y coma es obligatorio al terminar la definición de una clase.</div></div>
+</div>
+
+<div class="section-title" id="s2"><span class="section-num">02</span><h2>Clase Padre y Clase Hija</h2></div>
+<p>La <strong>clase padre</strong>, también llamada clase base, contiene características generales. La <strong>clase hija</strong>, también llamada clase derivada, toma esas características y agrega detalles más específicos.</p>
+<div class="pera-box"><div class="pera-title">🍎 Ejemplo de la vida real</div><p>Piensa en una plantilla general llamada <b>Usuario</b>. Todos los usuarios pueden <b>iniciar sesión</b>.</p><p>Pero un <b>Alumno</b> también puede <b>consultar calificaciones</b>, y un <b>Docente</b> puede <b>capturar calificaciones</b>. Entonces <b>Alumno</b> y <b>Docente</b> pueden heredar lo general de <b>Usuario</b> y agregar sus propias funciones.</p></div>
+<table><tr><th>Concepto</th><th>También se conoce como</th><th>Ejemplo</th></tr><tr><td>Clase padre</td><td>Clase base / Superclase</td><td><code>Animal</code></td></tr><tr><td>Clase hija</td><td>Clase derivada / Subclase</td><td><code>Perro</code></td></tr><tr><td>Herencia</td><td>Relación “es un tipo de”</td><td><code>Perro : public Animal</code></td></tr></table>
+<div class="ib info"><div class="ibl">En C++</div><p>La sintaxis principal es <code>class Hija : public Padre</code>. Léelo así: “voy a crear una clase hija que toma lo público de la clase padre”.</p></div>
+
+<div class="section-title" id="s3"><span class="section-num">03</span><h2>Reutilización de Código</h2></div>
+<p>Uno de los beneficios más importantes de la herencia es evitar repetir código. En lugar de escribir la misma instrucción en varias clases, se escribe una sola vez en la clase padre y las clases hijas la aprovechan.</p>
+<div class="pera-box"><div class="pera-title">🍐 ¿Por qué esto importa?</div><p>Si copias y pegas el mismo código en muchas clases, después cualquier cambio se vuelve un dolor de cabeza. Tendrías que corregir lo mismo en todos lados.</p><p>Con herencia, pones lo común en una clase padre. Así, si algo cambia, lo corriges en un solo lugar.</p></div>
+<div class="cb"><div class="ch"><span>C++ · Reutilización de métodos</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">class</span> <span class="tp">Usuario</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">iniciarSesion</span>() {
+        cout &lt;&lt; <span class="str">"Sesión iniciada"</span>;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Alumno</span> : <span class="kw">public</span> <span class="tp">Usuario</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">consultarCalificacion</span>() {
+        cout &lt;&lt; <span class="str">"Mostrando calificaciones"</span>;
+    }
+};</pre></div>
+<div class="line-doc">
+  <div class="line-doc-title">Código explicado línea por línea</div>
+  <div class="line-doc-row"><div class="line-code">class Usuario {</div><div class="line-explain">Crea una clase base llamada <code>Usuario</code>. Aquí se colocan acciones generales que pueden compartir otros tipos de usuario.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Permite que los métodos declarados debajo puedan ejecutarse desde objetos o clases hijas.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void iniciarSesion() {</div><div class="line-explain">Crea un método llamado <code>iniciarSesion()</code>. Como es <code>void</code>, solo realiza una acción y no devuelve un dato.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Sesión iniciada";</div><div class="line-explain">Muestra el mensaje en consola. Esta línea representa una acción común que podrá reutilizar la clase hija.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Cierra el método <code>iniciarSesion()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Usuario</code>. El <code>;</code> final es obligatorio en C++.</div></div>
+  <div class="line-doc-row"><div class="line-code">class Alumno : public Usuario {</div><div class="line-explain">Crea la clase hija <code>Alumno</code>. Con <code>: public Usuario</code> hereda lo público de <code>Usuario</code>, por ejemplo <code>iniciarSesion()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Los métodos escritos debajo serán públicos dentro de <code>Alumno</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void consultarCalificacion() {</div><div class="line-explain">Agrega un método nuevo exclusivo del alumno. La clase hija no solo hereda, también puede extenderse con funciones propias.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Mostrando calificaciones";</div><div class="line-explain">Imprime un mensaje que simula la consulta de calificaciones.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Cierra el método <code>consultarCalificacion()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Alumno</code>.</div></div>
+</div>
+
+<div class="ib tip"><div class="ibl">Ventaja</div><p>Si mañana cambia la forma de iniciar sesión, solo se modifica en la clase <b>Usuario</b>. Los alumnos, docentes o administradores que hereden de Usuario aprovecharán ese cambio automáticamente.</p></div>
+
+<div class="section-title" id="s4"><span class="section-num">04</span><h2>Extensibilidad</h2></div>
+<p>La herencia permite extender un sistema sin empezar desde cero. Una clase hija conserva lo que ya funciona en la clase padre y agrega nuevas acciones propias.</p>
+<div class="pera-box"><div class="pera-title">🍎 Dicho fácil</div><p>Es como comprar una mochila básica y después agregarle compartimentos especiales. No tiras la mochila; solo la mejoras.</p><p>En programación pasa igual: no borras la clase base, solo creas una clase hija más específica.</p></div>
+<div class="ib note"><div class="ibl">Ejemplo sencillo</div><p>Si ya tienes una clase <b>Vehiculo</b>, puedes crear <b>Auto</b>, <b>Moto</b> y <b>Camioneta</b> sin duplicar los métodos generales como <code>encender()</code> o <code>frenar()</code>.</p></div>
+
+<div class="section-title" id="s5"><span class="section-num">05</span><h2>Herencia Simple</h2></div>
+<p>La <strong>herencia simple</strong> ocurre cuando una clase hija hereda de una sola clase padre. Es el caso más directo: una clase toma características de otra.</p>
+<div class="pera-box"><div class="pera-title">🍐 Para no confundirse</div><p>En herencia simple hay una relación clara: <b>Moto es un tipo de Vehículo</b>.</p><p>Entonces <b>Moto</b> puede usar lo general de <b>Vehiculo</b>, como <code>encender()</code>, y también tener algo propio, como <code>acelerar()</code>.</p></div>
+<div class="cb"><div class="ch"><span>C++ · Herencia simple</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">class</span> <span class="tp">Vehiculo</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">encender</span>() {
+        cout &lt;&lt; <span class="str">"Vehículo encendido"</span>;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Moto</span> : <span class="kw">public</span> <span class="tp">Vehiculo</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">acelerar</span>() {
+        cout &lt;&lt; <span class="str">"Acelerando moto"</span>;
+    }
+};</pre></div>
+<div class="line-doc">
+  <div class="line-doc-title">Código explicado línea por línea</div>
+  <div class="line-doc-row"><div class="line-code">class Vehiculo {</div><div class="line-explain">Define la clase padre <code>Vehiculo</code>. Contendrá características generales de cualquier vehículo.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Permite que sus métodos públicos sean accesibles desde objetos y desde clases hijas.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void encender() {</div><div class="line-explain">Declara el método <code>encender()</code>. Es una acción general que también podrá usar una <code>Moto</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Vehículo encendido";</div><div class="line-explain">Muestra en pantalla que el vehículo fue encendido.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Cierra el método <code>encender()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase padre <code>Vehiculo</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">class Moto : public Vehiculo {</div><div class="line-explain">Crea la clase hija <code>Moto</code>. La expresión <code>: public Vehiculo</code> significa que <code>Moto</code> hereda de <code>Vehiculo</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Indica que los métodos propios de <code>Moto</code> serán públicos.</div></div>
+  <div class="line-doc-row"><div class="line-code">    void acelerar() {</div><div class="line-explain">Agrega un método propio de la clase <code>Moto</code>. No viene de la clase padre; es una extensión.</div></div>
+  <div class="line-doc-row"><div class="line-code">        cout &lt;&lt; "Acelerando moto";</div><div class="line-explain">Muestra el mensaje de aceleración en la consola.</div></div>
+  <div class="line-doc-row"><div class="line-code">    }</div><div class="line-explain">Cierra el método <code>acelerar()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Moto</code>.</div></div>
+</div>
+
+<div class="section-title" id="s6"><span class="section-num">06</span><h2>Herencia Múltiple</h2></div>
+<p>La <strong>herencia múltiple</strong> ocurre cuando una clase hija hereda de más de una clase padre. C++ sí permite este tipo de herencia, pero debe usarse con cuidado porque puede generar confusión.</p>
+<div class="pera-box"><div class="pera-title">🍎 Ejemplo sencillo</div><p>Una impresora multifuncional puede hacer dos cosas: <b>imprimir</b> y <b>escanear</b>.</p><p>En código, podríamos decir que <b>Multifuncional</b> hereda de <b>Impresora</b> y también de <b>Scanner</b>. Así obtiene capacidades de ambas clases.</p></div>
+<div class="cb"><div class="ch"><span>C++ · Herencia múltiple</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">class</span> <span class="tp">Impresora</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">imprimir</span>() { cout &lt;&lt; <span class="str">"Imprimiendo"</span>; }
+};
+
+<span class="kw">class</span> <span class="tp">Scanner</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">escanear</span>() { cout &lt;&lt; <span class="str">"Escaneando"</span>; }
+};
+
+<span class="kw">class</span> <span class="tp">Multifuncional</span> : <span class="kw">public</span> <span class="tp">Impresora</span>, <span class="kw">public</span> <span class="tp">Scanner</span> { };</pre></div>
+<div class="line-doc">
+  <div class="line-doc-title">Código explicado línea por línea</div>
+  <div class="line-doc-row"><div class="line-code">class Impresora {</div><div class="line-explain">Crea una clase padre llamada <code>Impresora</code>. Representa una capacidad: imprimir.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Hace público el método que se declarará en esta clase.</div></div>
+  <div class="line-doc-row"><div class="line-code">void imprimir() { cout &lt;&lt; "Imprimiendo"; }</div><div class="line-explain">Declara el método <code>imprimir()</code> en una sola línea. Al ejecutarse, muestra el texto <code>Imprimiendo</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Impresora</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">class Scanner {</div><div class="line-explain">Crea otra clase padre llamada <code>Scanner</code>. Representa otra capacidad: escanear.</div></div>
+  <div class="line-doc-row"><div class="line-code">public:</div><div class="line-explain">Permite que su método pueda usarse públicamente.</div></div>
+  <div class="line-doc-row"><div class="line-code">void escanear() { cout &lt;&lt; "Escaneando"; }</div><div class="line-explain">Declara el método <code>escanear()</code>, que imprime el mensaje <code>Escaneando</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">};</div><div class="line-explain">Cierra la clase <code>Scanner</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">class Multifuncional : public Impresora, public Scanner { };</div><div class="line-explain">Crea una clase hija que hereda de dos clases padre. La coma separa las clases heredadas. Ahora <code>Multifuncional</code> puede imprimir y escanear.</div></div>
+</div>
+
+<div class="ib warn"><div class="ibl">Cuidado</div><p>La herencia múltiple puede ser útil, pero úsala con planeación. Si varias clases padre tienen métodos parecidos o con el mismo nombre, el programa puede confundirse y necesitar que le digas exactamente cuál usar.</p></div>
+
+<div class="section-title" id="s7"><span class="section-num">07</span><h2>Ambigüedad en Herencia</h2></div>
+<p>La ambigüedad aparece cuando una clase hija recibe métodos con el mismo nombre desde diferentes clases padre. En ese caso, C++ necesita que el programador aclare de qué clase quiere usar el método.</p>
+<div class="pera-box"><div class="pera-title">🍐 Imagínalo así</div><p>Supón que dos maestros te dicen “haz la tarea”, pero cada uno se refiere a una tarea diferente. Tú tendrías que preguntar: “¿la tarea de cuál materia?”.</p><p>En C++ pasa algo parecido. Si <b>A</b> y <b>B</b> tienen un método llamado <code>mostrar()</code>, y <b>C</b> hereda de ambas, entonces debes aclarar si quieres usar <code>A::mostrar()</code> o <code>B::mostrar()</code>.</p></div>
+<div class="cb"><div class="ch"><span>C++ · Resolución de ambigüedad</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">class</span> <span class="tp">A</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">mostrar</span>() { cout &lt;&lt; <span class="str">"A"</span>; } };
+<span class="kw">class</span> <span class="tp">B</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">mostrar</span>() { cout &lt;&lt; <span class="str">"B"</span>; } };
+
+<span class="kw">class</span> <span class="tp">C</span> : <span class="kw">public</span> <span class="tp">A</span>, <span class="kw">public</span> <span class="tp">B</span> { };
+
+<span class="tp">C</span> obj;
+obj.<span class="tp">A</span>::<span class="fn">mostrar</span>(); <span class="cmt">// Se especifica que se usará el método de A</span></pre></div>
+<div class="line-doc">
+  <div class="line-doc-title">Código explicado con calma</div>
+  <div class="line-doc-row"><div class="line-code">class A { ... mostrar() ... };</div><div class="line-explain">La clase <code>A</code> tiene un método llamado <code>mostrar()</code>. Ese método imprime la letra <code>A</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">class B { ... mostrar() ... };</div><div class="line-explain">La clase <code>B</code> también tiene un método llamado <code>mostrar()</code>. Aquí empieza el posible conflicto porque ambas clases usan el mismo nombre.</div></div>
+  <div class="line-doc-row"><div class="line-code">class C : public A, public B { };</div><div class="line-explain">La clase <code>C</code> hereda de <code>A</code> y de <code>B</code>. Por eso recibe dos métodos con el mismo nombre: <code>A::mostrar()</code> y <code>B::mostrar()</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">C obj;</div><div class="line-explain">Crea un objeto llamado <code>obj</code> de la clase <code>C</code>.</div></div>
+  <div class="line-doc-row"><div class="line-code">obj.A::mostrar();</div><div class="line-explain">Aquí se usa el operador <code>::</code> para decirle a C++: “usa el método <code>mostrar()</code> que viene de la clase <code>A</code>, no el de <code>B</code>”.</div></div>
+</div>
+
+<div class="part-divider" id="ejercicios"><div class="part-badge">Ejercicios</div><div><h2>Ejercicios de Repaso</h2><p>Primero lee los apuntes con calma. Cuando estés listo, activa los ejercicios y empezará el tiempo.</p></div></div>
+
+<div class="v30-start-exam-panel" id="v30StartExamPanel">
+  <span class="v30-exam-status" id="v30ExamStatus">Ejercicios bloqueados</span>
+  <h3>Activa los ejercicios cuando estés listo</h3>
+  <p>Los apuntes y ejemplos se pueden leer sin presión. El temporizador de <b>40 minutos</b> iniciará hasta que presiones el botón de abajo.</p>
+  <div class="ib warn">
+    <div class="ibl">Aviso importante</div>
+    <p>Al activar los ejercicios tendrás solo <b>40 minutos</b> para contestar. Si se termina el tiempo, la actividad se cerrará y se tomará en cuenta únicamente lo que hayas contestado.</p>
+  </div>
+  <button class="v30-btn" id="v30BeginExercisesBtn" onclick="v30BeginExercises()">Iniciar ejercicios y activar temporizador</button>
+</div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 1</span><h2 style="font-size:17px;">Conceptos base</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>4 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq1_1"><div class="wq-text">¿Qué permite la herencia en POO?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_1','wrong','Eso corresponde más a almacenamiento de datos.')">Guardar archivos</div><div class="wopt" onclick="checkOpt(this,'wq1_1','correct','Correcto. Una clase puede tomar atributos y métodos de otra.')">Crear una clase nueva a partir de otra existente</div><div class="wopt" onclick="checkOpt(this,'wq1_1','wrong','Compilar es una tarea del compilador, no de la herencia.')">Compilar más rápido</div></div><div class="wfb" id="fb_wq1_1"></div></div>
+<div class="wq" id="wq1_2"><div class="wq-text">En la relación <code>Perro : public Animal</code>, ¿cuál es la clase padre?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_2','wrong','Perro es la clase hija o derivada.')">Perro</div><div class="wopt" onclick="checkOpt(this,'wq1_2','correct','Correcto. Animal es la clase base.')">Animal</div><div class="wopt" onclick="checkOpt(this,'wq1_2','wrong','public es el tipo de herencia.')">public</div></div><div class="wfb" id="fb_wq1_2"></div></div>
+<div class="wq" id="wq1_3"><div class="wq-text">Completa la idea: la herencia representa una relación...</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_3','correct','Correcto. Una clase hija es un tipo de clase padre.')">“es un tipo de”</div><div class="wopt" onclick="checkOpt(this,'wq1_3','wrong','Esa relación se parece más a composición.')">“tiene un”</div><div class="wopt" onclick="checkOpt(this,'wq1_3','wrong','Eso no describe herencia.')">“está dentro de”</div></div><div class="wfb" id="fb_wq1_3"></div></div>
+<div class="wq" id="wq1_4"><div class="wq-text">Escribe el nombre técnico de la clase que hereda de otra:</div><div class="wq-input-row"><input class="wq-input" id="in_wq1_4" placeholder="Ej. clase..." onkeydown="if(event.key==='Enter')checkInput('wq1_4',['clase hija','hija','clase derivada','derivada','subclase'],'Puede llamarse clase hija, clase derivada o subclase.')"><button class="wbtn" onclick="checkInput('wq1_4',['clase hija','hija','clase derivada','derivada','subclase'],'Puede llamarse clase hija, clase derivada o subclase.')">Verificar</button></div><div class="wfb" id="fb_wq1_4"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 2</span><h2 style="font-size:17px;">Código C++</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>5 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq2_1"><div class="wq-text">¿Cuál es la sintaxis correcta para que <code>Moto</code> herede de <code>Vehiculo</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_1','correct','Correcto. Esa es la sintaxis de herencia pública en C++.')">class Moto : public Vehiculo</div><div class="wopt" onclick="checkOpt(this,'wq2_1','wrong','En C++ no se usa extends.')">class Moto extends Vehiculo</div><div class="wopt" onclick="checkOpt(this,'wq2_1','wrong','Ese orden está invertido.')">class Vehiculo : public Moto</div></div><div class="wfb" id="fb_wq2_1"></div></div>
+<div class="wq" id="wq2_2"><div class="wq-text">Escribe la palabra que permite que los métodos heredados públicos sigan siendo públicos:</div><div class="wq-input-row"><input class="wq-input" id="in_wq2_2" placeholder="Palabra clave..." onkeydown="if(event.key==='Enter')checkInput('wq2_2',['public'],'La palabra correcta es public.')"><button class="wbtn" onclick="checkInput('wq2_2',['public'],'La palabra correcta es public.')">Verificar</button></div><div class="wfb" id="fb_wq2_2"></div></div>
+<div class="wq" id="wq2_3"><div class="wq-text">¿Qué ventaja principal ofrece reutilizar código mediante herencia?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_3','wrong','No necesariamente reduce el tamaño del programa compilado.')">El ejecutable siempre pesa menos</div><div class="wopt" onclick="checkOpt(this,'wq2_3','correct','Correcto. Evita repetir métodos en varias clases.')">Evita duplicar código y facilita mantenimiento</div><div class="wopt" onclick="checkOpt(this,'wq2_3','wrong','La herencia no reemplaza todos los errores de programación.')">Elimina todos los errores</div></div><div class="wfb" id="fb_wq2_3"></div></div>
+<div class="wq" id="wq2_4"><div class="wq-text">¿Cuál es un ejemplo correcto de herencia simple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_4','correct','Correcto. Auto hereda de una sola clase padre.')">Auto hereda de Vehiculo</div><div class="wopt" onclick="checkOpt(this,'wq2_4','wrong','Eso sería herencia múltiple.')">Multifuncional hereda de Impresora y Scanner</div><div class="wopt" onclick="checkOpt(this,'wq2_4','wrong','Eso describe composición, no herencia.')">Auto tiene Motor</div></div><div class="wfb" id="fb_wq2_4"></div></div>
+<div class="wq" id="wq2_5"><div class="wq-text">Escribe la línea inicial para declarar una clase <code>Alumno</code> que hereda públicamente de <code>Usuario</code>:</div><div class="wq-input-row"><input class="wq-input" id="in_wq2_5" placeholder="class ..." onkeydown="if(event.key==='Enter')checkInput('wq2_5',['class Alumno : public Usuario','class alumno : public usuario'],'La forma esperada es: class Alumno : public Usuario')"><button class="wbtn" onclick="checkInput('wq2_5',['class Alumno : public Usuario','class alumno : public usuario'],'La forma esperada es: class Alumno : public Usuario')">Verificar</button></div><div class="wfb" id="fb_wq2_5"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 3</span><h2 style="font-size:17px;">Herencia múltiple y ambigüedad</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>5 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq3_1"><div class="wq-text">¿Qué es la herencia múltiple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_1','wrong','Eso sigue siendo herencia simple.')">Una clase hereda de una sola clase</div><div class="wopt" onclick="checkOpt(this,'wq3_1','correct','Correcto. En C++ una clase puede heredar de varias clases padre.')">Una clase hereda de dos o más clases</div><div class="wopt" onclick="checkOpt(this,'wq3_1','wrong','Eso es crear objetos, no herencia múltiple.')">Crear varios objetos de una clase</div></div><div class="wfb" id="fb_wq3_1"></div></div>
+<div class="wq" id="wq3_2"><div class="wq-text">¿Cuál es un riesgo de la herencia múltiple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_2','correct','Correcto. Puede haber métodos con el mismo nombre heredados desde distintas clases.')">Ambigüedad entre métodos heredados</div><div class="wopt" onclick="checkOpt(this,'wq3_2','wrong','C++ sí permite herencia múltiple.')">C++ no la permite</div><div class="wopt" onclick="checkOpt(this,'wq3_2','wrong','No se relaciona directamente con la RAM.')">Siempre consume toda la memoria RAM</div></div><div class="wfb" id="fb_wq3_2"></div></div>
+<div class="wq" id="wq3_3"><div class="wq-text">¿Cómo puedes indicar qué método usar cuando hay ambigüedad?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_3','wrong','Borrar una clase no es solución correcta de diseño.')">Eliminando una clase padre</div><div class="wopt" onclick="checkOpt(this,'wq3_3','correct','Correcto. Se usa el operador de resolución de ámbito ::')">Usando Clase::metodo()</div><div class="wopt" onclick="checkOpt(this,'wq3_3','wrong','private no resuelve por sí solo qué método usar.')">Cambiando todo a private</div></div><div class="wfb" id="fb_wq3_3"></div></div>
+<div class="wq" id="wq3_4"><div class="wq-text">Escribe el operador de resolución de ámbito usado en C++:</div><div class="wq-input-row"><input class="wq-input" id="in_wq3_4" placeholder="Operador..." onkeydown="if(event.key==='Enter')checkInput('wq3_4',['::'],'El operador correcto es ::')"><button class="wbtn" onclick="checkInput('wq3_4',['::'],'El operador correcto es ::')">Verificar</button></div><div class="wfb" id="fb_wq3_4"></div></div>
+<div class="wq" id="wq3_5"><div class="wq-text">¿Cuál línea representa herencia múltiple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_5','wrong','Solo hereda de una clase.')">class Perro : public Animal</div><div class="wopt" onclick="checkOpt(this,'wq3_5','correct','Correcto. Hereda de Impresora y Scanner.')">class Multifuncional : public Impresora, public Scanner</div><div class="wopt" onclick="checkOpt(this,'wq3_5','wrong','Eso solo declara un objeto.')">Alumno a;</div></div><div class="wfb" id="fb_wq3_5"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;" id="simulador"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Simulador</span><h2 style="font-size:17px;">Mini compilador conceptual C++</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>4 pasos en terminal educativa</span></div><div class="warm-body"><div class="wq"><div class="wq-text">🖥️ Escribe los comandos en orden para crear una herencia simple: <code>class Animal</code> → <code>class Perro : public Animal</code> → <code>Perro p</code> → <code>p.respirar()</code></div></div></div><div class="cli-sim-header" style="border-top:1px solid var(--border);"><span class="cli-sim-title">Simulador C++ – Herencia simple</span><span class="cli-reset-help" title="¿Te equivocaste? Escribe RESET para borrar este ejercicio y volver a comenzar.">↻ Ayuda: <code>RESET</code></span></div><div class="cli-output" id="simcpp-out"></div><div class="cli-input-row"><span class="cli-prompt-label" id="simcpp-prompt">cpp-lab&gt;</span><input class="cli-input" id="simcpp-in" placeholder="Escribe una línea de C++ conceptual..." onkeydown="handleCppSim(event)" autocomplete="off" spellcheck="false"></div></div>
+
+<div class="v30-panel" id="v30FinalPanel"><h3>Entrega final de la actividad</h3><p>Cuando hayas terminado todos los ejercicios, envía tu resultado. Recuerda: solo se permite un intento, salvo autorización del docente.</p><div class="v30-result-grid"><div class="v30-result-card"><span>Contestadas</span><b id="v30Answered">0</b></div><div class="v30-result-card"><span>Correctas</span><b id="v30Correct">0</b></div><div class="v30-result-card"><span>Incorrectas</span><b id="v30Wrong">0</b></div><div class="v30-result-card"><span>Calificación</span><b id="v30Grade">0</b></div></div><div class="ib warn"><div class="ibl">Antes de enviar</div><p>Revisa que tus datos sean correctos. Después de enviar, la actividad quedará bloqueada en este navegador.</p></div><div class="v30-security-list"><div class="v30-security-item">🔒 <b>Un intento:</b> al enviar se bloquea la actividad.</div><div class="v30-security-item">👀 <b>Alertas:</b> se registran cambios de pestaña y acciones sospechosas.</div><div class="v30-security-item">⏱️ <b>Tiempo:</b> inicia al activar los ejercicios.</div><div class="v30-security-item">📋 <b>Copiar/pegar:</b> se limita para promover razonamiento propio.</div></div><button class="v30-btn" id="v30SubmitBtn" onclick="v30SubmitResults()">Enviar calificación al docente</button> <button class="v30-btn secondary" onclick="v30DownloadBackup()">Descargar respaldo</button><p id="v30SubmitStatus" style="margin-top:12px;"></p></div>
+</main>
+<footer><span>R.A. 2.1 – A · Programación Orientada a Objetos</span><span>Ing. Santiago Martínez González</span><span>C++ · Herencia</span></footer>
+<div class="v30-warning-toast" id="v30Toast"><h4 id="v30ToastTitle">Aviso de actividad</h4><p id="v30ToastText">Se registró una acción.</p></div>
+
+<script>
+const V30_CONFIG={activityId:'RA21A_HERENCIA_CPP_POO_2526_V30',teacherEmail:'profesantiagomtzglez@gmail.com',unlockKey:'POO22526',formspreeEndpoint:'https://formspree.io/f/xojrzeaj',totalQuestions:18,
+  // Candado institucional: solo acepta correos que terminen en @tam.conalep.edu.mx
+  allowedEmailDomains:['@tam.conalep.edu.mx'],
+  // Sube este archivo JSON junto al HTML en GitHub Pages para bloquear correos que ya entregaron desde otro dispositivo.
+  submittedEmailsUrl:'./intentos_poo_herencia.json',
+  // URL de Apps Script publicada como aplicación web para registrar y consultar intentos por correo institucional.
+  sheetApiUrl:'https://script.google.com/macros/s/AKfycbxC-qGGSBiYcxCfZMrnH5F393kE_N5sn_4RWS7CPNvPc7KgQyZszT4cKhZv70AIRuR8eA/exec'
+};
+const v30Keys={student:V30_CONFIG.activityId+'_student',answers:V30_CONFIG.activityId+'_answers',completed:V30_CONFIG.activityId+'_completed',startedAt:V30_CONFIG.activityId+'_startedAt',guard:V30_CONFIG.activityId+'_guard',timeLeft:V30_CONFIG.activityId+'_timeLeft',exerciseStarted:V30_CONFIG.activityId+'_exerciseStarted',timeExpired:V30_CONFIG.activityId+'_timeExpired',remoteOverride:V30_CONFIG.activityId+'_remoteOverride'};let v30Answers={};let v30TimerHandle=null;
+function v30LoadAnswers(){try{v30Answers=JSON.parse(localStorage.getItem(v30Keys.answers)||'{}')}catch(e){v30Answers={}}}function v30SaveAnswers(){localStorage.setItem(v30Keys.answers,JSON.stringify(v30Answers))}
+function v30LoadGuard(){try{return JSON.parse(localStorage.getItem(v30Keys.guard)||'{\"tabSwitches\":0,\"copyPaste\":0,\"rightClicks\":0,\"events\":[]}')}catch(e){return{tabSwitches:0,copyPaste:0,rightClicks:0,events:[]}}}
+function v30SaveGuard(g){localStorage.setItem(v30Keys.guard,JSON.stringify(g))}
+function v30Toast(title,text){const t=document.getElementById('v30Toast');if(!t)return;document.getElementById('v30ToastTitle').textContent=title;document.getElementById('v30ToastText').textContent=text;t.classList.add('show');clearTimeout(v30Toast._h);v30Toast._h=setTimeout(()=>t.classList.remove('show'),4200)}
+function v30GuardEvent(type,detail){
+  if(v30IsCompleted())return;
+  if(!v30GetStudent())return;
+  const g=v30LoadGuard();
+  if(type==='tab')g.tabSwitches++;
+  if(type==='copyPaste')g.copyPaste++;
+  if(type==='rightClick')g.rightClicks++;
+  g.events.push({type,detail:detail||'',at:new Date().toISOString()});
+  v30SaveGuard(g);
+  v30RefreshUI();
+  if(type==='tab')v30HandleTabWarning(g.tabSwitches);
+}
+
+function v30HandleTabWarning(count){
+  if(!v30ExercisesStarted() || v30IsCompleted())return;
+  if(count===1){
+    alert(`⚠️ PRIMERA ADVERTENCIA
+
+Se detectó que cambiaste de pestaña o saliste de la actividad.
+
+Recuerda: esta actividad debe contestarse sin consultar otras ventanas. A la tercera vez, el examen se cerrará automáticamente y se enviará solo lo que lleves contestado.`);
+    v30Toast('Primera advertencia','Se registró un cambio de pestaña. A la tercera, se cierra el examen.');
+  }else if(count===2){
+    alert(`🚨 SEGUNDA Y ÚLTIMA ADVERTENCIA
+
+Ya van 2 cambios de pestaña detectados.
+
+A la próxima vez que salgas de esta ventana, el examen se bloqueará y se enviará automáticamente con lo que lleves contestado.`);
+    v30Toast('Última advertencia','Si vuelves a cambiar de pestaña, se cerrará el intento.');
+  }else if(count>=3){
+    localStorage.setItem(v30Keys.timeExpired,'1');
+    localStorage.setItem(V30_CONFIG.activityId + '_closedByTab','1');
+    v30Toast('Examen cerrado','Se detectó el tercer cambio de pestaña. Se enviará lo contestado.');
+    setTimeout(()=>v30SubmitResults(true),450);
+  }
+}
+function v30GetStudent(){try{return JSON.parse(localStorage.getItem(v30Keys.student)||'null')}catch(e){return null}}function v30IsCompleted(){return localStorage.getItem(v30Keys.completed)==='1'}function v30NormalizeEmail(email){return String(email||'').trim().toLowerCase()}function v30StudentFingerprint(s){return btoa(unescape(encodeURIComponent(`${s.name}|${s.group}|${s.shift}|${v30NormalizeEmail(s.email)}`))).slice(0,32)}
+function v30ExercisesStarted(){return localStorage.getItem(v30Keys.exerciseStarted)==='1'}
+function v30TimeExpired(){return localStorage.getItem(v30Keys.timeExpired)==='1'}
+function v30BeginExercises(){
+  if(!v30GetStudent()){alert('Primero registra tus datos para iniciar la actividad.');return}
+  if(v30IsCompleted()){alert('Esta actividad ya fue enviada o cerrada. Solicita desbloqueo al docente.');return}
+  if(v30ExercisesStarted()){v30RefreshUI();return}
+  const ok=confirm('Al iniciar los ejercicios se activará el temporizador de 40 minutos. Si el tiempo termina, se cerrará la actividad y se tomará en cuenta solo lo contestado. ¿Deseas iniciar ahora?');
+  if(!ok)return;
+  localStorage.setItem(v30Keys.exerciseStarted,'1');
+  localStorage.setItem(v30Keys.startedAt,new Date().toISOString());
+  localStorage.setItem(v30Keys.timeLeft,'2400');
+  document.body.classList.remove('v30-exercises-locked');
+  v30StartTimer();
+  v30Toast('Temporizador iniciado','Tienes 40 minutos para contestar los ejercicios.');
+  v30RefreshUI();
+}
+function v30RequireExercisesStarted(){
+  if(v30IsCompleted())return false;
+  if(!v30GetStudent()){alert('Primero registra tus datos.');return false}
+  if(!v30ExercisesStarted()){alert('Primero activa los ejercicios. El temporizador iniciará cuando aceptes el aviso.');return false}
+  return true
+}
+function v30EmailAllowed(email){
+  const normalized=v30NormalizeEmail(email);
+  const domains=Array.isArray(V30_CONFIG.allowedEmailDomains)?V30_CONFIG.allowedEmailDomains:[];
+  return domains.length===0 || domains.some(d=>normalized.endsWith(String(d).toLowerCase()));
+}
+async function v30LoadSubmittedEmails(){
+  const normalizeList=(data)=>{
+    const list=Array.isArray(data)?data:(data.blockedEmails||data.submittedEmails||data.correos||data.intentos||[]);
+    return list.map(item=>typeof item==='string'?item:(item.email||item.correo||'')).map(v30NormalizeEmail).filter(Boolean);
+  };
+  if(V30_CONFIG.sheetApiUrl){
+    try{
+      const url=V30_CONFIG.sheetApiUrl + (V30_CONFIG.sheetApiUrl.includes('?')?'&':'?') + 'v=' + Date.now();
+      const res=await fetch(url,{cache:'no-store'});
+      if(res.ok){
+        const data=await res.json();
+        const list=normalizeList(data);
+        if(Array.isArray(list))return list;
+      }
+    }catch(e){console.warn('No se pudo consultar Google Sheets. Se usará respaldo JSON si existe.',e)}
+  }
+  if(!V30_CONFIG.submittedEmailsUrl)return [];
+  try{
+    const url=V30_CONFIG.submittedEmailsUrl + (V30_CONFIG.submittedEmailsUrl.includes('?')?'&':'?') + 'v=' + Date.now();
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok)return [];
+    const data=await res.json();
+    return normalizeList(data);
+  }catch(e){return []}
+}
+async function v30RegisterAttemptInSheet(payload){
+  if(!V30_CONFIG.sheetApiUrl)return;
+  try{
+    const sheetPayload={
+      correo:payload.correo_alumno,
+      nombre:payload.nombre,
+      grupo:payload.grupo,
+      turno:payload.turno,
+      calificacion:payload.calificacion,
+      correctas:payload.correctas,
+      incorrectas:payload.incorrectas,
+      contestadas:payload.contestadas,
+      total_preguntas:payload.total_preguntas,
+      cierre_por_tiempo:payload.cierre_por_tiempo,
+      cierre_por_cambio_pestana:payload.cierre_por_cambio_pestana,
+      envio:payload.envio
+    };
+    await fetch(V30_CONFIG.sheetApiUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(sheetPayload)
+    });
+  }catch(e){console.warn('No se pudo registrar el intento en Google Sheets.',e)}
+}
+async function v30EmailAlreadySubmitted(email){
+  if(localStorage.getItem(v30Keys.remoteOverride)==='1')return false;
+  const submitted=await v30LoadSubmittedEmails();
+  return submitted.includes(v30NormalizeEmail(email));
+}
+async function v30StartActivity(){const student={name:document.getElementById('v30Name').value.trim(),group:document.getElementById('v30Group').value.trim(),shift:document.getElementById('v30Shift').value.trim(),email:document.getElementById('v30Email').value.trim()};if(!student.name||!student.group||!student.shift||!student.email){alert('Completa todos los datos del alumno.');return}if(!/^\S+@\S+\.\S+$/.test(student.email)){alert('Escribe un correo válido.');return}if(!v30EmailAllowed(student.email)){alert('Debes registrarte con tu correo institucional CONALEP. El correo debe terminar en @tam.conalep.edu.mx');return}const startBtn=document.getElementById('v30StartBtn');if(startBtn){startBtn.disabled=true;startBtn.textContent='Verificando correo...'}const already=await v30EmailAlreadySubmitted(student.email);if(startBtn){startBtn.disabled=false;startBtn.textContent='Iniciar actividad'}if(already){alert('Este correo institucional ya aparece como registrado o enviado. Si necesitas una segunda oportunidad, solicita autorización al docente.');return}student.email=v30NormalizeEmail(student.email);student.fingerprint=v30StudentFingerprint(student);localStorage.setItem(v30Keys.student,JSON.stringify(student));if(!localStorage.getItem(v30Keys.startedAt))localStorage.setItem(v30Keys.startedAt,new Date().toISOString());document.getElementById('v30StartModal').classList.remove('show');document.body.classList.remove('v30-locked');v30RefreshUI()}
+function v30OpenUnlock(){document.getElementById('v30UnlockModal').classList.add('show');document.getElementById('v30UnlockMsg').className='v30-lock-msg'}function v30CloseUnlock(){document.getElementById('v30UnlockModal').classList.remove('show')}function v30UnlockAttempt(){const key=document.getElementById('v30UnlockKey').value.trim();const msg=document.getElementById('v30UnlockMsg');if(key!==V30_CONFIG.unlockKey){msg.textContent='Clave incorrecta. Solicita autorización al docente.';msg.className='v30-lock-msg show';return}localStorage.removeItem(v30Keys.completed);localStorage.removeItem(v30Keys.answers);localStorage.removeItem(v30Keys.startedAt);localStorage.removeItem(v30Keys.guard);localStorage.removeItem(v30Keys.timeLeft);localStorage.removeItem(v30Keys.exerciseStarted);localStorage.removeItem(v30Keys.timeExpired);localStorage.removeItem(V30_CONFIG.activityId + '_closedByTab');localStorage.setItem(v30Keys.remoteOverride,'1');v30Answers={};msg.textContent='Actividad desbloqueada. Puedes iniciar una nueva oportunidad.';msg.className='v30-lock-msg show';setTimeout(()=>location.reload(),900)}
+function v30RecordAnswer(qId,isCorrect,detail){if(v30IsCompleted())return;if(!v30GetStudent())return;v30Answers[qId]={correct:!!isCorrect,detail:detail||'',answeredAt:new Date().toISOString()};v30SaveAnswers();v30RefreshUI()}function v30Stats(){const answered=Object.keys(v30Answers).length;const correct=Object.values(v30Answers).filter(a=>a.correct).length;const wrong=answered-correct;const grade=Math.round((correct/V30_CONFIG.totalQuestions)*100);return{answered,correct,wrong,grade}}
+function v30RefreshUI(){const s=v30GetStudent();const st=v30Stats();const pct=Math.round((st.answered/V30_CONFIG.totalQuestions)*100);const studentLabel=document.getElementById('v30StudentLabel');if(studentLabel)studentLabel.innerHTML=s?`Alumno: <b>${s.name}</b> · ${s.group} · ${s.shift}`:'Alumno: <b>No registrado</b>';const progress=document.getElementById('v30Progress');if(progress)progress.style.width=pct+'%';const score=document.getElementById('v30ScoreLabel');if(score)score.textContent=`${st.correct}/${V30_CONFIG.totalQuestions} · ${st.grade}%`;const guard=document.getElementById('v30GuardLabel');if(guard){const g=v30LoadGuard();guard.innerHTML=`Alertas: <b>${(g.tabSwitches||0)+(g.copyPaste||0)+(g.rightClicks||0)}</b>`;}['Answered','Correct','Wrong','Grade'].forEach(k=>{const el=document.getElementById('v30'+k);if(el)el.textContent=st[k.toLowerCase()]});const timer=document.getElementById('v30Timer');if(timer&&!v30ExercisesStarted()&&!v30IsCompleted())timer.textContent='Sin iniciar';const status=document.getElementById('v30ExamStatus');if(status){status.textContent=v30IsCompleted()?'Actividad cerrada':(v30ExercisesStarted()?'Ejercicios activos':'Ejercicios bloqueados');status.style.color=v30ExercisesStarted()? 'var(--accent)' : 'var(--yellow)';}const panel=document.getElementById('v30StartExamPanel');if(panel&&v30ExercisesStarted())panel.style.display='none';if(!v30ExercisesStarted()&&!v30IsCompleted())document.body.classList.add('v30-exercises-locked');else document.body.classList.remove('v30-exercises-locked');const btn=document.getElementById('v30SubmitBtn');if(btn){btn.disabled=(!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions)||v30IsCompleted()||!v30ExercisesStarted();btn.textContent=v30IsCompleted()?'Actividad enviada y bloqueada':(v30TimeExpired()?'Enviar respuestas contestadas':'Enviar calificación al docente')}}
+async function v30SubmitResults(forcePartial=false){const s=v30GetStudent();if(!s){alert('Primero registra tus datos.');return}const st=v30Stats();if(!forcePartial&&st.answered<V30_CONFIG.totalQuestions){alert(`Aún faltan preguntas por contestar: ${V30_CONFIG.totalQuestions-st.answered}`);return}const status=document.getElementById('v30SubmitStatus');const startedAt=localStorage.getItem(v30Keys.startedAt)||'';const payload={_subject:`Calificación POO Herencia C++ - ${s.name} - ${st.grade}`,docente:V30_CONFIG.teacherEmail,actividad:'R.A. 2.1 A - Herencia en Programación Orientada a Objetos con C++',nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,correo_institucional_validado:v30EmailAllowed(s.email)?'SI - @tam.conalep.edu.mx':'NO',calificacion:st.grade,correctas:st.correct,incorrectas:st.wrong,contestadas:st.answered,total_preguntas:V30_CONFIG.totalQuestions,cierre_por_tiempo:forcePartial||v30TimeExpired()?'SI':'NO',cierre_por_cambio_pestana:localStorage.getItem(V30_CONFIG.activityId + '_closedByTab')==='1'?'SI':'NO',inicio:startedAt,envio:new Date().toISOString(),tiempo_minutos:startedAt?Math.round((Date.now()-new Date(startedAt).getTime())/60000):'',navegador:navigator.userAgent,huella_alumno:s.fingerprint,alertas_json:JSON.stringify(v30LoadGuard(),null,2),respuestas_json:JSON.stringify(v30Answers,null,2)};try{status.textContent='Enviando resultado...';const res=await fetch(V30_CONFIG.formspreeEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});if(!res.ok)throw new Error('No se pudo enviar a Formspree.');await v30RegisterAttemptInSheet(payload);localStorage.setItem(v30Keys.completed,'1');document.body.classList.add('v30-completed');status.innerHTML='<span style="color:var(--green)">Resultado enviado correctamente. La actividad quedó bloqueada.</span>';v30RefreshUI()}catch(err){status.innerHTML='<span style="color:var(--red)">No se pudo enviar. Revisa tu conexión o el endpoint de Formspree. Puedes descargar el respaldo.</span>'}}
+function v30DownloadBackup(){const s=v30GetStudent()||{name:'sin_registro',group:'',shift:'',email:''};const st=v30Stats();const data={actividad:V30_CONFIG.activityId,alumno:s,resultado:st,respuestas:v30Answers,generado:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`resultado_POO_Herencia_${(s.name||'alumno').replace(/\s+/g,'_')}.json`;a.click();URL.revokeObjectURL(a.href)}
+function v30FormatTime(sec){sec=Math.max(0,sec|0);const m=String(Math.floor(sec/60)).padStart(2,'0');const s=String(sec%60).padStart(2,'0');return `${m}:${s}`}
+function v30StartTimer(){if(v30TimerHandle||v30IsCompleted())return;let left=Number(localStorage.getItem(v30Keys.timeLeft)||2400);const el=document.getElementById('v30Timer');if(el)el.textContent=v30FormatTime(left);v30TimerHandle=setInterval(()=>{if(v30IsCompleted()||!v30GetStudent()){clearInterval(v30TimerHandle);v30TimerHandle=null;return}left--;localStorage.setItem(v30Keys.timeLeft,String(left));if(el)el.textContent=v30FormatTime(left);if(left===300)v30Toast('Quedan 5 minutos','Revisa tus respuestas y prepara el envío.');if(left<=0){clearInterval(v30TimerHandle);v30TimerHandle=null;localStorage.setItem(v30Keys.timeExpired,'1');v30Toast('Tiempo terminado','Se enviará lo contestado hasta este momento y la actividad quedará cerrada.');v30SubmitResults(true);}},1000)}
+function v30InstallGuards(){document.addEventListener('visibilitychange',()=>{if(document.hidden){if(!v30GetStudent()||v30IsCompleted()||!v30ExercisesStarted())return;v30GuardEvent('tab','Cambio de pestaña o ventana durante ejercicios');}});document.addEventListener('contextmenu',e=>{if(!v30GetStudent()||v30IsCompleted())return;e.preventDefault();v30GuardEvent('rightClick','Intento de clic derecho');v30Toast('Clic derecho bloqueado','Usa el material para razonar y responder con tus palabras.');});document.addEventListener('copy',e=>{if(!v30GetStudent()||v30IsCompleted())return;e.preventDefault();v30GuardEvent('copyPaste','Intento de copiar');v30Toast('Copiar bloqueado','Lee el ejemplo y escribe con tus propias palabras.');});document.addEventListener('paste',e=>{if(!v30GetStudent()||v30IsCompleted())return;const el=e.target;if(el&&el.classList&&el.classList.contains('wq-input')){e.preventDefault();v30GuardEvent('copyPaste','Intento de pegar en respuesta');v30Toast('Pegar bloqueado','Escribe tu respuesta directamente para practicar.');}});document.addEventListener('keydown',e=>{if(!v30GetStudent()||v30IsCompleted())return;const k=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&['c','v','x','a','p','s','u'].includes(k)){e.preventDefault();v30GuardEvent('copyPaste','Atajo bloqueado: Ctrl+'+k.toUpperCase());v30Toast('Atajo bloqueado','Se registró un intento de usar atajos no permitidos.');}})}
+function v30Bootstrap(){
+  v30LoadAnswers();
+  const s=v30GetStudent();
+  const startModal=document.getElementById('v30StartModal');
+  const lockMsg=document.getElementById('v30LockedMessage');
+  const form=document.getElementById('v30StudentForm');
+  const startBtn=document.getElementById('v30StartBtn');
+
+  // Estado limpio por defecto: esto asegura que en incógnito o primera visita SIEMPRE aparezca el registro.
+  if(startModal) startModal.classList.remove('show');
+  if(lockMsg) lockMsg.classList.remove('show');
+  if(form) form.style.display='grid';
+  if(startBtn) startBtn.style.display='inline-block';
+
+  if(v30IsCompleted()){
+    document.body.classList.remove('v30-locked');
+    document.body.classList.add('v30-completed');
+    if(startModal) startModal.classList.add('show');
+    if(lockMsg) lockMsg.classList.add('show');
+    if(form) form.style.display='none';
+    if(startBtn) startBtn.style.display='none';
+  }else if(!s){
+    document.body.classList.add('v30-locked');
+    document.body.classList.remove('v30-completed');
+    if(startModal) startModal.classList.add('show');
+  }else{
+    document.body.classList.remove('v30-locked');
+    document.body.classList.remove('v30-completed');
+  }
+  v30RefreshUI();
+}
+function checkOpt(el,qId,result,msg){if(!v30RequireExercisesStarted())return;const wrap=document.getElementById(qId);const opts=wrap.querySelectorAll('.wopt');const fb=document.getElementById('fb_'+qId);const isCorrect=result==='correct';v30RecordAnswer(qId,isCorrect,el.textContent.trim());opts.forEach(o=>{o.onclick=null});if(isCorrect){el.classList.add('correct');fb.className='wfb show ok';fb.textContent='✓ '+msg}else{el.classList.add('wrong');fb.className='wfb show bad';fb.textContent='✗ '+msg}}
+function checkInput(qId,correct,hint){if(!v30RequireExercisesStarted())return;const input=document.getElementById('in_'+qId);const fb=document.getElementById('fb_'+qId);const val=input.value.trim().toLowerCase();const norm=s=>s.toLowerCase().replace(/\s+/g,' ').trim().replace(/;$/,'');const ok=correct.some(c=>norm(val)===norm(c));if(!val){fb.className='wfb show hint';fb.textContent='Escribe algo primero.';return}if(ok){input.className='wq-input ok';input.disabled=true;fb.className='wfb show ok';fb.textContent='✓ Correcto.';v30RecordAnswer(qId,true,input.value.trim())}else{input.className='wq-input bad';fb.className='wfb show bad';fb.textContent='✗ No es correcto. Pista: '+hint;v30RecordAnswer(qId,false,input.value.trim());setTimeout(()=>{input.className='wq-input';input.select()},1200)}}
+let cppStep=0;function simPrint(text,cls=''){const out=document.getElementById('simcpp-out');const line=document.createElement('div');if(cls)line.className=cls;line.textContent=text;out.appendChild(line);out.scrollTop=out.scrollHeight}function initCppSim(){cppStep=0;document.getElementById('simcpp-out').innerHTML='<span class="cli-line-info">C++ Learning Simulator — escribe las líneas solicitadas</span>\n';}
+function handleCppSim(e){if(e.key!=='Enter')return;if(!v30RequireExercisesStarted())return;const input=document.getElementById('simcpp-in');const raw=input.value.trim();input.value='';if(!raw)return;simPrint('cpp-lab> '+raw);const cmd=raw.toLowerCase().replace(/\s+/g,' ').replace(/;$/,'');if(cmd==='reset'){initCppSim();return}const expected=[{id:'sim_1',tests:['class animal','class animal {','class Animal'],msg:'Clase base Animal creada.'},{id:'sim_2',tests:['class perro : public animal','class perro: public animal','class Perro : public Animal'],msg:'Clase derivada Perro creada correctamente.'},{id:'sim_3',tests:['perro p','Perro p'],msg:'Objeto p de tipo Perro declarado.'},{id:'sim_4',tests:['p.respirar()','p.respirar();'],msg:'Correcto. El objeto Perro puede usar respirar() porque lo heredó de Animal.'}];const current=expected[cppStep];if(!current){simPrint('Simulación completada. Ya puedes enviar cuando termines todo.','cli-line-ok');return}const ok=current.tests.some(t=>cmd===t.toLowerCase().replace(/\s+/g,' ').replace(/;$/,''));if(ok){simPrint('✓ '+current.msg,'cli-line-ok');v30RecordAnswer(current.id,true,raw);cppStep++;if(cppStep===expected.length)simPrint('✅ Herencia simple completada: Animal → Perro → objeto → método heredado.','cli-line-info')}else{simPrint('✗ Aún no. Revisa el orden o la sintaxis solicitada.','cli-line-err');v30RecordAnswer(current.id,false,raw)}}
+document.addEventListener('DOMContentLoaded',()=>{v30Bootstrap();v30InstallGuards();if(v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30StartTimer();initCppSim()});
+
+// ═══════════════════════════════════════
+// DESCARGA DE APUNTES EN PDF · VERSIÓN COMPACTA Y BAJO CONSUMO DE TINTA
+// ═══════════════════════════════════════
+async function downloadApuntesPDF(){
+  const status = document.getElementById('pdfExportStatus');
+  if(status){ status.textContent = 'Preparando apuntes compactos para impresión...'; status.classList.add('show'); }
+
+  if(typeof html2pdf === 'undefined'){
+    if(status) status.textContent = 'No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.';
+    alert('No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.');
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'pdf-export-area pdf-lite';
+  wrapper.innerHTML = `
+    <section class="pdf-cover">
+      <h1>Apuntes 2.1 - A) Herencia en C++</h1>
+      <div class="pdf-meta-grid">
+        <p class="pdf-meta"><b>Materia:</b> Programación Orientada a Objetos</p>
+        <p class="pdf-meta"><b>Docente:</b> Ing. Santiago Martínez González</p>
+        <p class="pdf-meta full"><b>Unidad 2:</b> Desarrollo de aplicaciones orientadas a objetos</p>
+      </div>
+      <p class="pdf-purpose"><b>Propósito:</b> comprender cómo una clase puede reutilizar y extender el código de otra clase mediante herencia.</p>
+    </section>
+
+    <div class="pdf-note important">
+      <b>Idea principal:</b> la herencia permite crear una clase nueva a partir de otra ya existente. Así evitamos repetir código y hacemos programas más ordenados.
+    </div>
+
+    <section class="pdf-topic">
+    <h2>1. ¿Qué es la herencia?</h2>
+    <p>Imagina que ya existe una clase llamada <code>Animal</code>. Esa clase ya sabe respirar. Si luego creamos una clase <code>Perro</code>, no tiene sentido volver a escribir desde cero todo lo que un animal ya hace. Mejor hacemos que <code>Perro</code> herede de <code>Animal</code>.</p>
+    <div class="pdf-note">
+      <b>En palabras simples:</b> la clase hija recibe características y comportamientos de la clase padre.
+    </div>
+
+    <div class="codebox">
+      <div class="code-title">Ejemplo básico: Animal → Perro</div>
+<pre>class Animal {
+public:
+    void respirar() {
+        cout &lt;&lt; "Respirando...";
+    }
+};
+
+class Perro : public Animal {
+public:
+    void ladrar() {
+        cout &lt;&lt; "Guau!";
+    }
+};</pre>
+    </div>
+
+    <h3>Explicación línea por línea</h3>
+    <table>
+      <tr><th>Línea</th><th>¿Qué significa?</th></tr>
+      <tr><td><code>class Animal {</code></td><td>Crea una clase llamada Animal. La llave <code>{</code> abre su contenido.</td></tr>
+      <tr><td><code>public:</code></td><td>Indica que lo que está debajo podrá usarse desde otras partes del programa.</td></tr>
+      <tr><td><code>void respirar() {</code></td><td>Crea un método llamado respirar. <code>void</code> significa que no regresa un valor.</td></tr>
+      <tr><td><code>cout &lt;&lt; "Respirando...";</code></td><td>Muestra un mensaje en pantalla. El punto y coma <code>;</code> termina la instrucción.</td></tr>
+      <tr><td><code>};</code></td><td>Cierra la clase. En C++ las clases terminan con punto y coma.</td></tr>
+      <tr><td><code>class Perro : public Animal {</code></td><td>Crea la clase Perro heredando de Animal. Los dos puntos <code>:</code> significan "hereda de".</td></tr>
+      <tr><td><code>void ladrar()</code></td><td>Es un método propio de Perro. Perro puede ladrar y también respirar porque lo heredó.</td></tr>
+    </table>
+
+    </section>
+
+    <section class="pdf-topic">
+    <h2>2. Conceptos clave</h2>
+    <div class="pdf-grid">
+      <div class="pdf-card"><b>Clase padre / base</b><p>Es la clase original. Contiene lo común. Ejemplo: <code>Animal</code>.</p></div>
+      <div class="pdf-card"><b>Clase hija / derivada</b><p>Es la clase que hereda. Puede usar lo de la clase padre y agregar lo suyo. Ejemplo: <code>Perro</code>.</p></div>
+      <div class="pdf-card"><b>Reutilización</b><p>Sirve para no repetir código. Escribimos una vez y aprovechamos varias veces.</p></div>
+      <div class="pdf-card"><b>Extensibilidad</b><p>Permite agregar nuevas clases sin romper lo que ya funciona.</p></div>
+    </div>
+
+    </section>
+
+    <section class="pdf-topic">
+    <h2>3. Herencia simple</h2>
+    <p>La herencia simple ocurre cuando una clase hija hereda de una sola clase padre.</p>
+    <div class="codebox">
+      <div class="code-title">Ejemplo: Vehiculo → Moto</div>
+<pre>class Vehiculo {
+public:
+    void encender() {
+        cout &lt;&lt; "Vehiculo encendido";
+    }
+};
+
+class Moto : public Vehiculo {
+public:
+    void acelerar() {
+        cout &lt;&lt; "Acelerando moto";
+    }
+};</pre>
+    </div>
+    <p>En este ejemplo, <code>Moto</code> puede usar <code>encender()</code> porque lo heredó de <code>Vehiculo</code>. Además, tiene su propio método <code>acelerar()</code>.</p>
+
+    </section>
+
+    <section class="pdf-topic">
+    <h2>4. Herencia múltiple</h2>
+    <p>La herencia múltiple ocurre cuando una clase hereda de más de una clase padre. En C++ sí es posible, pero debe usarse con cuidado.</p>
+    <div class="codebox">
+      <div class="code-title">Ejemplo: Impresora + Scanner → Multifuncional</div>
+<pre>class Impresora {
+public:
+    void imprimir() {
+        cout &lt;&lt; "Imprimiendo...";
+    }
+};
+
+class Scanner {
+public:
+    void escanear() {
+        cout &lt;&lt; "Escaneando...";
+    }
+};
+
+class Multifuncional : public Impresora, public Scanner {
+};</pre>
+    </div>
+    <p>La clase <code>Multifuncional</code> hereda lo que sabe hacer una impresora y también lo que sabe hacer un scanner.</p>
+
+    </section>
+
+    <section class="pdf-topic compact">
+    <h2>5. Ambigüedad</h2>
+    <p>La ambigüedad aparece cuando una clase hereda dos métodos con el mismo nombre desde diferentes clases padre. El compilador no sabe cuál usar.</p>
+    <div class="codebox">
+      <div class="code-title">Ejemplo de solución con operador de alcance</div>
+<pre>objeto.ClasePadre::metodo();</pre>
+    </div>
+    <p>El símbolo <code>::</code> ayuda a decirle a C++ exactamente de qué clase queremos usar el método.</p>
+
+    </section>
+
+    <section class="pdf-topic compact">
+    <h2>6. Buenas prácticas</h2>
+    <ul>
+      <li>Usa herencia solo cuando realmente exista una relación de tipo "es un". Ejemplo: un perro es un animal.</li>
+      <li>No uses herencia solo para ahorrar escritura si las clases no están relacionadas.</li>
+      <li>Coloca en la clase padre lo que sea común.</li>
+      <li>Coloca en la clase hija lo que sea específico.</li>
+      <li>Evita herencia múltiple si vuelve confuso el programa.</li>
+    </ul>
+
+    </section>
+
+    <section class="pdf-topic compact">
+    <h2>7. Resumen rápido</h2>
+    <table>
+      <tr><th>Concepto</th><th>Explicación corta</th></tr>
+      <tr><td>Herencia</td><td>Una clase hija reutiliza código de una clase padre.</td></tr>
+      <tr><td><code>: public</code></td><td>Indica que una clase hereda públicamente de otra.</td></tr>
+      <tr><td><code>public</code></td><td>Permite usar métodos desde fuera de la clase.</td></tr>
+      <tr><td><code>void</code></td><td>Indica que el método no devuelve un valor.</td></tr>
+      <tr><td><code>cout</code></td><td>Muestra información en pantalla.</td></tr>
+      <tr><td><code>;</code></td><td>Finaliza una instrucción o la declaración de una clase.</td></tr>
+    </table>
+
+    <div class="pdf-note important">
+      <b>Para estudiar:</b> antes de memorizar el código, identifica quién es la clase padre, quién es la clase hija y qué comportamiento se está heredando.
+    </div>
+    </section>
+  `;
+
+  document.body.appendChild(wrapper);
+
+  const options = {
+    margin: 0.3,
+    filename: 'Apuntes 2.1 - A).pdf',
+    image: { type: 'jpeg', quality: 0.92 },
+    html2canvas: { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    pagebreak: { mode: ['css','legacy'], avoid: ['.pdf-topic', '.codebox', 'table', '.pdf-note', '.pdf-card'] }
+  };
+
+  try{
+    await html2pdf().set(options).from(wrapper).save();
+    if(status) status.textContent = 'PDF generado correctamente con secciones acomodadas.';
+  }catch(error){
+    if(status) status.textContent = 'No se pudo generar el PDF. Intenta de nuevo.';
+    alert('No se pudo generar el PDF. Intenta de nuevo.');
+  }finally{
+    wrapper.remove();
+    setTimeout(()=>{ if(status) status.classList.remove('show'); }, 2500);
+  }
+}
+
+</script>
+</body>
+</html>
