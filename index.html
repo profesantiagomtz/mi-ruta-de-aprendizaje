@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Ruta de Aprendizaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#1f2937;
+  --border:#30363d;
+  --accent:#00d4aa;
+  --blue:#58a6ff;
+  --text:#e6edf3;
+  --muted:#8b949e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(0,212,170,.12), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(88,166,255,.10), transparent 35%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:40px 24px 70px;
+}
+.credit{
+  display:inline-flex;
+  flex-direction:column;
+  gap:4px;
+  padding:14px 18px;
+  border-radius:14px;
+  border-left:4px solid var(--accent);
+  border:1px solid rgba(0,212,170,.25);
+  background:rgba(22,27,34,.75);
+  margin-bottom:30px;
+}
+.credit span{
+  font-size:11px;
+  color:var(--accent);
+  font-family:'IBM Plex Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+.credit strong{font-size:18px}
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:26px;
+  padding:60px 40px;
+  background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#102340 100%);
+  border:1px solid var(--border);
+  border-bottom:4px solid var(--accent);
+  box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  border:70px solid rgba(255,255,255,.03);
+  top:-120px;
+  right:-120px;
+}
+.tag{
+  display:inline-block;
+  margin-bottom:18px;
+  font-size:12px;
+  color:var(--accent);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  font-family:'IBM Plex Mono',monospace;
+}
+.hero h1{
+  font-size:clamp(42px,6vw,72px);
+  line-height:1.05;
+  margin-bottom:18px;
+}
+.hero h1 span{color:var(--accent)}
+.hero p{
+  max-width:780px;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.8;
+}
+.section-title{
+  margin:50px 0 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:14px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:12px;
+}
+.section-title h2{font-size:28px}
+.section-title p{color:var(--muted);font-size:14px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+}
+.card{
+  position:relative;
+  overflow:hidden;
+  background:rgba(22,27,34,.88);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:26px;
+  transition:.22s ease;
+}
+.card::before{
+  content:'';
+  position:absolute;
+  inset:0 0 auto 0;
+  height:4px;
+  background:linear-gradient(90deg,var(--accent),var(--blue));
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(0,212,170,.4);
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+}
+.card .label{
+  display:inline-flex;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(0,212,170,.12);
+  border:1px solid rgba(0,212,170,.28);
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  font-family:'IBM Plex Mono',monospace;
+  margin-bottom:18px;
+}
+.card h3{font-size:24px;margin-bottom:12px}
+.card p{
+  color:var(--muted);
+  margin-bottom:20px;
+  line-height:1.7;
+}
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:24px;
+}
+.tags span{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:5px 10px;
+  font-size:12px;
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  padding:12px 18px;
+  border-radius:12px;
+  background:var(--accent);
+  color:#03120e;
+  font-weight:700;
+  font-family:'IBM Plex Mono',monospace;
+}
+footer{
+  margin-top:50px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+  color:var(--muted);
+  font-size:13px;
+  font-family:'IBM Plex Mono',monospace;
+}
+@media(max-width:700px){
+  .hero{padding:40px 24px}
+  .hero h1{font-size:46px}
+  .section-title{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="credit">
+  <span>Material didáctico desarrollado por:</span>
+  <strong>Ing. Santiago Martínez González</strong>
+</div>
+
+<section class="hero">
+  <div class="tag">Repositorio educativo · GitHub Pages</div>
+  <h1>Mi Ruta de <span>Aprendizaje</span></h1>
+  <p>
+    Plataforma personal donde se concentran materiales didácticos,
+    prácticas, simuladores, proyectos y recursos interactivos para las
+    materias relacionadas con programación, redes, bases de datos,
+    desarrollo web y seguridad informática.
+  </p>
+</section>
+
+<section>
+  <div class="section-title">
+    <h2>Áreas disponibles</h2>
+    <p>Selecciona la categoría que deseas explorar.</p>
+  </div>
+
+  <div class="grid">
+
+    <article class="card">
+      <div class="label">Programación</div>
+      <h3>Programación</h3>
+      <p>Materiales interactivos, ejercicios y rutas de aprendizaje relacionadas con POO y desarrollo de software.</p>
+      <div class="tags">
+        <span>POO</span>
+        <span>C++</span>
+        <span>HTML</span>
+        <span>JavaScript</span>
+      </div>
+      <a class="btn" href="programacion/poo/index.html">Entrar →</a>
+    </article>
+
+    <article class="card">
+      <div class="label">Redes</div>
+      <h3>Manejo de Redes</h3>
+      <p>Recursos sobre IOS Cisco, Packet Tracer, configuración de dispositivos y prácticas de laboratorio.</p>
+      <div class="tags">
+        <span>Cisco IOS</span>
+        <span>Packet Tracer</span>
+        <span>CLI</span>
+        <span>Switching</span>
+      </div>
+      <a class="btn" href="manejo-de-redes/index.html">Entrar →</a>
+    </article>
+
+    <article class="card">
+      <div class="label">Bases de datos</div>
+      <h3>Bases de Datos</h3>
+      <p>Ejercicios, prácticas y materiales relacionados con SQL, Access y diseño de bases de datos.</p>
+      <div class="tags">
+        <span>SQL</span>
+        <span>Access</span>
+        <span>DDL</span>
+        <span>Modelado</span>
+      </div>
+      <a class="btn" href="bases-de-datos/">Entrar →</a>
+    </article>
+
+    <article class="card">
+      <div class="label">Desarrollo Web</div>
+      <h3>Desarrollo Web</h3>
+      <p>Recursos sobre HTML, CSS, JavaScript y construcción de páginas web modernas.</p>
+      <div class="tags">
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+        <span>UI/UX</span>
+      </div>
+      <a class="btn" href="desarrollo-web/">Entrar →</a>
+    </article>
+
+  </div>
+</section>
+
+<footer>
+  <span>Repositorio educativo personal · GitHub Pages</span>
+  <span>Ing. Santiago Martínez González</span>
+</footer>
+
+</div>
+</body>
+</html>
