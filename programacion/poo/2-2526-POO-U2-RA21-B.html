@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="origin">
+<title>R.A. 2.1 – B. Implementación de la herencia en objetos | Programación Orientada a Objetos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,500;0,700;1,300&display=swap');
+
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#1c2230; --border:#30363d;
+    --accent:#00d4aa; --accent2:#ff6b35; --accent3:#7c6fff; --text:#e6edf3;
+    --muted:#8b949e; --green:#3fb950; --yellow:#d29922; --red:#f85149; --blue:#58a6ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+
+  header{background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%);border-bottom:3px solid var(--accent);padding:44px 64px 36px;position:relative;overflow:hidden}
+  header::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;border:70px solid rgba(0,212,170,.05)}
+  header::after{content:'</>';position:absolute;right:90px;bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:74px;font-weight:600;color:rgba(124,111,255,.08)}
+  .htag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;display:block}
+  header h1{font-size:30px;font-weight:700;color:#fff;line-height:1.25;max-width:820px}
+  header h1 span{color:var(--accent)}
+  .header-sub{color:var(--muted);font-size:14px;margin-top:8px;font-weight:300}
+  .hpills{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+  .hpill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+  .hpill b{color:var(--text)}
+
+  .toc{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:6px;margin:32px 64px;padding:22px 30px}
+  .toc-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:14px}
+  .toc-cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;padding-left:20px}
+  .toc-cols li{font-size:13px;margin-bottom:3px}.toc-cols a{color:var(--muted);text-decoration:none}.toc-cols a:hover{color:var(--accent)}
+  .toc-section{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--border);margin-top:12px;margin-bottom:4px;padding-left:20px}
+  main{padding:0 64px 80px}
+
+  .section-title{display:flex;align-items:center;gap:12px;margin:48px 0 20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .section-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);border-radius:4px;padding:2px 8px;white-space:nowrap}
+  .section-title h2{font-size:20px;font-weight:700;color:#fff}
+  p{margin-bottom:12px;color:var(--muted);font-weight:300} p strong,p b{color:var(--text);font-weight:500}
+  ul,ol{padding-left:22px;color:var(--muted);font-size:14px;line-height:2.1;margin-bottom:12px}
+  code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:13px;color:var(--accent)}
+
+  .ib{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:14px 0;font-size:14px}
+
+  .pera-box{background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(0,212,170,.06));border:1px solid rgba(255,107,53,.30);border-left:4px solid var(--accent2);border-radius:10px;padding:18px 22px;margin:16px 0;font-size:14px;box-shadow:0 0 0 1px rgba(255,255,255,.02) inset}
+  .pera-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+  .pera-box p{color:var(--muted);margin:0 0 10px}.pera-box p:last-child{margin-bottom:0}.pera-box b{color:var(--text)}
+  .mini-gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 18px}.mini-term{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}.mini-term code{display:inline-block;margin-bottom:6px}.mini-term span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+  @media(max-width:768px){.mini-gloss{grid-template-columns:1fr}}
+  .ib.tip{border-left:4px solid var(--green)}.ib.warn{border-left:4px solid var(--yellow)}.ib.danger{border-left:4px solid var(--red)}.ib.note{border-left:4px solid var(--accent3)}.ib.info{border-left:4px solid var(--blue)}
+  .ibl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:5px}.ib.tip .ibl{color:var(--green)}.ib.warn .ibl{color:var(--yellow)}.ib.danger .ibl{color:var(--red)}.ib.note .ibl{color:var(--accent3)}.ib.info .ibl{color:var(--blue)}.ib p{color:var(--muted);margin:0}
+  .cb{background:#010409;border:1px solid var(--border);border-top:3px solid var(--accent2);border-radius:0 0 8px 8px;margin:12px 0 20px;overflow:hidden}.ch{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#ff5f57}.dot.y{background:#ffbd2e}.dot.g{background:#28ca41}
+  pre{padding:18px 20px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.9;color:#c9d1d9}.cmd{color:#79c0ff}.val{color:#a5d6ff}.cmt{color:#484f58;font-style:italic}.ok{color:var(--green)}.wc{color:var(--yellow)}.err{color:var(--red)}.pr{color:var(--accent);user-select:none}.kw{color:#ff7b72}.tp{color:#d2a8ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}
+  table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:13px}th{background:var(--surface2);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;border:1px solid var(--border);text-align:left}td{padding:9px 14px;border:1px solid var(--border);color:var(--text)}tr:nth-child(even)td{background:rgba(255,255,255,.02)}
+  .part-divider{margin:64px -64px 0;padding:28px 64px;background:linear-gradient(90deg,rgba(0,212,170,.06) 0%,transparent 100%);border-top:2px solid var(--accent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px}.part-badge{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.35);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:4px;white-space:nowrap}.part-divider h2{font-size:22px;font-weight:700;color:#fff}.part-divider p{font-size:13px;color:var(--muted);margin-top:2px}
+  .uml{background:#010409;border:1px solid var(--border);border-radius:10px;padding:24px;margin:16px 0;font-family:'IBM Plex Mono',monospace}.uml-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}.uml-card{min-width:180px;background:var(--surface2);border:2px solid rgba(0,212,170,.28);border-radius:8px;overflow:hidden}.uml-title{background:rgba(0,212,170,.09);color:var(--accent);padding:8px 12px;text-align:center;font-weight:600}.uml-body{padding:10px 14px;color:var(--muted);font-size:12px;line-height:1.8}.arrow{color:var(--accent3);font-size:30px}
+
+  .warm-block{background:linear-gradient(135deg,#0d1a2e,#0d1117);border:1px solid rgba(91,124,250,.25);border-left:4px solid #5b7cfa;border-radius:8px;margin:28px 0 0;overflow:hidden}.warm-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(91,124,250,.15);background:rgba(91,124,250,.06)}.warm-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5b7cfa;background:rgba(91,124,250,.12);border:1px solid rgba(91,124,250,.3);border-radius:3px;padding:2px 8px}.warm-header span{font-size:13px;color:var(--muted)}.warm-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}.wq{display:flex;flex-direction:column;gap:6px}.wq-text{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}.wq-opts{display:flex;flex-wrap:wrap;gap:8px}.wopt{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:7px 14px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Mono',monospace}.wopt:hover{border-color:rgba(91,124,250,.5);color:var(--text)}.wopt.correct{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);pointer-events:none}.wopt.wrong{border-color:var(--red);background:rgba(249,81,73,.1);color:var(--red);pointer-events:none}.wfb{font-size:12px;padding:6px 10px;border-radius:4px;display:none;line-height:1.5}.wfb.show{display:block}.wfb.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:#86efac}.wfb.bad{background:rgba(249,81,73,.08);border:1px solid rgba(249,81,73,.2);color:#fca5a5}.wfb.hint{background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.2);color:#a5b4fc}.wq-input-row{display:flex;gap:8px;align-items:center}.wq-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none}.wq-input:focus{border-color:#5b7cfa}.wq-input.ok{border-color:var(--green);background:rgba(63,185,80,.05)}.wq-input.bad{border-color:var(--red);background:rgba(249,81,73,.05)}.wbtn{background:#5b7cfa;color:#fff;border:none;border-radius:5px;padding:8px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer;white-space:nowrap}.wbtn:hover{background:#4a6af0}
+  .cli-sim-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between}.cli-sim-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}.cli-sim-hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.2)}.cli-output{padding:14px 16px;min-height:120px;max-height:260px;overflow-y:auto;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.9;color:#c9d1d9;background:#010409}.cli-line-ok{color:var(--green)}.cli-line-err{color:var(--red)}.cli-line-info{color:#5b7cfa}.cli-line-warn{color:var(--yellow)}.cli-line-dim{color:#484f58}.cli-input-row{border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;background:rgba(0,212,170,.02)}.cli-prompt-label{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--accent);white-space:nowrap;padding:10px 8px 10px 0}.cli-input{flex:1;background:transparent;border:none;outline:none;padding:10px 0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text);caret-color:var(--accent)}
+
+  .v30-topbar{position:sticky;top:0;z-index:999;background:rgba(13,17,23,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;gap:16px}.v30-left,.v30-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.v30-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.08);border-radius:999px;padding:4px 10px}.v30-student{font-size:12px;color:var(--muted)}.v30-student b{color:var(--text);font-weight:600}.v30-progress-wrap{width:220px;height:8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);overflow:hidden}.v30-progress{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));transition:width .35s ease}.v30-score{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}.v30-btn{background:var(--accent);color:#06110f;border:none;border-radius:7px;padding:8px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s}.v30-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.v30-btn.secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.v30-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}.v30-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:34px 0}.v30-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.v30-result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}.v30-result-card span{display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}.v30-result-card b{font-size:22px;color:#fff}.v30-modal{position:fixed;inset:0;z-index:2000;background:rgba(1,4,9,.78);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}.v30-modal.show{display:flex}.v30-card{width:min(560px,100%);background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);padding:28px}.v30-card h2{color:#fff;font-size:24px;margin-bottom:8px}.v30-card p{color:var(--muted);font-size:14px}.v30-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.v30-field.full{grid-column:1/-1}.v30-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}.v30-field input,.v30-field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}.v30-field input:focus,.v30-field select:focus{border-color:var(--accent)}.v30-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}.v30-lock-msg{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:#fca5a5;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;display:none}.v30-lock-msg.show{display:block}body.v30-locked main,body.v30-locked .toc{filter:blur(4px);pointer-events:none;user-select:none}body.v30-completed main,body.v30-completed .toc{opacity:.72}body.v30-completed .wopt,body.v30-completed .wq-input,body.v30-completed .wbtn,body.v30-completed .cli-input{pointer-events:none!important;opacity:.65}
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:20px 64px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;gap:12px;flex-wrap:wrap}
+  @media(max-width:768px){header,main,footer{padding-left:20px;padding-right:20px}.toc{margin-left:20px;margin-right:20px}.toc-cols{grid-template-columns:1fr}.part-divider{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}.v30-topbar{padding:10px 20px;align-items:flex-start;flex-direction:column}.v30-progress-wrap{width:100%}.v30-result-grid{grid-template-columns:1fr 1fr}.v30-form{grid-template-columns:1fr}.wq-input-row{flex-direction:column;align-items:stretch}}
+
+  /* ══ CÓDIGO EXPLICADO LÍNEA POR LÍNEA ══ */
+  .line-doc{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;margin:-8px 0 24px;overflow:hidden}
+  .line-doc-title{background:rgba(0,212,170,.06);border-bottom:1px solid var(--border);padding:10px 16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .line-doc-row{display:grid;grid-template-columns:minmax(210px,310px) 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);align-items:start}
+  .line-doc-row:last-child{border-bottom:none}
+  .line-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c9d1d9;background:#010409;border:1px solid var(--border);border-radius:6px;padding:9px 10px;overflow-x:auto;white-space:pre}
+  .line-explain{font-size:13px;color:var(--muted);line-height:1.7}
+  .line-explain b,.line-explain code{color:var(--text)}
+  .line-explain code{font-family:'IBM Plex Mono',monospace;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.15);border-radius:3px;padding:1px 6px;font-size:12px;color:var(--accent)}
+  @media(max-width:768px){.line-doc-row{grid-template-columns:1fr}.line-code{font-size:11px}}
+
+
+/* ══ CANDADOS PEDAGÓGICOS ANTI-TRAMPA ══ */
+.v30-guard-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--yellow);border:1px solid rgba(210,153,34,.35);background:rgba(210,153,34,.08);border-radius:999px;padding:4px 10px}
+.v30-guard-pill b{color:#f5d58b}.v30-timer{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.06);border-radius:999px;padding:4px 10px}.v30-warning-toast{position:fixed;right:18px;bottom:18px;z-index:3000;max-width:360px;background:linear-gradient(145deg,#24180a,#0d1117);border:1px solid rgba(210,153,34,.45);border-left:4px solid var(--yellow);box-shadow:0 20px 50px rgba(0,0,0,.45);border-radius:14px;padding:14px 16px;display:none}.v30-warning-toast.show{display:block;animation:v30pop .22s ease}.v30-warning-toast h4{font-size:14px;color:#fff;margin-bottom:4px}.v30-warning-toast p{font-size:12px;color:var(--muted);margin:0}@keyframes v30pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}.v30-security-list{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.v30-security-item{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--muted)}.v30-security-item b{color:var(--text)}@media(max-width:768px){.v30-security-list{grid-template-columns:1fr}.v30-warning-toast{left:14px;right:14px;bottom:14px}}
+
+
+  /* ══ BLOQUEO PEDAGÓGICO DE EJERCICIOS ══ */
+  .v30-start-exam-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:28px 0;box-shadow:0 16px 45px rgba(0,0,0,.18)}
+  .v30-start-exam-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-start-exam-panel p{color:var(--muted);font-size:14px;margin-bottom:10px}
+  .v30-exam-status{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);border:1px solid rgba(210,153,34,.3);background:rgba(210,153,34,.08);border-radius:999px;padding:4px 10px;display:inline-block;margin-bottom:10px}
+  body.v30-exercises-locked .warm-block, body.v30-exercises-locked #v30FinalPanel{filter:blur(3px);opacity:.55;pointer-events:none;user-select:none}
+  body.v30-exercises-locked .v30-start-exam-panel{filter:none;opacity:1;pointer-events:auto;user-select:auto}
+
+
+  /* Tooltip visible para RESET del simulador */
+  .cli-reset-help {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,.28);
+    background: rgba(0,212,170,.08);
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: help;
+    box-shadow: 0 0 0 rgba(0,212,170,0);
+    transition: all .18s ease;
+  }
+  .cli-reset-help:hover {
+    color: #06110f;
+    background: var(--accent);
+    box-shadow: 0 0 18px rgba(0,212,170,.25);
+  }
+  .cli-reset-help code {
+    color: inherit;
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.18);
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  .cli-reset-help::after {
+    content: "¿Te equivocaste?\A\AEscribe: RESET\A\Apara borrar este ejercicio y volver a comenzar.";
+    white-space: pre-line;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 285px;
+    background: linear-gradient(145deg, #161b22, #0d1117);
+    color: var(--text);
+    border: 1px solid rgba(0,212,170,.35);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    box-shadow: 0 18px 45px rgba(0,0,0,.45);
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 50;
+  }
+  .cli-reset-help:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media(max-width:768px){
+    .cli-reset-help::after{ right:auto; left:0; width:260px; }
+  }
+
+
+
+  /* ══ BOTÓN PDF DE APUNTES ══ */
+  .notes-download-panel{margin:26px 64px 0;background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(88,166,255,.05));border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:10px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .notes-download-panel h3{font-size:16px;color:#fff;margin:0 0 3px}.notes-download-panel p{font-size:13px;color:var(--muted);margin:0}.notes-download-panel .v30-btn{font-size:12px;padding:10px 16px}
+  .pdf-export-area{background:#0d1117;color:#e6edf3;font-family:'IBM Plex Sans',sans-serif;padding:24px;max-width:900px;line-height:1.65}
+  .pdf-export-area header{margin:-24px -24px 22px;padding:34px 42px 28px;position:relative;border-bottom:3px solid #00d4aa;background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%)}
+  .pdf-export-area .toc{margin:18px 0 22px}.pdf-export-area main{padding:0}.pdf-export-area .part-divider,.pdf-export-area #v30StartExamPanel,.pdf-export-area #v30FinalPanel{display:none!important}
+  .pdf-export-area .section-title{break-inside:avoid;page-break-inside:avoid}.pdf-export-area .cb,.pdf-export-area .ib,.pdf-export-area .line-doc,.pdf-export-area .pera-box,.pdf-export-area .uml,.pdf-export-area table{break-inside:avoid;page-break-inside:avoid}
+  .pdf-export-area pre{white-space:pre-wrap;word-break:break-word}.pdf-export-status{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;display:none}.pdf-export-status.show{display:block}
+  @media(max-width:768px){.notes-download-panel{margin-left:20px;margin-right:20px;align-items:flex-start}.notes-download-panel .v30-btn{width:100%}}
+
+
+  /* ══ PDF COMPACTO · BAJO CONSUMO DE TINTA ══ */
+  .pdf-export-area.pdf-lite{
+    background:#ffffff!important;
+    color:#000000!important;
+    font-family:Arial, Helvetica, sans-serif!important;
+    padding:18px!important;
+    max-width:820px!important;
+    line-height:1.34!important;
+    font-size:10.8px!important;
+  }
+  .pdf-lite *{box-shadow:none!important;text-shadow:none!important;}
+  .pdf-lite .pdf-cover{
+    border:1.6px solid #1f2937;
+    border-left:7px solid #00a889;
+    padding:12px 15px 11px;
+    margin-bottom:11px;
+    background:#ffffff!important;
+    break-inside:avoid;
+  }
+  .pdf-lite h1{font-size:20px;margin:0 0 8px;color:#0f172a!important;line-height:1.12;letter-spacing:.1px;}
+  .pdf-lite .pdf-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;margin:0 0 5px;}
+  .pdf-lite .pdf-meta-grid .full{grid-column:1/-1;}
+  .pdf-lite .pdf-meta{font-size:10px;color:#000!important;margin:0;line-height:1.25;}
+  .pdf-lite .pdf-meta b{color:#0f766e!important;}
+  .pdf-lite .pdf-purpose{border-top:1px solid #cbd5e1;margin-top:6px;padding-top:5px;font-size:10.2px;color:#000!important;line-height:1.28;}
+  .pdf-lite .pdf-purpose b{color:#0f766e!important;}
+  .pdf-lite h2{font-size:14.5px;margin:13px 0 6px;color:#0f172a!important;border-bottom:1.5px solid #00a889;padding-bottom:3px;break-after:avoid;}
+  .pdf-lite h3{font-size:11.5px;margin:8px 0 4px;color:#0f172a!important;break-after:avoid;}
+  .pdf-lite p,.pdf-lite li{color:#000!important;margin:3px 0;}
+  .pdf-lite ul,.pdf-lite ol{margin:4px 0 6px 18px;padding:0;color:#000!important;line-height:1.34;}
+  .pdf-lite .pdf-note{border:1px solid #94a3b8;border-left:5px solid #0ea5e9;background:#f8fafc!important;padding:7px 9px;margin:7px 0;break-inside:avoid;color:#000!important;}
+  .pdf-lite .pdf-note.important{border-left-color:#00a889;background:#ecfdf5!important;}
+  .pdf-lite .pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0;}
+  .pdf-lite .pdf-card{border:1px solid #cbd5e1;border-top:3px solid #0ea5e9;background:#fff!important;padding:7px 8px;break-inside:avoid;color:#000!important;}
+  .pdf-lite .pdf-card b{color:#0f172a!important;}
+  .pdf-lite .codebox{border:1px solid #334155;background:#f8fafc!important;margin:7px 0 8px;break-inside:avoid;}
+  .pdf-lite .code-title{background:#e0f2fe!important;color:#0f172a!important;border-bottom:1px solid #94a3b8;font-weight:bold;font-size:9.8px;padding:4px 8px;}
+  .pdf-lite pre{margin:0;padding:8px;font-size:9.2px;line-height:1.28;white-space:pre-wrap;word-break:break-word;color:#000!important;font-family:'Courier New',monospace!important;background:#f8fafc!important;}
+  .pdf-lite code{font-family:'Courier New',monospace!important;background:#f1f5f9!important;color:#000!important;border:1px solid #cbd5e1;padding:0 3px;border-radius:2px;font-size:9.8px;}
+  .pdf-lite table{width:100%;border-collapse:collapse;margin:7px 0;font-size:9.8px;break-inside:avoid;color:#000!important;}
+  .pdf-lite th{background:#e0f2fe!important;color:#0f172a!important;border:1px solid #94a3b8;padding:4px 5px;text-align:left;}
+  .pdf-lite td{border:1px solid #94a3b8;padding:4px 5px;color:#000!important;}
+  .pdf-lite .mini{font-size:9.8px;color:#000!important;}
+  .pdf-lite .page-cut{page-break-before:always;}
+
+  .pdf-lite .pdf-topic{
+    break-inside:avoid;
+    page-break-inside:avoid;
+    margin:0 0 8px;
+  }
+  .pdf-lite .pdf-topic h2{margin-top:8px;}
+  .pdf-lite .pdf-topic.compact{break-inside:avoid;page-break-inside:avoid;}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+<!-- VERSION: PROO RA21B FORMSUBMIT ONLY - 2026-05-20 -->
+
+<div class="v30-topbar">
+  <div class="v30-left"><span class="v30-badge">Actividad 3.0</span><span class="v30-student" id="v30StudentLabel">Alumno: <b>No registrado</b></span></div>
+  <div class="v30-right"><div class="v30-progress-wrap" title="Progreso de ejercicios"><div class="v30-progress" id="v30Progress"></div></div><span class="v30-timer" id="v30Timer">Sin iniciar</span><span class="v30-guard-pill" id="v30GuardLabel">Alertas: <b>0</b></span><span class="v30-score" id="v30ScoreLabel">0/18 · 0%</span><button class="v30-btn secondary" onclick="v30OpenUnlock()">Desbloquear</button></div>
+</div>
+
+<div class="v30-modal" id="v30StartModal">
+  <div class="v30-card">
+    <h2>Registro del alumno</h2>
+    <p>Antes de iniciar, captura tus datos. Usa tu <b>correo institucional</b>. Esta actividad solo permite <b>un intento</b>. Al finalizar, tu calificación será enviada al docente.</p>
+    <div class="v30-lock-msg" id="v30LockedMessage">Esta actividad ya fue enviada desde este navegador. Si necesitas una segunda oportunidad, solicita autorización al docente.</div>
+    <div class="v30-form" id="v30StudentForm">
+      <div class="v30-field full"><label>Nombre completo</label><input id="v30Name" autocomplete="name" placeholder="Ej. Juan Pérez López"></div>
+      <div class="v30-field"><label>Grupo</label><input id="v30Group" placeholder="Ej. 411"></div>
+      <div class="v30-field"><label>Turno</label><select id="v30Shift"><option value="">Selecciona...</option><option>Matutino</option><option>Vespertino</option></select></div>
+      <div class="v30-field full"><label>Correo institucional del alumno</label><input id="v30Email" type="email" autocomplete="email" placeholder="ej. alumno@tam.conalep.edu.mx"></div>
+    </div>
+    <div class="v30-actions"><button class="v30-btn secondary" onclick="v30OpenUnlock()">Tengo permiso para segunda oportunidad</button><button class="v30-btn" id="v30StartBtn" onclick="v30StartActivity()">Iniciar actividad</button></div>
+  </div>
+</div>
+
+<div class="v30-modal" id="v30UnlockModal">
+  <div class="v30-card"><h2>Desbloqueo docente</h2><p>Solo el docente puede autorizar una segunda oportunidad. Ingresa la clave proporcionada.</p><div class="v30-form"><div class="v30-field full"><label>Clave de desbloqueo</label><input id="v30UnlockKey" type="password" placeholder="Clave del docente"></div></div><div class="v30-lock-msg" id="v30UnlockMsg"></div><div class="v30-actions"><button class="v30-btn secondary" onclick="v30CloseUnlock()">Cancelar</button><button class="v30-btn" onclick="v30UnlockAttempt()">Desbloquear intento</button></div></div>
+</div>
+
+<header>
+  <span class="htag">Recurso de Aprendizaje 2.1 · Sección B</span>
+  <h1>Implementación de la <span>Herencia en Objetos</span><br>con C++</h1>
+  <p class="header-sub">Material didáctico elaborado por el Ing. Santiago Martínez González</p>
+  <div class="hpills"><div class="hpill">Materia: <b>Programación Orientada a Objetos</b></div><div class="hpill">Unidad: <b>2</b></div><div class="hpill">Lenguaje: <b>C++</b></div><div class="hpill">Tema: <b>Herencia simple y múltiple</b></div></div>
+</header>
+
+<div class="notes-download-panel" id="notesDownloadPanel">
+  <div>
+    <h3>📘 Apuntes de estudio</h3>
+    <p>Descarga únicamente la parte teórica del material en PDF para repasar o imprimir.</p>
+    <div class="pdf-export-status" id="pdfExportStatus">Preparando PDF...</div>
+  </div>
+  <button class="v30-btn" onclick="downloadApuntesPDF()">Descargar apuntes PDF</button>
+</div>
+
+
+<div class="toc">
+  <div class="toc-title">Contenido del material</div>
+  <div class="toc-section">── Apuntes prácticos ──</div>
+  <ol class="toc-cols"><li><a href="#s1">¿Qué significa implementar herencia?</a></li><li><a href="#s1b">Estructura base de un programa C++</a></li><li><a href="#s2">Herencia simple: Persona → Alumno</a></li><li><a href="#s3">Instanciar objetos heredados</a></li><li><a href="#s4">Constructores en herencia simple</a></li><li><a href="#s5">Aplicación escolar completa</a></li><li><a href="#s6">Herencia múltiple: capacidades</a></li><li><a href="#s7">Aplicación con herencia múltiple</a></li></ol>
+  <div class="toc-section">── Ejercicios y simulador ──</div>
+  <ol class="toc-cols" start="8"><li><a href="#ejercicios">Identificación de código</a></li><li><a href="#ejercicios">Completar sintaxis</a></li><li><a href="#ejercicios">Constructores</a></li><li><a href="#ejercicios">Herencia múltiple</a></li><li><a href="#simulador">Simulador C++</a></li><li><a href="#v30FinalPanel">Entrega final</a></li></ol>
+</div>
+
+<main>
+<div class="section-title" id="s1"><span class="section-num">01</span><h2>¿Qué significa implementar herencia?</h2></div>
+<p>Implementar herencia significa pasar de la idea teórica a la construcción de código: crear una <strong>clase base</strong>, crear una <strong>clase derivada</strong>, instanciar objetos y comprobar que los métodos heredados funcionan correctamente.</p>
+<div class="pera-box"><div class="pera-title">💡 Explicación clara</div><p>En el inciso A identificamos la herencia. En este inciso B vamos a programarla. La pregunta ya no es “¿qué es?”, sino: <b>¿cómo la escribo en C++ y cómo la uso con objetos?</b></p></div>
+<div class="ib note"><div class="ibl">Objetivo práctico</div><p>Al terminar este material podrás construir aplicaciones pequeñas donde una clase hija use atributos y métodos de una clase padre, tanto en herencia simple como en herencia múltiple.</p></div>
+<table><tr><th>Elemento</th><th>Función en el programa</th><th>Ejemplo</th></tr><tr><td>Clase base</td><td>Guarda lo común</td><td><code>Persona</code></td></tr><tr><td>Clase derivada</td><td>Agrega lo específico</td><td><code>Alumno</code></td></tr><tr><td>Objeto heredado</td><td>Usa métodos propios y heredados</td><td><code>Alumno a;</code></td></tr></table>
+
+<div class="section-title" id="s1b"><span class="section-num">01.1</span><h2>Antes de heredar: estructura base de un programa C++</h2></div>
+<p>Antes de programar la herencia, el alumno debe reconocer la estructura mínima de un programa en C++. Así no solo copia una clase, sino que sabe armar un archivo completo desde cero.</p>
+<div class="pera-box"><div class="pera-title">🧱 Paso cero</div><p>Todo ejemplo completo de esta clase se escribirá desde <b><code>#include &lt;iostream&gt;</code></b>, después <b><code>using namespace std;</code></b>, luego las clases y finalmente la función <b><code>main()</code></b>, que es donde el programa empieza a ejecutarse.</p></div>
+<div class="cb"><div class="ch"><span>C++ · Plantilla mínima para iniciar desde cero</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">#include</span> &lt;iostream&gt;
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> main() {
+    cout &lt;&lt; <span class="str">"Mi primer programa desde cero"</span> &lt;&lt; endl;
+
+    <span class="kw">return</span> 0;
+}</pre></div>
+<div class="line-doc"><div class="line-doc-title">Estructura explicada línea por línea</div>
+<div class="line-doc-row"><div class="line-code">#include &lt;iostream&gt;</div><div class="line-explain">Permite usar entrada y salida de datos, por ejemplo <code>cout</code> para mostrar mensajes en pantalla y <code>cin</code> para capturar datos.</div></div>
+<div class="line-doc-row"><div class="line-code">using namespace std;</div><div class="line-explain">Evita escribir <code>std::</code> antes de instrucciones como <code>cout</code>, <code>cin</code>, <code>endl</code> y <code>string</code>.</div></div>
+<div class="line-doc-row"><div class="line-code">int main() {</div><div class="line-explain">Es la función principal. Todo programa en C++ inicia su ejecución aquí.</div></div>
+<div class="line-doc-row"><div class="line-code">cout &lt;&lt; "..." &lt;&lt; endl;</div><div class="line-explain">Muestra texto en pantalla. <code>endl</code> baja a la siguiente línea.</div></div>
+<div class="line-doc-row"><div class="line-code">return 0;</div><div class="line-explain">Indica que el programa terminó correctamente.</div></div>
+</div>
+<div class="ib info"><div class="ibl">Regla para esta clase</div><p>Cada práctica debe entregarse como programa completo: librería, espacio de nombres, clases, función <code>main()</code>, creación de objetos y ejecución de métodos.</p></div>
+
+<div class="section-title" id="s2"><span class="section-num">02</span><h2>Herencia simple: Persona → Alumno</h2></div>
+<p>La herencia simple se implementa cuando una clase hija hereda de una sola clase padre. En C++ se escribe usando dos puntos y el tipo de herencia.</p>
+<div class="cb"><div class="ch"><span>C++ · Herencia simple completa</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">#include</span> &lt;iostream&gt;
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="tp">Persona</span> {
+<span class="kw">public</span>:
+    string nombre;
+
+    <span class="kw">void</span> <span class="fn">saludar</span>() {
+        cout &lt;&lt; <span class="str">"Hola, soy "</span> &lt;&lt; nombre &lt;&lt; endl;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Alumno</span> : <span class="kw">public</span> <span class="tp">Persona</span> {
+<span class="kw">public</span>:
+    string matricula;
+
+    <span class="kw">void</span> <span class="fn">mostrarMatricula</span>() {
+        cout &lt;&lt; <span class="str">"Matrícula: "</span> &lt;&lt; matricula &lt;&lt; endl;
+    }
+};
+
+<span class="kw">int</span> main() {
+    Alumno a;
+    a.nombre = <span class="str">"Luis"</span>;
+    a.matricula = <span class="str">"A001"</span>;
+    a.saludar();
+    a.mostrarMatricula();
+    <span class="kw">return</span> 0;
+}</pre></div>
+<div class="line-doc"><div class="line-doc-title">Código explicado línea por línea</div>
+<div class="line-doc-row"><div class="line-code">#include &lt;iostream&gt;</div><div class="line-explain">Carga la librería necesaria para usar <code>cout</code>, <code>cin</code> y <code>endl</code>.</div></div>
+<div class="line-doc-row"><div class="line-code">using namespace std;</div><div class="line-explain">Permite escribir <code>cout</code> y <code>string</code> directamente sin anteponer <code>std::</code>.</div></div>
+<div class="line-doc-row"><div class="line-code">class Persona {</div><div class="line-explain">Crea la clase base. Aquí se coloca la información común que puede compartir cualquier persona.</div></div>
+<div class="line-doc-row"><div class="line-code">string nombre;</div><div class="line-explain">Declara un atributo público llamado <code>nombre</code>. Como está en la clase padre, la clase hija podrá usarlo.</div></div>
+<div class="line-doc-row"><div class="line-code">void saludar()</div><div class="line-explain">Crea un método de la clase padre. Este método será heredado por <code>Alumno</code>.</div></div>
+<div class="line-doc-row"><div class="line-code">class Alumno : public Persona {</div><div class="line-explain">Crea la clase hija <code>Alumno</code>. La parte <code>: public Persona</code> indica que Alumno hereda públicamente de Persona.</div></div>
+<div class="line-doc-row"><div class="line-code">string matricula;</div><div class="line-explain">Agrega un atributo propio de la clase hija. Una persona no siempre tiene matrícula, pero un alumno sí.</div></div>
+<div class="line-doc-row"><div class="line-code">Alumno a;</div><div class="line-explain">Crea un objeto de tipo <code>Alumno</code>. Ese objeto tendrá lo heredado de Persona y lo propio de Alumno.</div></div>
+<div class="line-doc-row"><div class="line-code">a.saludar();</div><div class="line-explain">Ejecuta un método heredado. Aunque <code>saludar()</code> fue escrito en Persona, el objeto Alumno puede usarlo.</div></div>
+</div>
+
+<div class="section-title" id="s3"><span class="section-num">03</span><h2>Instanciar objetos heredados</h2></div>
+<p>Un objeto de una clase derivada puede usar miembros propios y miembros heredados. Esto permite crear programas más limpios porque no repetimos lo que ya existe en la clase base.</p>
+<div class="pera-box"><div class="pera-title">🍎 Dicho fácil</div><p>Si <b>Alumno</b> hereda de <b>Persona</b>, entonces al crear <code>Alumno a;</code>, ese objeto ya trae lo de Persona. Por eso podemos usar <code>a.nombre</code> y <code>a.saludar()</code>.</p></div>
+<div class="ib tip"><div class="ibl">Regla práctica</div><p>Cuando pruebes herencia, verifica dos cosas: que el objeto pueda usar lo heredado y que también pueda usar lo propio.</p></div>
+
+<div class="section-title" id="s4"><span class="section-num">04</span><h2>Constructores en herencia simple</h2></div>
+<p>Cuando una clase hija hereda de una clase padre que tiene constructor, la clase hija debe llamar al constructor de la clase padre para inicializar correctamente la parte heredada del objeto.</p>
+<div class="cb"><div class="ch"><span>C++ · Constructor de clase padre y clase hija</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">#include</span> &lt;iostream&gt;
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="tp">Persona</span> {
+<span class="kw">protected</span>:
+    string nombre;
+<span class="kw">public</span>:
+    Persona(string n) {
+        nombre = n;
+    }
+
+    <span class="kw">void</span> <span class="fn">mostrarNombre</span>() {
+        cout &lt;&lt; <span class="str">"Nombre: "</span> &lt;&lt; nombre &lt;&lt; endl;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Alumno</span> : <span class="kw">public</span> <span class="tp">Persona</span> {
+<span class="kw">private</span>:
+    string matricula;
+<span class="kw">public</span>:
+    Alumno(string n, string m) : Persona(n) {
+        matricula = m;
+    }
+
+    <span class="kw">void</span> <span class="fn">mostrarAlumno</span>() {
+        mostrarNombre();
+        cout &lt;&lt; <span class="str">"Matrícula: "</span> &lt;&lt; matricula &lt;&lt; endl;
+    }
+};
+
+<span class="kw">int</span> main() {
+    Alumno alumno1(<span class="str">"Ana"</span>, <span class="str">"A002"</span>);
+    alumno1.mostrarAlumno();
+
+    <span class="kw">return</span> 0;
+}</pre></div>
+<div class="line-doc"><div class="line-doc-title">Punto clave del constructor</div>
+<div class="line-doc-row"><div class="line-code">Alumno(string n, string m) : Persona(n)</div><div class="line-explain">Esta línea crea el constructor de <code>Alumno</code> y llama al constructor de <code>Persona</code>. Así se inicializa primero la parte heredada.</div></div>
+<div class="line-doc-row"><div class="line-code">protected:</div><div class="line-explain">Permite que la clase hija pueda acceder al miembro heredado, pero evita que se use libremente desde fuera de la clase.</div></div>
+</div>
+
+<div class="section-title" id="s5"><span class="section-num">05</span><h2>Aplicación escolar con herencia simple</h2></div>
+<p>En una aplicación escolar podemos crear una clase base <strong>Persona</strong> y después clases derivadas como <strong>Alumno</strong> y <strong>Docente</strong>. Ambas comparten nombre y edad, pero cada una tiene acciones diferentes.</p>
+<div class="uml"><div class="uml-row"><div class="uml-card"><div class="uml-title">Persona</div><div class="uml-body"># nombre<br># edad<br>+ mostrarDatos()</div></div><div class="arrow">⟶</div><div class="uml-card"><div class="uml-title">Alumno</div><div class="uml-body">- matricula<br>+ mostrarAlumno()</div></div><div class="uml-card"><div class="uml-title">Docente</div><div class="uml-body">- especialidad<br>+ mostrarDocente()</div></div></div></div>
+<div class="ib info"><div class="ibl">Aplicación real</div><p>Este tipo de estructura sirve para sistemas escolares, control de usuarios, inventarios, nóminas o cualquier aplicación donde existan elementos generales y elementos especializados.</p></div>
+
+<div class="section-title" id="s6"><span class="section-num">06</span><h2>Herencia múltiple: implementar varias capacidades</h2></div>
+<p>La herencia múltiple permite que una clase derive de dos o más clases base. En la práctica puede servir cuando una clase necesita combinar capacidades diferentes.</p>
+<div class="cb"><div class="ch"><span>C++ · Herencia múltiple desde cero</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="kw">#include</span> &lt;iostream&gt;
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="tp">Impresora</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">imprimir</span>() {
+        cout &lt;&lt; <span class="str">"Imprimiendo documento"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Scanner</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">escanear</span>() {
+        cout &lt;&lt; <span class="str">"Escaneando documento"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="kw">class</span> <span class="tp">Multifuncional</span> : <span class="kw">public</span> <span class="tp">Impresora</span>, <span class="kw">public</span> <span class="tp">Scanner</span> {
+};
+
+<span class="kw">int</span> main() {
+    Multifuncional equipo;
+    equipo.imprimir();
+    equipo.escanear();
+
+    <span class="kw">return</span> 0;
+}</pre></div>
+<div class="line-doc"><div class="line-doc-title">Código explicado línea por línea</div>
+<div class="line-doc-row"><div class="line-code">class Impresora { ... };</div><div class="line-explain">Define una primera clase base con la capacidad de imprimir.</div></div>
+<div class="line-doc-row"><div class="line-code">class Scanner { ... };</div><div class="line-explain">Define una segunda clase base con la capacidad de escanear.</div></div>
+<div class="line-doc-row"><div class="line-code">class Multifuncional : public Impresora, public Scanner</div><div class="line-explain">Crea una clase derivada que hereda de dos clases. La coma separa cada clase padre.</div></div>
+</div>
+
+<div class="section-title" id="s7"><span class="section-num">07</span><h2>Aplicación con herencia múltiple</h2></div>
+<p>Ahora se crea un objeto de tipo <code>Multifuncional</code>. Ese objeto podrá usar los métodos heredados de <code>Impresora</code> y de <code>Scanner</code>.</p>
+<div class="cb"><div class="ch"><span>Salida esperada en consola</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre>Imprimiendo documento
+Escaneando documento</pre></div>
+<div class="ib warn"><div class="ibl">Cuidado práctico</div><p>En herencia múltiple conviene que cada clase padre tenga responsabilidades claras. Si dos clases padre tienen métodos con el mismo nombre, tendrás que especificar de cuál clase viene el método.</p></div>
+
+<div class="part-divider" id="ejercicios"><div class="part-badge">Ejercicios</div><div><h2>Ejercicios de Implementación</h2><p>Lee los apuntes primero. Cuando estés listo, activa los ejercicios y empezará el tiempo.</p></div></div>
+
+<div class="v30-start-exam-panel" id="v30StartExamPanel">
+  <span class="v30-exam-status" id="v30ExamStatus">Ejercicios bloqueados</span>
+  <h3>Activa los ejercicios cuando estés listo</h3>
+  <p>Los apuntes y ejemplos se pueden leer sin presión. El temporizador de <b>40 minutos</b> iniciará hasta que presiones el botón de abajo.</p>
+  <div class="ib warn"><div class="ibl">Aviso importante</div><p>Al activar los ejercicios tendrás solo <b>40 minutos</b> para contestar. Si se termina el tiempo, la actividad se cerrará y se tomará en cuenta únicamente lo que hayas contestado.</p></div>
+  <button class="v30-btn" id="v30BeginExercisesBtn" onclick="v30BeginExercises()">Iniciar ejercicios y activar temporizador</button>
+</div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 1</span><h2 style="font-size:17px;">Herencia simple en código</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>4 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq1_1"><div class="wq-text">En <code>class Alumno : public Persona</code>, ¿qué clase es la base o padre?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_1','wrong','Alumno es la clase derivada.')">Alumno</div><div class="wopt" onclick="checkOpt(this,'wq1_1','correct','Correcto. Persona es la clase base.')">Persona</div><div class="wopt" onclick="checkOpt(this,'wq1_1','wrong','public indica el tipo de herencia.')">public</div></div><div class="wfb" id="fb_wq1_1"></div></div>
+<div class="wq" id="wq1_2"><div class="wq-text">¿Cuál línea crea un objeto de la clase hija <code>Alumno</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_2','correct','Correcto. Esa línea instancia un objeto llamado a.')">Alumno a;</div><div class="wopt" onclick="checkOpt(this,'wq1_2','wrong','Eso declara una clase, no un objeto.')">class Alumno;</div><div class="wopt" onclick="checkOpt(this,'wq1_2','wrong','Eso es una asignación de texto.')">a = Alumno;</div></div><div class="wfb" id="fb_wq1_2"></div></div>
+<div class="wq" id="wq1_3"><div class="wq-text">Si <code>Alumno</code> hereda de <code>Persona</code>, ¿qué puede hacer un objeto Alumno?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1_3','correct','Correcto. Puede usar miembros heredados y propios.')">Usar métodos de Persona y de Alumno</div><div class="wopt" onclick="checkOpt(this,'wq1_3','wrong','También puede usar métodos propios.')">Solo usar métodos de Persona</div><div class="wopt" onclick="checkOpt(this,'wq1_3','wrong','Sí puede usar métodos heredados si son accesibles.')">No puede usar métodos heredados</div></div><div class="wfb" id="fb_wq1_3"></div></div>
+<div class="wq" id="wq1_4"><div class="wq-text">Completa la palabra clave: <code>class Alumno : ______ Persona</code></div><div class="wq-input-row"><input class="wq-input" id="in_wq1_4" placeholder="Palabra clave..." onkeydown="if(event.key==='Enter')checkInput('wq1_4',['public'],'La palabra correcta es public.')"><button class="wbtn" onclick="checkInput('wq1_4',['public'],'La palabra correcta es public.')">Verificar</button></div><div class="wfb" id="fb_wq1_4"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 2</span><h2 style="font-size:17px;">Constructores y acceso</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>5 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq2_1"><div class="wq-text">¿Para qué sirve <code>: Persona(n)</code> en el constructor de <code>Alumno</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_1','correct','Correcto. Llama al constructor de la clase padre.')">Para llamar al constructor de Persona</div><div class="wopt" onclick="checkOpt(this,'wq2_1','wrong','No sirve para borrar objetos.')">Para destruir Persona</div><div class="wopt" onclick="checkOpt(this,'wq2_1','wrong','No imprime en pantalla.')">Para imprimir el nombre</div></div><div class="wfb" id="fb_wq2_1"></div></div>
+<div class="wq" id="wq2_2"><div class="wq-text">Escribe el modificador que permite acceso desde la clase hija, pero no libremente desde fuera:</div><div class="wq-input-row"><input class="wq-input" id="in_wq2_2" placeholder="Modificador..." onkeydown="if(event.key==='Enter')checkInput('wq2_2',['protected'],'La respuesta correcta es protected.')"><button class="wbtn" onclick="checkInput('wq2_2',['protected'],'La respuesta correcta es protected.')">Verificar</button></div><div class="wfb" id="fb_wq2_2"></div></div>
+<div class="wq" id="wq2_3"><div class="wq-text">¿Qué se inicializa primero al crear un objeto de una clase hija?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_3','correct','Correcto. Primero se construye la parte base.')">La clase padre</div><div class="wopt" onclick="checkOpt(this,'wq2_3','wrong','La parte hija se construye después de la base.')">La clase hija</div><div class="wopt" onclick="checkOpt(this,'wq2_3','wrong','main no es parte del objeto.')">La función main</div></div><div class="wfb" id="fb_wq2_3"></div></div>
+<div class="wq" id="wq2_4"><div class="wq-text">¿Cuál opción representa correctamente un constructor de Alumno que llama a Persona?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2_4','correct','Correcto. Esa sintaxis usa lista de inicialización.')">Alumno(string n) : Persona(n) { }</div><div class="wopt" onclick="checkOpt(this,'wq2_4','wrong','Falta la llamada correcta con dos puntos.')">Alumno(string n) Persona(n) { }</div><div class="wopt" onclick="checkOpt(this,'wq2_4','wrong','extends no se usa en C++.')">Alumno extends Persona(n) { }</div></div><div class="wfb" id="fb_wq2_4"></div></div>
+<div class="wq" id="wq2_5"><div class="wq-text">Escribe la línea para declarar que <code>Docente</code> hereda públicamente de <code>Persona</code>:</div><div class="wq-input-row"><input class="wq-input" id="in_wq2_5" placeholder="class ..." onkeydown="if(event.key==='Enter')checkInput('wq2_5',['class Docente : public Persona','class docente : public persona'],'La forma esperada es: class Docente : public Persona')"><button class="wbtn" onclick="checkInput('wq2_5',['class Docente : public Persona','class docente : public persona'],'La forma esperada es: class Docente : public Persona')">Verificar</button></div><div class="wfb" id="fb_wq2_5"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Tema 3</span><h2 style="font-size:17px;">Herencia múltiple</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>5 preguntas</span></div><div class="warm-body">
+<div class="wq" id="wq3_1"><div class="wq-text">¿Cuál línea implementa herencia múltiple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_1','wrong','Esa línea solo hereda de una clase.')">class Alumno : public Persona</div><div class="wopt" onclick="checkOpt(this,'wq3_1','correct','Correcto. Hereda de dos clases base.')">class Multifuncional : public Impresora, public Scanner</div><div class="wopt" onclick="checkOpt(this,'wq3_1','wrong','Eso crea un objeto, no una herencia.')">Multifuncional equipo;</div></div><div class="wfb" id="fb_wq3_1"></div></div>
+<div class="wq" id="wq3_2"><div class="wq-text">En la clase <code>Multifuncional</code>, ¿qué método viene de <code>Scanner</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_2','wrong','Ese método viene de Impresora.')">imprimir()</div><div class="wopt" onclick="checkOpt(this,'wq3_2','correct','Correcto. Scanner aporta escanear().')">escanear()</div><div class="wopt" onclick="checkOpt(this,'wq3_2','wrong','main no viene de Scanner.')">main()</div></div><div class="wfb" id="fb_wq3_2"></div></div>
+<div class="wq" id="wq3_3"><div class="wq-text">¿Qué símbolo separa las clases padre en herencia múltiple?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_3','correct','Correcto. Se usa coma para separar clases base.')">Coma ,</div><div class="wopt" onclick="checkOpt(this,'wq3_3','wrong','El punto y coma cierra instrucciones o clases.')">Punto y coma ;</div><div class="wopt" onclick="checkOpt(this,'wq3_3','wrong','El punto se usa para acceder a miembros desde objetos.')">Punto .</div></div><div class="wfb" id="fb_wq3_3"></div></div>
+<div class="wq" id="wq3_4"><div class="wq-text">Escribe el nombre de la clase hija del ejemplo <code>Impresora + Scanner</code>:</div><div class="wq-input-row"><input class="wq-input" id="in_wq3_4" placeholder="Clase hija..." onkeydown="if(event.key==='Enter')checkInput('wq3_4',['Multifuncional','multifuncional'],'La respuesta correcta es Multifuncional.')"><button class="wbtn" onclick="checkInput('wq3_4',['Multifuncional','multifuncional'],'La respuesta correcta es Multifuncional.')">Verificar</button></div><div class="wfb" id="fb_wq3_4"></div></div>
+<div class="wq" id="wq3_5"><div class="wq-text">¿Qué puede hacer un objeto <code>Multifuncional equipo;</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3_5','wrong','También puede escanear.')">Solo imprimir</div><div class="wopt" onclick="checkOpt(this,'wq3_5','correct','Correcto. Usa métodos heredados de ambas clases base.')">Imprimir y escanear</div><div class="wopt" onclick="checkOpt(this,'wq3_5','wrong','Sí puede usar métodos heredados si son públicos.')">No puede usar métodos heredados</div></div><div class="wfb" id="fb_wq3_5"></div></div>
+</div></div>
+
+<div class="section-title" style="margin-top:36px;" id="simulador"><span class="section-num" style="background:rgba(91,124,250,.1);border-color:rgba(91,124,250,.3);color:#7c9fff;">Simulador</span><h2 style="font-size:17px;">Mini compilador conceptual C++</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>4 pasos en terminal educativa</span></div><div class="warm-body"><div class="wq"><div class="wq-text">🖥️ Escribe los comandos en orden para implementar herencia simple: <code>class Persona</code> → <code>class Alumno : public Persona</code> → <code>Alumno a</code> → <code>a.saludar()</code></div></div></div><div class="cli-sim-header" style="border-top:1px solid var(--border);"><span class="cli-sim-title">Simulador C++ – Implementación de herencia</span><span class="cli-reset-help" title="¿Te equivocaste? Escribe RESET para borrar este ejercicio y volver a comenzar.">↻ Ayuda: <code>RESET</code></span></div><div class="cli-output" id="simcpp-out"></div><div class="cli-input-row"><span class="cli-prompt-label" id="simcpp-prompt">cpp-lab&gt;</span><input class="cli-input" id="simcpp-in" placeholder="Escribe una línea de C++ conceptual..." onkeydown="handleCppSim(event)" autocomplete="off" spellcheck="false"></div></div>
+
+<div class="v30-panel" id="v30FinalPanel"><h3>Entrega final de la actividad</h3><p>Cuando hayas terminado todos los ejercicios, envía tu resultado. Recuerda: solo se permite un intento, salvo autorización del docente.</p><div class="v30-result-grid"><div class="v30-result-card"><span>Contestadas</span><b id="v30Answered">0</b></div><div class="v30-result-card"><span>Correctas</span><b id="v30Correct">0</b></div><div class="v30-result-card"><span>Incorrectas</span><b id="v30Wrong">0</b></div><div class="v30-result-card"><span>Calificación</span><b id="v30Grade">0</b></div></div><div class="ib warn"><div class="ibl">Antes de enviar</div><p>Revisa que tus datos sean correctos. Después de enviar, la actividad quedará bloqueada en este navegador.</p></div><div class="v30-security-list"><div class="v30-security-item">🔒 <b>Un intento:</b> al enviar se bloquea la actividad.</div><div class="v30-security-item">👀 <b>Alertas:</b> se registran cambios de pestaña y acciones sospechosas.</div><div class="v30-security-item">⏱️ <b>Tiempo:</b> inicia al activar los ejercicios.</div><div class="v30-security-item">📋 <b>Copiar/pegar:</b> se limita para promover razonamiento propio.</div></div><button class="v30-btn" id="v30SubmitBtn" onclick="v30SubmitResults()">Enviar calificación al docente</button> <button class="v30-btn secondary" onclick="v30DownloadBackup()">Descargar respaldo</button><p id="v30SubmitStatus" style="margin-top:12px;"></p></div>
+</main>
+<footer><span>R.A. 2.1 – B · Programación Orientada a Objetos</span><span>Ing. Santiago Martínez González</span><span>C++ · Implementación de herencia</span></footer>
+<div class="v30-warning-toast" id="v30Toast"><h4 id="v30ToastTitle">Aviso de actividad</h4><p id="v30ToastText">Se registró una acción.</p></div>
+
+<script>
+const V30_CONFIG={activityId:'RA21B_IMPLEMENTACION_HERENCIA_CPP_POO_2526_V30',teacherEmail:'profesantiagomtzglez@gmail.com',unlockKey:'POO22526',formsubmitEndpoint:'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',totalQuestions:18,
+  // Candado institucional: solo acepta correos que terminen en @tam.conalep.edu.mx
+  allowedEmailDomains:['@tam.conalep.edu.mx'],
+  // Sube este archivo JSON junto al HTML en GitHub Pages para bloquear correos que ya entregaron desde otro dispositivo.
+  submittedEmailsUrl:'./intentos_poo_herencia_b.json',
+  // URL de Apps Script publicada como aplicación web para registrar y consultar intentos por correo institucional.
+  sheetApiUrl:'https://script.google.com/macros/s/AKfycbxC-qGGSBiYcxCfZMrnH5F393kE_N5sn_4RWS7CPNvPc7KgQyZszT4cKhZv70AIRuR8eA/exec'
+};
+const v30Keys={student:V30_CONFIG.activityId+'_student',answers:V30_CONFIG.activityId+'_answers',completed:V30_CONFIG.activityId+'_completed',startedAt:V30_CONFIG.activityId+'_startedAt',guard:V30_CONFIG.activityId+'_guard',timeLeft:V30_CONFIG.activityId+'_timeLeft',exerciseStarted:V30_CONFIG.activityId+'_exerciseStarted',timeExpired:V30_CONFIG.activityId+'_timeExpired',remoteOverride:V30_CONFIG.activityId+'_remoteOverride'};let v30Answers={};let v30TimerHandle=null;
+function v30LoadAnswers(){try{v30Answers=JSON.parse(localStorage.getItem(v30Keys.answers)||'{}')}catch(e){v30Answers={}}}function v30SaveAnswers(){localStorage.setItem(v30Keys.answers,JSON.stringify(v30Answers))}
+function v30LoadGuard(){try{return JSON.parse(localStorage.getItem(v30Keys.guard)||'{\"tabSwitches\":0,\"copyPaste\":0,\"rightClicks\":0,\"events\":[]}')}catch(e){return{tabSwitches:0,copyPaste:0,rightClicks:0,events:[]}}}
+function v30SaveGuard(g){localStorage.setItem(v30Keys.guard,JSON.stringify(g))}
+function v30Toast(title,text){const t=document.getElementById('v30Toast');if(!t)return;document.getElementById('v30ToastTitle').textContent=title;document.getElementById('v30ToastText').textContent=text;t.classList.add('show');clearTimeout(v30Toast._h);v30Toast._h=setTimeout(()=>t.classList.remove('show'),4200)}
+function v30GuardEvent(type,detail){
+  if(v30IsCompleted())return;
+  if(!v30GetStudent())return;
+  const g=v30LoadGuard();
+  if(type==='tab')g.tabSwitches++;
+  if(type==='copyPaste')g.copyPaste++;
+  if(type==='rightClick')g.rightClicks++;
+  g.events.push({type,detail:detail||'',at:new Date().toISOString()});
+  v30SaveGuard(g);
+  v30RefreshUI();
+  if(type==='tab')v30HandleTabWarning(g.tabSwitches);
+}
+
+function v30HandleTabWarning(count){
+  if(!v30ExercisesStarted() || v30IsCompleted())return;
+  if(count===1){
+    alert(`⚠️ PRIMERA ADVERTENCIA
+
+Se detectó que cambiaste de pestaña o saliste de la actividad.
+
+Recuerda: esta actividad debe contestarse sin consultar otras ventanas. A la tercera vez, el examen se cerrará automáticamente y se enviará solo lo que lleves contestado.`);
+    v30Toast('Primera advertencia','Se registró un cambio de pestaña. A la tercera, se cierra el examen.');
+  }else if(count===2){
+    alert(`🚨 SEGUNDA Y ÚLTIMA ADVERTENCIA
+
+Ya van 2 cambios de pestaña detectados.
+
+A la próxima vez que salgas de esta ventana, el examen se bloqueará y se enviará automáticamente con lo que lleves contestado.`);
+    v30Toast('Última advertencia','Si vuelves a cambiar de pestaña, se cerrará el intento.');
+  }else if(count>=3){
+    localStorage.setItem(v30Keys.timeExpired,'1');
+    localStorage.setItem(V30_CONFIG.activityId + '_closedByTab','1');
+    v30Toast('Examen cerrado','Se detectó el tercer cambio de pestaña. Se enviará lo contestado.');
+    setTimeout(()=>v30SubmitResults(true),450);
+  }
+}
+function v30GetStudent(){try{return JSON.parse(localStorage.getItem(v30Keys.student)||'null')}catch(e){return null}}function v30IsCompleted(){return localStorage.getItem(v30Keys.completed)==='1'}function v30NormalizeEmail(email){return String(email||'').trim().toLowerCase()}function v30StudentFingerprint(s){return btoa(unescape(encodeURIComponent(`${s.name}|${s.group}|${s.shift}|${v30NormalizeEmail(s.email)}`))).slice(0,32)}
+function v30ExercisesStarted(){return localStorage.getItem(v30Keys.exerciseStarted)==='1'}
+function v30TimeExpired(){return localStorage.getItem(v30Keys.timeExpired)==='1'}
+function v30BeginExercises(){
+  if(!v30GetStudent()){alert('Primero registra tus datos para iniciar la actividad.');return}
+  if(v30IsCompleted()){alert('Esta actividad ya fue enviada o cerrada. Solicita desbloqueo al docente.');return}
+  if(v30ExercisesStarted()){v30RefreshUI();return}
+  const ok=confirm('Al iniciar los ejercicios se activará el temporizador de 40 minutos. Si el tiempo termina, se cerrará la actividad y se tomará en cuenta solo lo contestado. ¿Deseas iniciar ahora?');
+  if(!ok)return;
+  localStorage.setItem(v30Keys.exerciseStarted,'1');
+  localStorage.setItem(v30Keys.startedAt,new Date().toISOString());
+  localStorage.setItem(v30Keys.timeLeft,'2400');
+  document.body.classList.remove('v30-exercises-locked');
+  v30StartTimer();
+  v30Toast('Temporizador iniciado','Tienes 40 minutos para contestar los ejercicios.');
+  v30RefreshUI();
+}
+function v30RequireExercisesStarted(){
+  if(v30IsCompleted())return false;
+  if(!v30GetStudent()){alert('Primero registra tus datos.');return false}
+  if(!v30ExercisesStarted()){alert('Primero activa los ejercicios. El temporizador iniciará cuando aceptes el aviso.');return false}
+  return true
+}
+function v30EmailAllowed(email){
+  const normalized=v30NormalizeEmail(email);
+  const domains=Array.isArray(V30_CONFIG.allowedEmailDomains)?V30_CONFIG.allowedEmailDomains:[];
+  return domains.length===0 || domains.some(d=>normalized.endsWith(String(d).toLowerCase()));
+}
+async function v30LoadSubmittedEmails(){
+  const normalizeList=(data)=>{
+    const list=Array.isArray(data)?data:(data.blockedEmails||data.submittedEmails||data.correos||data.intentos||[]);
+    return list.map(item=>typeof item==='string'?item:(item.email||item.correo||'')).map(v30NormalizeEmail).filter(Boolean);
+  };
+  if(V30_CONFIG.sheetApiUrl){
+    try{
+      const url=V30_CONFIG.sheetApiUrl + (V30_CONFIG.sheetApiUrl.includes('?')?'&':'?') + 'v=' + Date.now();
+      const res=await fetch(url,{cache:'no-store'});
+      if(res.ok){
+        const data=await res.json();
+        const list=normalizeList(data);
+        if(Array.isArray(list))return list;
+      }
+    }catch(e){console.warn('No se pudo consultar Google Sheets. Se usará respaldo JSON si existe.',e)}
+  }
+  if(!V30_CONFIG.submittedEmailsUrl)return [];
+  try{
+    const url=V30_CONFIG.submittedEmailsUrl + (V30_CONFIG.submittedEmailsUrl.includes('?')?'&':'?') + 'v=' + Date.now();
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok)return [];
+    const data=await res.json();
+    return normalizeList(data);
+  }catch(e){return []}
+}
+async function v30RegisterAttemptInSheet(payload){
+  if(!V30_CONFIG.sheetApiUrl)return;
+  try{
+    const sheetPayload={
+      correo:payload.correo_alumno,
+      nombre:payload.nombre,
+      grupo:payload.grupo,
+      turno:payload.turno,
+      calificacion:payload.calificacion,
+      correctas:payload.correctas,
+      incorrectas:payload.incorrectas,
+      contestadas:payload.contestadas,
+      total_preguntas:payload.total_preguntas,
+      cierre_por_tiempo:payload.cierre_por_tiempo,
+      cierre_por_cambio_pestana:payload.cierre_por_cambio_pestana,
+      envio:payload.envio
+    };
+    await fetch(V30_CONFIG.sheetApiUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(sheetPayload)
+    });
+  }catch(e){console.warn('No se pudo registrar el intento en Google Sheets.',e)}
+}
+async function v30EmailAlreadySubmitted(email){
+  if(localStorage.getItem(v30Keys.remoteOverride)==='1')return false;
+  const submitted=await v30LoadSubmittedEmails();
+  return submitted.includes(v30NormalizeEmail(email));
+}
+async function v30StartActivity(){const student={name:document.getElementById('v30Name').value.trim(),group:document.getElementById('v30Group').value.trim(),shift:document.getElementById('v30Shift').value.trim(),email:document.getElementById('v30Email').value.trim()};if(!student.name||!student.group||!student.shift||!student.email){alert('Completa todos los datos del alumno.');return}if(!/^\S+@\S+\.\S+$/.test(student.email)){alert('Escribe un correo válido.');return}if(!v30EmailAllowed(student.email)){alert('Debes registrarte con tu correo institucional CONALEP. El correo debe terminar en @tam.conalep.edu.mx');return}const startBtn=document.getElementById('v30StartBtn');if(startBtn){startBtn.disabled=true;startBtn.textContent='Verificando correo...'}const already=await v30EmailAlreadySubmitted(student.email);if(startBtn){startBtn.disabled=false;startBtn.textContent='Iniciar actividad'}if(already){alert('Este correo institucional ya aparece como registrado o enviado. Si necesitas una segunda oportunidad, solicita autorización al docente.');return}student.email=v30NormalizeEmail(student.email);student.fingerprint=v30StudentFingerprint(student);localStorage.setItem(v30Keys.student,JSON.stringify(student));if(!localStorage.getItem(v30Keys.startedAt))localStorage.setItem(v30Keys.startedAt,new Date().toISOString());document.getElementById('v30StartModal').classList.remove('show');document.body.classList.remove('v30-locked');v30RefreshUI()}
+function v30OpenUnlock(){document.getElementById('v30UnlockModal').classList.add('show');document.getElementById('v30UnlockMsg').className='v30-lock-msg'}function v30CloseUnlock(){document.getElementById('v30UnlockModal').classList.remove('show')}function v30UnlockAttempt(){const key=document.getElementById('v30UnlockKey').value.trim();const msg=document.getElementById('v30UnlockMsg');if(key!==V30_CONFIG.unlockKey){msg.textContent='Clave incorrecta. Solicita autorización al docente.';msg.className='v30-lock-msg show';return}localStorage.removeItem(v30Keys.completed);localStorage.removeItem(v30Keys.answers);localStorage.removeItem(v30Keys.startedAt);localStorage.removeItem(v30Keys.guard);localStorage.removeItem(v30Keys.timeLeft);localStorage.removeItem(v30Keys.exerciseStarted);localStorage.removeItem(v30Keys.timeExpired);localStorage.removeItem(V30_CONFIG.activityId + '_closedByTab');localStorage.setItem(v30Keys.remoteOverride,'1');v30Answers={};msg.textContent='Actividad desbloqueada. Puedes iniciar una nueva oportunidad.';msg.className='v30-lock-msg show';setTimeout(()=>location.reload(),900)}
+function v30RecordAnswer(qId,isCorrect,detail){if(v30IsCompleted())return;if(!v30GetStudent())return;v30Answers[qId]={correct:!!isCorrect,detail:detail||'',answeredAt:new Date().toISOString()};v30SaveAnswers();v30RefreshUI()}function v30Stats(){const answered=Object.keys(v30Answers).length;const correct=Object.values(v30Answers).filter(a=>a.correct).length;const wrong=answered-correct;const grade=Math.round((correct/V30_CONFIG.totalQuestions)*100);return{answered,correct,wrong,grade}}
+function v30RefreshUI(){const s=v30GetStudent();const st=v30Stats();const pct=Math.round((st.answered/V30_CONFIG.totalQuestions)*100);const studentLabel=document.getElementById('v30StudentLabel');if(studentLabel)studentLabel.innerHTML=s?`Alumno: <b>${s.name}</b> · ${s.group} · ${s.shift}`:'Alumno: <b>No registrado</b>';const progress=document.getElementById('v30Progress');if(progress)progress.style.width=pct+'%';const score=document.getElementById('v30ScoreLabel');if(score)score.textContent=`${st.correct}/${V30_CONFIG.totalQuestions} · ${st.grade}%`;const guard=document.getElementById('v30GuardLabel');if(guard){const g=v30LoadGuard();guard.innerHTML=`Alertas: <b>${(g.tabSwitches||0)+(g.copyPaste||0)+(g.rightClicks||0)}</b>`;}['Answered','Correct','Wrong','Grade'].forEach(k=>{const el=document.getElementById('v30'+k);if(el)el.textContent=st[k.toLowerCase()]});const timer=document.getElementById('v30Timer');if(timer&&!v30ExercisesStarted()&&!v30IsCompleted())timer.textContent='Sin iniciar';const status=document.getElementById('v30ExamStatus');if(status){status.textContent=v30IsCompleted()?'Actividad cerrada':(v30ExercisesStarted()?'Ejercicios activos':'Ejercicios bloqueados');status.style.color=v30ExercisesStarted()? 'var(--accent)' : 'var(--yellow)';}const panel=document.getElementById('v30StartExamPanel');if(panel&&v30ExercisesStarted())panel.style.display='none';if(!v30ExercisesStarted()&&!v30IsCompleted())document.body.classList.add('v30-exercises-locked');else document.body.classList.remove('v30-exercises-locked');const btn=document.getElementById('v30SubmitBtn');if(btn){btn.disabled=(!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions)||v30IsCompleted()||!v30ExercisesStarted();btn.textContent=v30IsCompleted()?'Actividad enviada y bloqueada':(v30TimeExpired()?'Enviar respuestas contestadas':'Enviar calificación al docente')}}
+async function v30SubmitResults(forcePartial=false){const s=v30GetStudent();if(!s){alert('Primero registra tus datos.');return}const st=v30Stats();if(!forcePartial&&st.answered<V30_CONFIG.totalQuestions){alert(`Aún faltan preguntas por contestar: ${V30_CONFIG.totalQuestions-st.answered}`);return}const status=document.getElementById('v30SubmitStatus');const startedAt=localStorage.getItem(v30Keys.startedAt)||'';const payload={_subject:`Calificación POO Implementación de Herencia C++ - ${s.name} - ${st.grade}`,docente:V30_CONFIG.teacherEmail,actividad:'R.A. 2.1 B - Implementación de la herencia en objetos con C++',nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,correo_institucional_validado:v30EmailAllowed(s.email)?'SI - @tam.conalep.edu.mx':'NO',calificacion:st.grade,correctas:st.correct,incorrectas:st.wrong,contestadas:st.answered,total_preguntas:V30_CONFIG.totalQuestions,cierre_por_tiempo:forcePartial||v30TimeExpired()?'SI':'NO',cierre_por_cambio_pestana:localStorage.getItem(V30_CONFIG.activityId + '_closedByTab')==='1'?'SI':'NO',inicio:startedAt,envio:new Date().toISOString(),tiempo_minutos:startedAt?Math.round((Date.now()-new Date(startedAt).getTime())/60000):'',navegador:navigator.userAgent,huella_alumno:s.fingerprint,alertas_json:JSON.stringify(v30LoadGuard(),null,2),respuestas_json:JSON.stringify(v30Answers,null,2)};try{status.textContent='Enviando resultado por FormSubmit...';const formSubmitPayload={...payload,_template:'table',_captcha:'false'};const res=await fetch(V30_CONFIG.formsubmitEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(formSubmitPayload)});let result=null;try{result=await res.json()}catch(e){}if(!res.ok||(result&&String(result.success).toLowerCase()==='false')){throw new Error((result&&result.message)?result.message:'No se pudo enviar a FormSubmit.')}await v30RegisterAttemptInSheet(payload);localStorage.setItem(v30Keys.completed,'1');document.body.classList.add('v30-completed');status.innerHTML='<span style="color:var(--green)">Resultado enviado correctamente por FormSubmit. La actividad quedó bloqueada.</span>';v30RefreshUI()}catch(err){console.error(err);status.innerHTML='<span style="color:var(--red)">No se pudo enviar por FormSubmit. Verifica que la página esté abierta desde GitHub Pages/servidor web y que el correo docente ya haya confirmado FormSubmit. Puedes descargar el respaldo.</span>'}}
+function v30DownloadBackup(){const s=v30GetStudent()||{name:'sin_registro',group:'',shift:'',email:''};const st=v30Stats();const data={actividad:V30_CONFIG.activityId,alumno:s,resultado:st,respuestas:v30Answers,generado:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`resultado_POO_Herencia_B_${(s.name||'alumno').replace(/\s+/g,'_')}.json`;a.click();URL.revokeObjectURL(a.href)}
+function v30FormatTime(sec){sec=Math.max(0,sec|0);const m=String(Math.floor(sec/60)).padStart(2,'0');const s=String(sec%60).padStart(2,'0');return `${m}:${s}`}
+function v30StartTimer(){if(v30TimerHandle||v30IsCompleted())return;let left=Number(localStorage.getItem(v30Keys.timeLeft)||2400);const el=document.getElementById('v30Timer');if(el)el.textContent=v30FormatTime(left);v30TimerHandle=setInterval(()=>{if(v30IsCompleted()||!v30GetStudent()){clearInterval(v30TimerHandle);v30TimerHandle=null;return}left--;localStorage.setItem(v30Keys.timeLeft,String(left));if(el)el.textContent=v30FormatTime(left);if(left===300)v30Toast('Quedan 5 minutos','Revisa tus respuestas y prepara el envío.');if(left<=0){clearInterval(v30TimerHandle);v30TimerHandle=null;localStorage.setItem(v30Keys.timeExpired,'1');v30Toast('Tiempo terminado','Se enviará lo contestado hasta este momento y la actividad quedará cerrada.');v30SubmitResults(true);}},1000)}
+function v30InstallGuards(){document.addEventListener('visibilitychange',()=>{if(document.hidden){if(!v30GetStudent()||v30IsCompleted()||!v30ExercisesStarted())return;v30GuardEvent('tab','Cambio de pestaña o ventana durante ejercicios');}});document.addEventListener('contextmenu',e=>{if(!v30GetStudent()||v30IsCompleted())return;e.preventDefault();v30GuardEvent('rightClick','Intento de clic derecho');v30Toast('Clic derecho bloqueado','Usa el material para razonar y responder con tus palabras.');});document.addEventListener('copy',e=>{if(!v30GetStudent()||v30IsCompleted())return;e.preventDefault();v30GuardEvent('copyPaste','Intento de copiar');v30Toast('Copiar bloqueado','Lee el ejemplo y escribe con tus propias palabras.');});document.addEventListener('paste',e=>{if(!v30GetStudent()||v30IsCompleted())return;const el=e.target;if(el&&el.classList&&el.classList.contains('wq-input')){e.preventDefault();v30GuardEvent('copyPaste','Intento de pegar en respuesta');v30Toast('Pegar bloqueado','Escribe tu respuesta directamente para practicar.');}});document.addEventListener('keydown',e=>{if(!v30GetStudent()||v30IsCompleted())return;const k=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&['c','v','x','a','p','s','u'].includes(k)){e.preventDefault();v30GuardEvent('copyPaste','Atajo bloqueado: Ctrl+'+k.toUpperCase());v30Toast('Atajo bloqueado','Se registró un intento de usar atajos no permitidos.');}})}
+function v30Bootstrap(){
+  v30LoadAnswers();
+  const s=v30GetStudent();
+  const startModal=document.getElementById('v30StartModal');
+  const lockMsg=document.getElementById('v30LockedMessage');
+  const form=document.getElementById('v30StudentForm');
+  const startBtn=document.getElementById('v30StartBtn');
+
+  // Estado limpio por defecto: esto asegura que en incógnito o primera visita SIEMPRE aparezca el registro.
+  if(startModal) startModal.classList.remove('show');
+  if(lockMsg) lockMsg.classList.remove('show');
+  if(form) form.style.display='grid';
+  if(startBtn) startBtn.style.display='inline-block';
+
+  if(v30IsCompleted()){
+    document.body.classList.remove('v30-locked');
+    document.body.classList.add('v30-completed');
+    if(startModal) startModal.classList.add('show');
+    if(lockMsg) lockMsg.classList.add('show');
+    if(form) form.style.display='none';
+    if(startBtn) startBtn.style.display='none';
+  }else if(!s){
+    document.body.classList.add('v30-locked');
+    document.body.classList.remove('v30-completed');
+    if(startModal) startModal.classList.add('show');
+  }else{
+    document.body.classList.remove('v30-locked');
+    document.body.classList.remove('v30-completed');
+  }
+  v30RefreshUI();
+}
+function checkOpt(el,qId,result,msg){if(!v30RequireExercisesStarted())return;const wrap=document.getElementById(qId);const opts=wrap.querySelectorAll('.wopt');const fb=document.getElementById('fb_'+qId);const isCorrect=result==='correct';v30RecordAnswer(qId,isCorrect,el.textContent.trim());opts.forEach(o=>{o.onclick=null});if(isCorrect){el.classList.add('correct');fb.className='wfb show ok';fb.textContent='✓ '+msg}else{el.classList.add('wrong');fb.className='wfb show bad';fb.textContent='✗ '+msg}}
+function checkInput(qId,correct,hint){if(!v30RequireExercisesStarted())return;const input=document.getElementById('in_'+qId);const fb=document.getElementById('fb_'+qId);const val=input.value.trim().toLowerCase();const norm=s=>s.toLowerCase().replace(/\s+/g,' ').trim().replace(/;$/,'');const ok=correct.some(c=>norm(val)===norm(c));if(!val){fb.className='wfb show hint';fb.textContent='Escribe algo primero.';return}if(ok){input.className='wq-input ok';input.disabled=true;fb.className='wfb show ok';fb.textContent='✓ Correcto.';v30RecordAnswer(qId,true,input.value.trim())}else{input.className='wq-input bad';fb.className='wfb show bad';fb.textContent='✗ No es correcto. Pista: '+hint;v30RecordAnswer(qId,false,input.value.trim());setTimeout(()=>{input.className='wq-input';input.select()},1200)}}
+let cppStep=0;function simPrint(text,cls=''){const out=document.getElementById('simcpp-out');const line=document.createElement('div');if(cls)line.className=cls;line.textContent=text;out.appendChild(line);out.scrollTop=out.scrollHeight}function initCppSim(){cppStep=0;document.getElementById('simcpp-out').innerHTML='<span class="cli-line-info">C++ Learning Simulator — escribe las líneas solicitadas</span>\n';}
+function handleCppSim(e){if(e.key!=='Enter')return;if(!v30RequireExercisesStarted())return;const input=document.getElementById('simcpp-in');const raw=input.value.trim();input.value='';if(!raw)return;simPrint('cpp-lab> '+raw);const cmd=raw.toLowerCase().replace(/\s+/g,' ').replace(/;$/,'');if(cmd==='reset'){initCppSim();return}const expected=[{id:'sim_1',tests:['class persona','class persona {','class Persona'],msg:'Clase base Persona creada.'},{id:'sim_2',tests:['class alumno : public persona','class alumno: public persona','class Alumno : public Persona'],msg:'Clase derivada Alumno creada correctamente.'},{id:'sim_3',tests:['alumno a','Alumno a'],msg:'Objeto a de tipo Alumno declarado.'},{id:'sim_4',tests:['a.saludar()','a.saludar();'],msg:'Correcto. El objeto Alumno puede usar saludar() porque lo heredó de Persona.'}];const current=expected[cppStep];if(!current){simPrint('Simulación completada. Ya puedes enviar cuando termines todo.','cli-line-ok');return}const ok=current.tests.some(t=>cmd===t.toLowerCase().replace(/\s+/g,' ').replace(/;$/,''));if(ok){simPrint('✓ '+current.msg,'cli-line-ok');v30RecordAnswer(current.id,true,raw);cppStep++;if(cppStep===expected.length)simPrint('✅ Herencia implementada: Persona → Alumno → objeto → método heredado.','cli-line-info')}else{simPrint('✗ Aún no. Revisa el orden o la sintaxis solicitada.','cli-line-err');v30RecordAnswer(current.id,false,raw)}}
+document.addEventListener('DOMContentLoaded',()=>{v30Bootstrap();v30InstallGuards();if(v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30StartTimer();initCppSim()});
+
+// ═══════════════════════════════════════
+// DESCARGA DE APUNTES EN PDF · VERSIÓN COMPACTA Y BAJO CONSUMO DE TINTA
+// ═══════════════════════════════════════
+async function downloadApuntesPDF(){
+  const status = document.getElementById('pdfExportStatus');
+  if(status){ status.textContent = 'Preparando apuntes compactos para impresión...'; status.classList.add('show'); }
+
+  if(typeof html2pdf === 'undefined'){
+    if(status) status.textContent = 'No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.';
+    alert('No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.');
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'pdf-export-area pdf-lite';
+  wrapper.innerHTML = `
+    <section class="pdf-cover">
+      <h1>Apuntes 2.1 - B) Implementación de la herencia en objetos</h1>
+      <div class="pdf-meta-grid">
+        <p class="pdf-meta"><b>Materia:</b> Programación Orientada a Objetos</p>
+        <p class="pdf-meta"><b>Docente:</b> Ing. Santiago Martínez González</p>
+        <p class="pdf-meta full"><b>Unidad 2:</b> Desarrollo de aplicaciones orientadas a objetos</p>
+      </div>
+      <p class="pdf-purpose"><b>Propósito:</b> implementar herencia simple y múltiple en objetos usando programas completos de C++, iniciando desde <code>#include &lt;iostream&gt;</code>.</p>
+    </section>
+    <div class="pdf-note important"><b>Idea principal:</b> implementar herencia consiste en crear clases base, clases derivadas y objetos que puedan usar métodos heredados.</div>
+    <section class="pdf-topic"><h2>1. Estructura mínima de C++</h2><p>Antes de usar clases y herencia, todo programa completo debe iniciar con la librería, el espacio de nombres y la función principal.</p><div class="codebox"><div class="code-title">Plantilla base</div><pre>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Programa desde cero" &lt;&lt; endl;
+    return 0;
+}</pre></div></section><section class="pdf-topic"><h2>2. Herencia simple</h2><p>La herencia simple ocurre cuando una clase hija hereda de una sola clase padre. En C++ se escribe con <code>: public</code>.</p><div class="codebox"><div class="code-title">Persona → Alumno</div><pre>#include &lt;iostream&gt;
+using namespace std;
+
+class Persona {
+public:
+    string nombre;
+    void saludar() {
+        cout &lt;&lt; "Hola, soy " &lt;&lt; nombre;
+    }
+};
+
+class Alumno : public Persona {
+public:
+    string matricula;
+};</pre></div></section>
+    <section class="pdf-topic"><h2>2. Objetos heredados</h2><p>Un objeto de la clase hija puede usar lo heredado y lo propio.</p><div class="codebox"><div class="code-title">Instanciación</div><pre>Alumno a;
+a.nombre = "Luis";
+a.matricula = "A001";
+a.saludar();</pre></div></section>
+    <section class="pdf-topic"><h2>3. Constructores</h2><p>Si la clase padre tiene constructor, la clase hija debe llamarlo usando lista de inicialización.</p><div class="codebox"><div class="code-title">Constructor de clase hija</div><pre>Alumno(string n, string m) : Persona(n) {
+    matricula = m;
+}</pre></div></section>
+    <section class="pdf-topic"><h2>4. Herencia múltiple</h2><p>La herencia múltiple permite que una clase herede de dos o más clases base.</p><div class="codebox"><div class="code-title">Impresora + Scanner → Multifuncional</div><pre>class Multifuncional : public Impresora, public Scanner {
+};
+
+Multifuncional equipo;
+equipo.imprimir();
+equipo.escanear();</pre></div></section>
+    <section class="pdf-topic compact"><h2>5. Resumen rápido</h2><table><tr><th>Concepto</th><th>Uso</th></tr><tr><td>Clase base</td><td>Contiene lo común.</td></tr><tr><td>Clase derivada</td><td>Hereda y agrega características propias.</td></tr><tr><td><code>: public</code></td><td>Implementa herencia pública.</td></tr><tr><td>Constructor heredado</td><td>Se inicializa llamando al constructor padre.</td></tr><tr><td>Herencia múltiple</td><td>Combina capacidades de varias clases base.</td></tr></table></section>
+  `;
+
+  document.body.appendChild(wrapper);
+
+  const options = {
+    margin: 0.3,
+    filename: 'Apuntes 2.1 - B - desde cero).pdf',
+    image: { type: 'jpeg', quality: 0.92 },
+    html2canvas: { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    pagebreak: { mode: ['css','legacy'], avoid: ['.pdf-topic', '.codebox', 'table', '.pdf-note', '.pdf-card'] }
+  };
+
+  try{
+    await html2pdf().set(options).from(wrapper).save();
+    if(status) status.textContent = 'PDF generado correctamente con secciones acomodadas.';
+  }catch(error){
+    if(status) status.textContent = 'No se pudo generar el PDF. Intenta de nuevo.';
+    alert('No se pudo generar el PDF. Intenta de nuevo.');
+  }finally{
+    wrapper.remove();
+    setTimeout(()=>{ if(status) status.classList.remove('show'); }, 2500);
+  }
+}
+
+</script>
+</body>
+</html>
