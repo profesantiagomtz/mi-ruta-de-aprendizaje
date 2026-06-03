@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-2526 - MRED - U2 - R.A. 2.1 - D | Manejo de Redes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#30363d;--accent:#00d4aa;--accent2:#58a6ff;--accent3:#7c6fff;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#ff6b35}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+.v30-topbar{position:sticky;top:0;z-index:999;background:rgba(13,17,23,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.v30-left,.v30-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.v30-badge,.v30-guard-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.08);border-radius:999px;padding:4px 10px}
+.v30-student{font-size:12px;color:var(--muted)}.v30-student b{color:var(--text)}
+.v30-progress-wrap{width:220px;height:8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);overflow:hidden}
+.v30-progress{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s}
+.v30-score,.v30-timer{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}
+.v30-timer{color:var(--yellow)}
+.v30-btn{background:var(--accent);color:#06110f;border:none;border-radius:7px;padding:8px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.v30-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.v30-btn.secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.v30-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.v30-modal{position:fixed;inset:0;z-index:2000;background:rgba(1,4,9,.78);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.v30-modal.show{display:flex}.v30-card{width:min(590px,100%);background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);padding:28px}
+.v30-card h2{color:#fff;font-size:24px;margin-bottom:8px}.v30-card p{color:var(--muted);font-size:14px}.v30-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.v30-field.full{grid-column:1/-1}
+.v30-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.v30-field input,.v30-field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}
+.v30-field input:focus,.v30-field select:focus{border-color:var(--accent)}.v30-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.v30-lock-msg{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:#fca5a5;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;display:none}.v30-lock-msg.show{display:block}
+body.v30-locked main,body.v30-locked .toc,body.v30-locked header{filter:blur(4px);pointer-events:none;user-select:none}
+body.v30-exercises-locked .warm-block,body.v30-exercises-locked #v30FinalPanel{filter:blur(3px);opacity:.55;pointer-events:none;user-select:none}
+body.v30-exercises-locked .v30-start-exam-panel{filter:none;opacity:1;pointer-events:auto;user-select:auto}
+body.v30-completed .wopt,body.v30-completed .wq-input,body.v30-completed .wbtn,body.v30-completed .cli-input{pointer-events:none!important;opacity:.65}
+header{background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%);border-bottom:3px solid var(--accent);padding:44px 64px 36px;position:relative;overflow:hidden}
+header:before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;border:70px solid rgba(0,212,170,.05)}
+.htag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;display:block}
+header h1{font-size:32px;font-weight:700;color:#fff;line-height:1.25;max-width:860px}header h1 span{color:var(--accent)}
+.header-sub{color:var(--muted);font-size:14px;margin-top:8px;font-weight:300}.hpills{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}.hpill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}.hpill b{color:var(--text)}
+main{padding:40px 64px 60px;max-width:1060px}
+.toc{margin:28px 64px 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.toc-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.toc-section{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:1px}
+.toc-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 20px;list-style:none;counter-reset:toc-counter}
+.toc-cols li{counter-increment:toc-counter;font-size:13px;padding:3px 0;color:var(--muted)}
+.toc-cols li:before{content:counter(toc-counter)'. ';color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px}
+.toc-cols a{color:var(--muted);text-decoration:none}.toc-cols a:hover{color:var(--accent)}
+.section-title{display:flex;align-items:baseline;gap:14px;margin:44px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:4px;padding:2px 8px;flex-shrink:0}
+.section-title h2{font-size:20px;font-weight:700;color:#fff}
+p{color:var(--muted);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;margin:16px 0 22px;font-size:13px}
+th{background:rgba(0,212,170,.08);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:2px solid rgba(0,212,170,.2)}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--muted)}
+tr:last-child td{border-bottom:none}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.15);border-radius:4px;padding:1px 6px;color:var(--accent)}
+.cb{background:#010409;border:1px solid var(--border);border-radius:10px;margin:16px 0 22px;overflow:hidden}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.dots{display:flex;gap:5px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#f85149}.dot.y{background:#d29922}.dot.g{background:#3fb950}
+pre{padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;color:#c9d1d9;white-space:pre-wrap;word-break:break-all}
+.pr{color:var(--accent)}.cmd{color:#79c0ff}.val{color:#ffa657}.cmt{color:var(--muted)}.ok{color:var(--green)}.err{color:var(--red)}.kw{color:#ff7b72}
+.ib{border-radius:8px;padding:14px 16px;margin:14px 0 22px;display:flex;gap:12px;flex-direction:column}
+.ib.info{background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-left:4px solid var(--accent2)}
+.ib.warn{background:rgba(210,153,34,.06);border:1px solid rgba(210,153,34,.2);border-left:4px solid var(--yellow)}
+.ib.ok{background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);border-left:4px solid var(--green)}
+.ibl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.ib.info .ibl{color:var(--accent2)}.ib.warn .ibl{color:var(--yellow)}.ib.ok .ibl{color:var(--green)}
+.ib p{margin:0;font-size:13px}
+.pera-box{background:linear-gradient(135deg,rgba(0,212,170,.04),rgba(88,166,255,.04));border:1px solid rgba(0,212,170,.15);border-left:4px solid var(--accent);border-radius:8px;padding:16px 18px;margin:14px 0 22px}
+.pera-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.pera-box p{margin:0;font-size:13px;color:var(--text)}
+.line-doc{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:12px 0 22px;overflow:hidden}.line-doc-title{background:rgba(0,212,170,.08);border-bottom:1px solid var(--border);padding:10px 14px;color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px}.line-doc-row{display:grid;grid-template-columns:minmax(260px,420px) 1fr;border-bottom:1px solid rgba(255,255,255,.05)}.line-doc-row:last-child{border-bottom:none}.line-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c9d1d9;background:#010409;padding:9px 12px;white-space:pre-wrap}.line-explain{font-size:13px;color:var(--muted);padding:9px 12px}
+.topo-vis{background:#010409;border:1px solid var(--border);border-radius:10px;padding:28px 20px;margin:16px 0;font-family:'IBM Plex Mono',monospace}.topo-row{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}.td{text-align:center;flex-shrink:0}.di{width:80px;height:58px;background:var(--surface2);border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 8px}.di.a{border-color:rgba(0,212,170,.5);background:rgba(0,212,170,.05)}.dn{font-size:12px;color:var(--text);font-weight:600}.dip{font-size:10px;color:var(--muted);margin-top:2px}.tc{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 8px}.cl{width:68px;height:3px;background:linear-gradient(90deg,var(--accent),rgba(0,212,170,.3));border-radius:2px}.clbl{font-size:9px;color:var(--muted);letter-spacing:1px}
+.part-divider{margin:64px -64px 0;padding:28px 64px;background:linear-gradient(90deg,rgba(0,212,170,.06) 0%,transparent 100%);border-top:2px solid var(--accent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px}.part-badge{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.35);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:4px;white-space:nowrap;flex-shrink:0}.part-divider h2{font-size:22px;color:#fff}.part-divider p{font-size:13px;color:var(--muted);margin-top:2px}
+.warm-block{background:linear-gradient(135deg,#0d1a2e,#0d1117);border:1px solid rgba(91,124,250,.25);border-left:4px solid #5b7cfa;border-radius:8px;margin:28px 0 0;overflow:hidden}.warm-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(91,124,250,.15);background:rgba(91,124,250,.06)}.warm-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8ea2ff;background:rgba(91,124,250,.12);border:1px solid rgba(91,124,250,.3);border-radius:3px;padding:2px 8px}.warm-header span{font-size:13px;color:var(--muted)}.warm-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}.wq{display:flex;flex-direction:column;gap:6px}.wq-text{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}.wq-opts{display:flex;flex-wrap:wrap;gap:8px}.wopt{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:7px 14px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Mono',monospace}.wopt:hover{border-color:rgba(91,124,250,.5);color:var(--text)}.wopt.correct{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);pointer-events:none}.wopt.wrong{border-color:var(--red);background:rgba(249,81,73,.1);color:var(--red);pointer-events:none}.wfb{font-size:12px;padding:6px 10px;border-radius:4px;display:none;line-height:1.5}.wfb.show{display:block}.wfb.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:#86efac}.wfb.bad{background:rgba(249,81,73,.08);border:1px solid rgba(249,81,73,.2);color:#fca5a5}.wfb.hint{background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.2);color:#a5b4fc}.wq-input-row{display:flex;gap:8px;align-items:center}.wq-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none}.wq-input.ok{border-color:var(--green);background:rgba(63,185,80,.05)}.wq-input.bad{border-color:var(--red);background:rgba(249,81,73,.05)}.wbtn{background:#5b7cfa;color:#fff;border:none;border-radius:5px;padding:8px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer}
+.v30-start-exam-panel,.v30-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:34px 0}.v30-start-exam-panel h3,.v30-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.v30-result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}.v30-result-card span{display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}.v30-result-card b{font-size:22px;color:#fff}.toast{position:fixed;right:18px;bottom:18px;z-index:3000;max-width:360px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--yellow);border-radius:12px;padding:14px 16px;box-shadow:0 18px 45px rgba(0,0,0,.42);display:none}.toast.show{display:block}.toast h4{color:#fff;margin-bottom:4px}.toast p{font-size:13px;margin:0;color:var(--muted)}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px 64px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+@media(max-width:768px){header,main,footer{padding-left:20px;padding-right:20px}.toc{margin-left:20px;margin-right:20px}.toc-cols{grid-template-columns:1fr}.v30-topbar{padding:10px 20px;align-items:flex-start;flex-direction:column}.v30-progress-wrap{width:100%}.v30-result-grid{grid-template-columns:1fr 1fr}.v30-form{grid-template-columns:1fr}.line-doc-row{grid-template-columns:1fr}.part-divider{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="v30-topbar">
+  <div class="v30-left"><span class="v30-badge">Actividad 4.0</span><span class="v30-student" id="v30StudentLabel">Alumno: <b>No registrado</b></span></div>
+  <div class="v30-right"><div class="v30-progress-wrap" title="Progreso de ejercicios"><div class="v30-progress" id="v30Progress"></div></div><span class="v30-timer" id="v30Timer">Sin iniciar</span><span class="v30-guard-pill" id="v30GuardLabel">Alertas: <b>0</b></span><span class="v30-score" id="v30ScoreLabel">0/6 · 0%</span><button class="v30-btn secondary" onclick="v30OpenUnlock()">Desbloquear</button></div>
+</div>
+
+<!-- ══ MODAL REGISTRO ══ -->
+<div class="v30-modal" id="v30StartModal">
+  <div class="v30-card">
+    <h2>Registro del alumno</h2>
+    <p>Antes de iniciar, captura tus datos. Usa tu <b>correo institucional</b>. Esta actividad permite <b>un intento</b>. Al finalizar, tu calificación será enviada al docente.</p>
+    <div class="v30-lock-msg" id="v30LockedMessage">Esta actividad ya fue enviada desde este navegador. Si necesitas una segunda oportunidad, solicita autorización al docente.</div>
+    <div class="v30-form" id="v30StudentForm">
+      <div class="v30-field full"><label>Nombre completo</label><input id="v30Name" autocomplete="name" placeholder="Ej. Juan Pérez López"></div>
+      <div class="v30-field"><label>Grupo</label><input id="v30Group" placeholder="Ej. 611"></div>
+      <div class="v30-field"><label>Turno</label><select id="v30Shift"><option value="">Selecciona...</option><option>Matutino</option><option>Vespertino</option></select></div>
+      <div class="v30-field full"><label>Correo institucional</label><input id="v30Email" type="email" autocomplete="email" placeholder="usuario@tam.conalep.edu.mx"></div>
+    </div>
+    <div class="v30-actions"><button class="v30-btn secondary" onclick="v30OpenUnlock()">Tengo permiso para segunda oportunidad</button><button class="v30-btn" id="v30StartBtn" onclick="v30StartActivity()">Iniciar material</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL DESBLOQUEO ══ -->
+<div class="v30-modal" id="v30UnlockModal">
+  <div class="v30-card"><h2>Desbloqueo docente</h2><p>Solo el docente puede autorizar una segunda oportunidad. Ingresa la clave proporcionada.</p><div class="v30-form"><div class="v30-field full"><label>Clave de desbloqueo</label><input id="v30UnlockKey" type="password" placeholder="Clave del docente"></div></div><div class="v30-lock-msg" id="v30UnlockMsg"></div><div class="v30-actions"><button class="v30-btn secondary" onclick="v30CloseUnlock()">Cancelar</button><button class="v30-btn" onclick="v30UnlockAttempt()">Desbloquear intento</button></div></div>
+</div>
+
+<div class="toast" id="v30Toast"><h4 id="v30ToastTitle"></h4><p id="v30ToastMsg"></p></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <span class="htag">2-2526 · Manejo de Redes · Unidad 2 · R.A. 2.1 · D</span>
+  <h1>Establecimiento de <span>líneas de base de red</span></h1>
+  <p class="header-sub">Material didáctico desarrollado por: Ing. Santiago Martínez González</p>
+  <div class="hpills">
+    <div class="hpill">Materia: <b>Manejo de Redes</b></div>
+    <div class="hpill">Herramienta: <b>Cisco Packet Tracer</b></div>
+    <div class="hpill">Contenido: <b>D</b></div>
+    <div class="hpill">R.A.: <b>2.1</b></div>
+    <div class="hpill">Ciclo: <b>2 · 2526</b></div>
+  </div>
+</header>
+
+<!-- ══ TOC ══ -->
+<div class="toc">
+  <div class="toc-title">Contenido del material</div>
+  <div class="toc-section">── D) Establecimiento de líneas de base de red ──</div>
+  <ol class="toc-cols">
+    <li><a href="#d1">¿Qué es una línea de base?</a></li>
+    <li><a href="#d2">Captura de host</a></li>
+    <li><a href="#d3">Comandos clave del host</a></li>
+    <li><a href="#d4">Captura de IOS</a></li>
+    <li><a href="#d5">Comandos clave del IOS</a></li>
+    <li><a href="#ejercicios">Ejercicios de repaso</a></li>
+  </ol>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+<div class="v30-actions" style="justify-content:flex-start;margin:22px 0 0">
+  <button class="v30-btn secondary" onclick="downloadNotesPDF()">📘 Descargar apuntes PDF</button>
+</div>
+
+<!-- D-01 -->
+<div class="section-title" id="d1"><span class="section-num">D-01</span><h2>¿Qué es una línea de base de red?</h2></div>
+<p>Una <b>línea de base</b> (baseline) es una fotografía del estado de la red cuando todo funciona correctamente. Es un punto de referencia: si en el futuro algo falla, se compara el estado actual con la línea de base para identificar qué cambió.</p>
+<div class="pera-box"><div class="pera-title">Explicación clara</div><p>Imagina que tu cuerpo en condiciones normales tiene 36.5 °C de temperatura. Cuando te enfermas, el médico mide 38.5 °C y ya sabe que algo está mal porque tiene una referencia. En redes, la línea de base funciona igual: guardas el estado "sano" de tu red para poder comparar después cuando algo falle.</p></div>
+<table>
+<tr><th>¿Sin línea de base?</th><th>¿Con línea de base?</th></tr>
+<tr><td>Difícil saber si el rendimiento actual es normal o anormal.</td><td>Puedes comparar y detectar cambios con datos reales.</td></tr>
+<tr><td>La resolución de problemas toma más tiempo.</td><td>El diagnóstico es más rápido y preciso.</td></tr>
+<tr><td>No sabes qué configuraciones estaban activas antes del fallo.</td><td>Tienes registros confiables de la configuración previa.</td></tr>
+</table>
+<div class="ib info"><div class="ibl">Dato importante</div><p>Una línea de base documenta dos cosas principales: el estado del <b>host</b> (la computadora del usuario) y el estado del <b>IOS</b> (el router o switch). Ambas capturas juntas forman el registro completo de la red.</p></div>
+
+<!-- D-02 -->
+<div class="section-title" id="d2"><span class="section-num">D-02</span><h2>Captura de host</h2></div>
+<p>La <b>captura de host</b> consiste en documentar la configuración de red de una computadora: su dirección IP, máscara de subred, gateway predeterminado, servidores DNS y el estado de las interfaces. Esta información se obtiene con comandos ejecutados desde la PC.</p>
+<div class="pera-box"><div class="pera-title">¿Por qué documentar el host?</div><p>Si un alumno cambia accidentalmente la IP de su PC o el gateway en clase, sin una línea de base no sabes cómo era la configuración original. Con la captura guardada, restauras los valores correctos en segundos.</p></div>
+<div class="cb"><div class="ch"><span>Windows – Captura básica del host</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">C:\&gt;</span> <span class="cmd">ipconfig</span> <span class="val">/all</span>
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : PC-LAB-01
+   Primary DNS Suffix. . . . . . . . :
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+
+Ethernet adapter Ethernet:
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Realtek PCIe GbE Family Controller
+   Physical Address. . . . . . . . . : 00-1A-2B-3C-4D-5E
+   DHCP Enabled. . . . . . . . . . . : No
+   Autoconfiguration Enabled . . . . : Yes
+   IPv4 Address. . . . . . . . . . . : <span class="val">192.168.1.10</span>
+   Subnet Mask . . . . . . . . . . . : <span class="val">255.255.255.0</span>
+   Default Gateway . . . . . . . . . : <span class="val">192.168.1.1</span>
+   DNS Servers . . . . . . . . . . . : <span class="val">8.8.8.8</span></pre></div>
+<table>
+<tr><th>Dato capturado</th><th>¿Qué documenta?</th></tr>
+<tr><td>IPv4 Address</td><td>La dirección IP asignada al equipo.</td></tr>
+<tr><td>Subnet Mask</td><td>La máscara que define el tamaño de la red local.</td></tr>
+<tr><td>Default Gateway</td><td>La dirección del router, la salida hacia otras redes.</td></tr>
+<tr><td>DNS Servers</td><td>Los servidores que resuelven nombres de dominio a IPs.</td></tr>
+<tr><td>Physical Address (MAC)</td><td>La dirección física única de la tarjeta de red.</td></tr>
+</table>
+
+<!-- D-03 -->
+<div class="section-title" id="d3"><span class="section-num">D-03</span><h2>Comandos clave para la captura del host</h2></div>
+<p>Además de <code>ipconfig /all</code>, existen otros comandos de Windows que complementan la documentación del estado del host y son esenciales para una captura completa.</p>
+<div class="line-doc"><div class="line-doc-title">Comandos de captura en Windows</div>
+<div class="line-doc-row"><div class="line-code">ipconfig /all</div><div class="line-explain">Muestra toda la configuración IP: dirección, máscara, gateway, DNS, MAC, DHCP activo o no. Es el comando principal para la captura de host.</div></div>
+<div class="line-doc-row"><div class="line-code">ping 127.0.0.1</div><div class="line-explain">Verifica que la pila TCP/IP del equipo esté funcionando correctamente (prueba de loopback). Si falla, el problema es local.</div></div>
+<div class="line-doc-row"><div class="line-code">ping 192.168.1.1</div><div class="line-explain">Verifica conectividad con el gateway (router). Si falla, el equipo no puede salir de la red local.</div></div>
+<div class="line-doc-row"><div class="line-code">arp -a</div><div class="line-explain">Muestra la tabla ARP: qué IPs conocidas tiene el equipo y a qué MACs corresponden. Útil para detectar conflictos de IP.</div></div>
+<div class="line-doc-row"><div class="line-code">netstat -n</div><div class="line-explain">Muestra las conexiones activas del equipo. Sirve para documentar qué servicios o sesiones estaban abiertas en el momento de la captura.</div></div>
+</div>
+<div class="cb"><div class="ch"><span>Tabla ARP del host</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">C:\&gt;</span> <span class="cmd">arp</span> <span class="val">-a</span>
+
+Interface: 192.168.1.10 --- 0x4
+  Internet Address      Physical Address      Type
+  <span class="val">192.168.1.1</span>           00-aa-bb-cc-dd-ee     dynamic
+  <span class="val">192.168.1.20</span>          00-11-22-33-44-55     dynamic
+  192.168.1.255         ff-ff-ff-ff-ff-ff     static</pre></div>
+<div class="ib warn"><div class="ibl">Consejo de laboratorio</div><p>Cuando documentes una línea de base en Packet Tracer, captura pantalla de cada comando ejecutado. Guarda las imágenes con nombres descriptivos como <code>host_ipconfig_all.png</code>, <code>host_arp.png</code>, etc. Eso facilita comparar después si algo cambia.</p></div>
+
+<!-- D-04 -->
+<div class="section-title" id="d4"><span class="section-num">D-04</span><h2>Captura de IOS</h2></div>
+<p>La <b>captura de IOS</b> documenta el estado del router o switch: su configuración activa, las interfaces, las rutas y el estado general del dispositivo. Se realiza desde la consola del dispositivo usando comandos de IOS.</p>
+<div class="pera-box"><div class="pera-title">¿Por qué documentar el IOS?</div><p>Si alguien ejecuta el comando <code>erase startup-config</code> o el router sufre un reinicio inesperado, perdemos toda la configuración. Con la captura de IOS guardada (en un archivo de texto o en un servidor TFTP), podemos restaurarla fácilmente.</p></div>
+<div class="cb"><div class="ch"><span>Router – Configuración activa</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">Router#</span> <span class="cmd">show running-config</span>
+
+Building configuration...
+
+Current configuration : 842 bytes
+!
+version 15.1
+hostname <span class="val">R1-LAB</span>
+!
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+!
+interface GigabitEthernet0/0
+ ip address <span class="val">192.168.1.1 255.255.255.0</span>
+ no shutdown
+!
+interface Serial0/0/0
+ ip address <span class="val">10.0.0.1 255.255.255.252</span>
+ no shutdown
+!
+ip route 0.0.0.0 0.0.0.0 10.0.0.2
+!
+end</pre></div>
+<div class="ib info"><div class="ibl">Running-config vs Startup-config</div><p><b>running-config</b> es la configuración que está en uso ahora mismo (en RAM). <b>startup-config</b> es la configuración guardada (en NVRAM) que se carga al encender el router. Para que ambas sean iguales hay que ejecutar <code>copy running-config startup-config</code>.</p></div>
+
+<!-- D-05 -->
+<div class="section-title" id="d5"><span class="section-num">D-05</span><h2>Comandos clave para la captura de IOS</h2></div>
+<p>En IOS Cisco existen varios comandos <code>show</code> que permiten documentar el estado completo del dispositivo. Juntos forman la captura de IOS de una línea de base profesional.</p>
+<div class="line-doc"><div class="line-doc-title">Comandos show para la captura de IOS</div>
+<div class="line-doc-row"><div class="line-code">show running-config</div><div class="line-explain">Muestra toda la configuración activa del dispositivo. Es el comando más importante para documentar el estado del router o switch.</div></div>
+<div class="line-doc-row"><div class="line-code">show startup-config</div><div class="line-explain">Muestra la configuración guardada en NVRAM. Si es diferente a la running-config, significa que hay cambios sin guardar.</div></div>
+<div class="line-doc-row"><div class="line-code">show ip interface brief</div><div class="line-explain">Muestra un resumen de todas las interfaces: dirección IP, estado (up/down) y protocolo. Esencial para la captura de IOS.</div></div>
+<div class="line-doc-row"><div class="line-code">show version</div><div class="line-explain">Muestra la versión del IOS, el tiempo activo del dispositivo (uptime), la memoria RAM/Flash, y el modelo del hardware.</div></div>
+<div class="line-doc-row"><div class="line-code">show ip route</div><div class="line-explain">Muestra la tabla de enrutamiento: qué redes conoce el router y cómo llegar a ellas. Parte fundamental de la línea de base de un router.</div></div>
+<div class="line-doc-row"><div class="line-code">show interfaces</div><div class="line-explain">Información detallada de cada interfaz: velocidad, encapsulación, errores, paquetes enviados y recibidos. Sirve para detectar problemas físicos o de rendimiento.</div></div>
+</div>
+<div class="cb"><div class="ch"><span>Router – Tabla de rutas</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">R1-LAB#</span> <span class="cmd">show ip route</span>
+
+Codes: C - connected, S - static, R - RIP, ...
+
+Gateway of last resort is 10.0.0.2 to network 0.0.0.0
+
+C    <span class="val">192.168.1.0/24</span> is directly connected, GigabitEthernet0/0
+C    <span class="val">10.0.0.0/30</span>    is directly connected, Serial0/0/0
+S*   <span class="ok">0.0.0.0/0</span>      [1/0] via 10.0.0.2</pre></div>
+<div class="cb"><div class="ch"><span>Router – Versión del dispositivo</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">R1-LAB#</span> <span class="cmd">show version</span>
+
+Cisco IOS Software, Version 15.1(4)M12a
+...
+<span class="val">R1-LAB</span> uptime is 2 days, 4 hours, 17 minutes
+System image file is "flash:c1900-universalk9-mz.SPA.151-4.M12a.bin"
+
+Cisco CISCO1941/K9 (revision 1.0) with <span class="val">491520K</span>/32768K bytes of memory.
+Processor board ID FTX1524V2MD
+
+1 Gigabit Ethernet interface
+2 Low-speed serial(sync/async) network interface(s)
+NVRAM: 256K bytes
+Flash: <span class="val">254976K</span> bytes</pre></div>
+<table>
+<tr><th>Dato del show version</th><th>¿Qué informa?</th></tr>
+<tr><td>Versión IOS</td><td>La versión exacta del sistema operativo del dispositivo.</td></tr>
+<tr><td>Uptime</td><td>Cuánto tiempo lleva encendido sin reiniciarse. Útil para saber si hubo reinicios recientes.</td></tr>
+<tr><td>RAM / Flash</td><td>Cuánta memoria tiene disponible para almacenar IOS y configuraciones.</td></tr>
+<tr><td>Modelo</td><td>El hardware exacto del equipo. Necesario para buscar compatibilidad de IOS.</td></tr>
+</table>
+<div class="ib ok"><div class="ibl">Proceso recomendado para la línea de base</div><p>Ejecuta los comandos en este orden: <code>show version</code> → <code>show running-config</code> → <code>show ip interface brief</code> → <code>show ip route</code>. Guarda la salida completa en un archivo de texto con fecha. Eso es tu línea de base de IOS.</p></div>
+
+<!-- EJERCICIOS -->
+<div class="part-divider" id="ejercicios"><div class="part-badge">Ejercicios</div><div><h2>Ejercicios de repaso</h2><p>Primero lee los apuntes. Cuando te sientas listo, activa los ejercicios. Desde ese momento inicia el temporizador.</p></div></div>
+<div class="v30-start-exam-panel" id="v30StartExamPanel"><h3>Ejercicios bloqueados</h3><p>Los apuntes y ejemplos se pueden leer sin presión. El temporizador de <b>35 minutos</b> iniciará hasta que presiones el botón.</p><div class="ib warn"><div class="ibl">Aviso</div><p>Al iniciar, tendrás 35 minutos. Si el tiempo termina, se cerrará la actividad y se tomará en cuenta solo lo contestado. Si cambias de pestaña 3 veces, también se cerrará automáticamente.</p></div><button class="v30-btn" id="v30BeginExercisesBtn" onclick="v30BeginExercises()">Iniciar ejercicios y activar temporizador</button></div>
+
+<div class="section-title"><span class="section-num">E1</span><h2>Líneas de base de red</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Practica</span><span>6 preguntas</span></div><div class="warm-body">
+
+<div class="wq" id="wq1"><div class="wq-text">¿Para qué sirve establecer una línea de base de red?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq1','wrong','Cambiar la contraseña es una tarea de seguridad, no una línea de base.')">Para cambiar la contraseña del router</div><div class="wopt" onclick="checkOpt(this,'wq1','correct','Correcto. La línea de base documenta el estado normal de la red para poder comparar si algo cambia.')">Para tener un punto de referencia del estado normal de la red</div><div class="wopt" onclick="checkOpt(this,'wq1','wrong','Apagar interfaces es una acción de configuración, no el propósito de una línea de base.')">Para apagar interfaces que no se usan</div></div><div class="wfb" id="fb_wq1"></div></div>
+
+<div class="wq" id="wq2"><div class="wq-text">¿Qué comando de Windows muestra toda la configuración IP del host incluyendo MAC, gateway y DNS?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq2','wrong','ping verifica conectividad, no muestra la configuración completa del host.')">ping 127.0.0.1</div><div class="wopt" onclick="checkOpt(this,'wq2','wrong','ipconfig sin parámetros solo muestra la IP, máscara y gateway, no el detalle completo.')">ipconfig</div><div class="wopt" onclick="checkOpt(this,'wq2','correct','Correcto. ipconfig /all muestra todos los detalles de configuración del host, incluyendo MAC, DNS, y si DHCP está activo.')">ipconfig /all</div></div><div class="wfb" id="fb_wq2"></div></div>
+
+<div class="wq" id="wq3"><div class="wq-text">¿Qué diferencia hay entre <code>running-config</code> y <code>startup-config</code>?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq3','wrong','No son lo mismo. running-config está en RAM; startup-config está en NVRAM.')">Son exactamente lo mismo, solo tienen nombres diferentes</div><div class="wopt" onclick="checkOpt(this,'wq3','correct','Correcto. running-config es la configuración en uso (RAM) y startup-config es la guardada que se carga al encender el router (NVRAM).')">running-config es la config activa en RAM; startup-config es la guardada en NVRAM</div><div class="wopt" onclick="checkOpt(this,'wq3','wrong','startup-config no es una versión más reciente, es la guardada para el próximo encendido.')">startup-config es la versión más reciente del IOS</div></div><div class="wfb" id="fb_wq3"></div></div>
+
+<div class="wq" id="wq4"><div class="wq-text">Escribe el comando IOS para ver la configuración actualmente en uso del router:</div><div class="wq-input-row"><input class="wq-input" id="in_wq4" placeholder="show ..." onkeydown="if(event.key==='Enter')checkInput('wq4',['show running-config','show run'],'El comando es: show running-config (o su abreviación show run)')"><button class="wbtn" onclick="checkInput('wq4',['show running-config','show run'],'El comando es: show running-config (o su abreviación show run)')">Verificar</button></div><div class="wfb" id="fb_wq4"></div></div>
+
+<div class="wq" id="wq5"><div class="wq-text">¿Qué información proporciona el comando <code>show version</code> en IOS?</div><div class="wq-opts"><div class="wopt" onclick="checkOpt(this,'wq5','wrong','Las contraseñas no se muestran con show version; se ven parcialmente en show running-config.')">Las contraseñas configuradas en el dispositivo</div><div class="wopt" onclick="checkOpt(this,'wq5','wrong','show version no muestra la tabla ARP. Para eso se usa show arp.')">La tabla ARP del router</div><div class="wopt" onclick="checkOpt(this,'wq5','correct','Correcto. show version informa la versión del IOS, el tiempo activo del router, la memoria y el modelo del hardware.')">La versión del IOS, tiempo activo (uptime), memoria y modelo del hardware</div></div><div class="wfb" id="fb_wq5"></div></div>
+
+<div class="wq" id="wq6"><div class="wq-text">Escribe el comando IOS que muestra las rutas que conoce el router y cómo llegar a cada red:</div><div class="wq-input-row"><input class="wq-input" id="in_wq6" placeholder="show ip ..." onkeydown="if(event.key==='Enter')checkInput('wq6',['show ip route','show ip route '],'El comando es: show ip route')"><button class="wbtn" onclick="checkInput('wq6',['show ip route','show ip route '],'El comando es: show ip route')">Verificar</button></div><div class="wfb" id="fb_wq6"></div></div>
+
+</div></div>
+
+<!-- PANEL FINAL -->
+<div class="v30-panel" id="v30FinalPanel"><h3>Entrega final de la actividad</h3><p>Cuando hayas terminado todos los ejercicios, envía tu resultado. Recuerda: solo se permite un intento, salvo autorización del docente.</p><div class="v30-result-grid"><div class="v30-result-card"><span>Contestadas</span><b id="v30Answered">0</b></div><div class="v30-result-card"><span>Correctas</span><b id="v30Correct">0</b></div><div class="v30-result-card"><span>Incorrectas</span><b id="v30Wrong">0</b></div><div class="v30-result-card"><span>Calificación</span><b id="v30Grade">0</b></div></div><div class="ib warn"><div class="ibl">Antes de enviar</div><p>Revisa tus datos. Después de enviar, la actividad quedará bloqueada en este navegador.</p></div><button class="v30-btn" id="v30SubmitBtn" onclick="v30SubmitResults()">Enviar calificación al docente</button><button class="v30-btn secondary" onclick="v30DownloadBackup()">Descargar respaldo</button><p id="v30SubmitStatus" style="margin-top:12px;"></p></div>
+
+</main>
+<footer><span>Manejo de Redes · Unidad 2 · R.A. 2.1 D</span><span>Ing. Santiago Martínez González</span><span>Líneas de base · Captura de host · Captura IOS</span></footer>
+
+<script>
+const V30_CONFIG={activityId:'MRED_22526_U2_RA21_D',teacherEmail:'profesantiagomtzglez@gmail.com',unlockKey:'REDES22526',formSubmitEndpoint:'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',totalQuestions:6,timeLimitSeconds:35*60,requiredDomain:'@tam.conalep.edu.mx'};
+const v30Keys={student:V30_CONFIG.activityId+'_student',answers:V30_CONFIG.activityId+'_answers',completed:V30_CONFIG.activityId+'_completed',startedAt:V30_CONFIG.activityId+'_startedAt',guard:V30_CONFIG.activityId+'_guard',timeLeft:V30_CONFIG.activityId+'_timeLeft',exerciseStarted:V30_CONFIG.activityId+'_exerciseStarted',timeExpired:V30_CONFIG.activityId+'_timeExpired'};let v30Answers={};let v30TimerHandle=null;
+function v30LoadAnswers(){try{v30Answers=JSON.parse(localStorage.getItem(v30Keys.answers)||'{}')}catch(e){v30Answers={}}}function v30SaveAnswers(){localStorage.setItem(v30Keys.answers,JSON.stringify(v30Answers))}function v30GetStudent(){try{return JSON.parse(localStorage.getItem(v30Keys.student)||'null')}catch(e){return null}}function v30IsCompleted(){return localStorage.getItem(v30Keys.completed)==='1'}function v30ExercisesStarted(){return localStorage.getItem(v30Keys.exerciseStarted)==='1'}function v30TimeExpired(){return localStorage.getItem(v30Keys.timeExpired)==='1'}function v30NormalizeEmail(email){return String(email||'').trim().toLowerCase()}function v30StudentFingerprint(s){return btoa(unescape(encodeURIComponent(`${s.name}|${s.group}|${s.shift}|${v30NormalizeEmail(s.email)}`))).slice(0,32)}
+function v30StartActivity(){const student={name:document.getElementById('v30Name').value.trim(),group:document.getElementById('v30Group').value.trim(),shift:document.getElementById('v30Shift').value.trim(),email:v30NormalizeEmail(document.getElementById('v30Email').value)};if(!student.name||!student.group||!student.shift||!student.email){alert('Completa todos los datos del alumno.');return}if(!/^\S+@\S+\.\S+$/.test(student.email)){alert('Escribe un correo válido.');return}if(!student.email.endsWith(V30_CONFIG.requiredDomain)){alert('Debes usar tu correo institucional que termine en '+V30_CONFIG.requiredDomain);return}student.fingerprint=v30StudentFingerprint(student);localStorage.setItem(v30Keys.student,JSON.stringify(student));document.getElementById('v30StartModal').classList.remove('show');document.body.classList.remove('v30-locked');v30RefreshUI()}
+function v30BeginExercises(){if(!v30GetStudent()){alert('Primero registra tus datos.');return}if(v30ExercisesStarted()){v30RefreshUI();return}const ok=confirm('Al iniciar los ejercicios se activará el temporizador de 35 minutos. Si el tiempo termina, se cerrará la actividad y se tomará en cuenta solo lo contestado. ¿Deseas iniciar ahora?');if(!ok)return;localStorage.setItem(v30Keys.exerciseStarted,'1');localStorage.setItem(v30Keys.startedAt,new Date().toISOString());localStorage.setItem(v30Keys.timeLeft,String(V30_CONFIG.timeLimitSeconds));document.body.classList.remove('v30-exercises-locked');v30StartTimer();v30RefreshUI()}
+function v30RequireExercisesStarted(){if(!v30GetStudent()){alert('Primero registra tus datos.');return false}if(!v30ExercisesStarted()){alert('Primero activa los ejercicios. El temporizador iniciará cuando aceptes el aviso.');return false}if(v30IsCompleted()){return false}return true}
+function v30StartTimer(){clearInterval(v30TimerHandle);v30TimerHandle=setInterval(()=>{if(!v30ExercisesStarted()||v30IsCompleted()){clearInterval(v30TimerHandle);return}let left=parseInt(localStorage.getItem(v30Keys.timeLeft)||V30_CONFIG.timeLimitSeconds,10);left--;localStorage.setItem(v30Keys.timeLeft,String(left));const timer=document.getElementById('v30Timer');if(timer){const m=Math.max(0,Math.floor(left/60));const s=Math.max(0,left%60);timer.textContent=`${m}:${String(s).padStart(2,'0')}`}if(left<=0){clearInterval(v30TimerHandle);localStorage.setItem(v30Keys.timeExpired,'1');v30Toast('Tiempo agotado','Se tomará en cuenta solo lo contestado.');v30SubmitResults(true)}},1000)}
+function v30LoadGuard(){try{return JSON.parse(localStorage.getItem(v30Keys.guard)||'{}')}catch(e){return {}}}function v30SaveGuard(g){localStorage.setItem(v30Keys.guard,JSON.stringify(g))}function v30Toast(title,msg){const t=document.getElementById('v30Toast');document.getElementById('v30ToastTitle').textContent=title;document.getElementById('v30ToastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5200)}
+function v30GuardEvent(type,detail){const g=v30LoadGuard();g[type+'s']=(g[type+'s']||0)+1;g.events=g.events||[];g.events.push({type,detail,at:new Date().toISOString()});v30SaveGuard(g);v30RefreshUI();if(type==='tab'){if((g.tabs||0)===1)v30Toast('Primera advertencia','Se detectó cambio de pestaña. Evita salir de la actividad.');else if((g.tabs||0)===2)v30Toast('Segunda advertencia','A la tercera salida se cerrará la actividad y se enviará lo contestado.');else if((g.tabs||0)>=3){localStorage.setItem(V30_CONFIG.activityId+'_closedByTab','1');v30SubmitResults(true)}}}
+function v30InstallGuards(){document.addEventListener('visibilitychange',()=>{if(document.hidden&&v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30GuardEvent('tab','Cambio de pestaña o ventana')});document.addEventListener('contextmenu',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('rightClick','Clic derecho');v30Toast('Clic derecho bloqueado','Usa el material para razonar y responder.')}});document.addEventListener('copy',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('copyPaste','Copiar')}});document.addEventListener('paste',e=>{if(v30GetStudent()&&!v30IsCompleted()){if(e.target&&e.target.classList&&e.target.classList.contains('wq-input')){e.preventDefault();v30GuardEvent('copyPaste','Pegar');v30Toast('Pegar bloqueado','Escribe tu respuesta directamente.')}}})}
+function v30OpenUnlock(){document.getElementById('v30UnlockModal').classList.add('show');document.getElementById('v30UnlockMsg').className='v30-lock-msg'}function v30CloseUnlock(){document.getElementById('v30UnlockModal').classList.remove('show')}function v30UnlockAttempt(){const key=document.getElementById('v30UnlockKey').value.trim(),msg=document.getElementById('v30UnlockMsg');if(key!==V30_CONFIG.unlockKey){msg.textContent='Clave incorrecta. Solicita autorización al docente.';msg.className='v30-lock-msg show';return}Object.values(v30Keys).forEach(k=>localStorage.removeItem(k));localStorage.removeItem(V30_CONFIG.activityId+'_closedByTab');v30Answers={};msg.textContent='Actividad desbloqueada. Puedes iniciar una nueva oportunidad.';msg.className='v30-lock-msg show';setTimeout(()=>location.reload(),900)}
+function v30RecordAnswer(qId,isCorrect,detail){if(!v30RequireExercisesStarted())return;v30Answers[qId]={correct:!!isCorrect,detail:detail||'',answeredAt:new Date().toISOString()};v30SaveAnswers();v30RefreshUI()}
+function v30Stats(){const answered=Object.keys(v30Answers).length,correct=Object.values(v30Answers).filter(a=>a.correct).length,wrong=answered-correct,grade=Math.round((correct/V30_CONFIG.totalQuestions)*100);return{answered,correct,wrong,grade}}
+function v30RefreshUI(){const s=v30GetStudent(),st=v30Stats(),pct=Math.round((st.answered/V30_CONFIG.totalQuestions)*100);document.getElementById('v30StudentLabel').innerHTML=s?`Alumno: <b>${s.name}</b> · ${s.group} · ${s.shift}`:'Alumno: <b>No registrado</b>';document.getElementById('v30Progress').style.width=pct+'%';document.getElementById('v30ScoreLabel').textContent=`${st.correct}/${V30_CONFIG.totalQuestions} · ${st.grade}%`;const g=v30LoadGuard();document.getElementById('v30GuardLabel').innerHTML=`Alertas: <b>${(g.tabs||0)+(g.copyPastes||0)+(g.rightClicks||0)}</b>`;document.getElementById('v30Answered').textContent=st.answered;document.getElementById('v30Correct').textContent=st.correct;document.getElementById('v30Wrong').textContent=st.wrong;document.getElementById('v30Grade').textContent=st.grade;const timer=document.getElementById('v30Timer');if(timer&&!v30ExercisesStarted()&&!v30IsCompleted())timer.textContent='Sin iniciar';const panel=document.getElementById('v30StartExamPanel');if(panel&&v30ExercisesStarted())panel.style.display='none';if(!v30ExercisesStarted()&&!v30IsCompleted())document.body.classList.add('v30-exercises-locked');else document.body.classList.remove('v30-exercises-locked');const btn=document.getElementById('v30SubmitBtn');if(btn){btn.disabled=(!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions)||v30IsCompleted()||!v30ExercisesStarted();btn.textContent=v30IsCompleted()?'Actividad enviada y bloqueada':(v30TimeExpired()?'Enviar respuestas contestadas':'Enviar calificación al docente')}}
+async function v30SubmitResults(auto=false){const s=v30GetStudent();if(!s){alert('Primero registra tus datos.');return}const st=v30Stats();if(!auto&&!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions){alert(`Aún faltan preguntas por contestar: ${V30_CONFIG.totalQuestions-st.answered}`);return}const status=document.getElementById('v30SubmitStatus');const startedAt=localStorage.getItem(v30Keys.startedAt)||'';const guard=v30LoadGuard();const payload={_subject:`MRED R.A.2.1 D - ${s.name} - ${st.grade}`,_captcha:'false',_template:'table',_autoresponse:'Tu actividad de Manejo de Redes fue recibida correctamente.',docente:V30_CONFIG.teacherEmail,actividad:'2-2526 - MRED - U2 - R.A. 2.1 - D',nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,calificacion:st.grade,correctas:st.correct,incorrectas:st.wrong,contestadas:st.answered,total_preguntas:V30_CONFIG.totalQuestions,inicio:startedAt,envio:new Date().toISOString(),cierre_automatico:auto?'SI':'NO',tiempo_expirado:v30TimeExpired()?'SI':'NO',cerrado_por_pestanas:localStorage.getItem(V30_CONFIG.activityId+'_closedByTab')==='1'?'SI':'NO',alertas_json:JSON.stringify(guard,null,2),respuestas_json:JSON.stringify(v30Answers,null,2),navegador:navigator.userAgent,huella_alumno:s.fingerprint};try{status.textContent='Enviando resultado...';const res=await fetch(V30_CONFIG.formSubmitEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});if(!res.ok)throw new Error('No se pudo enviar');localStorage.setItem(v30Keys.completed,'1');document.body.classList.add('v30-completed');status.innerHTML='<span style="color:var(--green)">Resultado enviado correctamente. La actividad quedó bloqueada.</span>';v30RefreshUI()}catch(err){status.innerHTML='<span style="color:var(--red)">No se pudo enviar. Revisa conexión o FormSubmit.co. Puedes descargar respaldo.</span>';v30DownloadBackup()}}
+function v30DownloadBackup(){const s=v30GetStudent()||{name:'sin_registro'},st=v30Stats();const data={actividad:V30_CONFIG.activityId,alumno:s,resultado:st,respuestas:v30Answers,guard:v30LoadGuard(),generado:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`resultado_MRED_RA21_D_${(s.name||'alumno').replace(/\s+/g,'_')}.json`;a.click();URL.revokeObjectURL(a.href)}
+function v30Bootstrap(){v30LoadAnswers();const s=v30GetStudent();if(v30IsCompleted()){document.body.classList.add('v30-completed');document.getElementById('v30StartModal').classList.add('show');document.getElementById('v30LockedMessage').classList.add('show');document.getElementById('v30StudentForm').style.display='none';document.getElementById('v30StartBtn').style.display='none'}else if(!s){document.body.classList.add('v30-locked');document.getElementById('v30StartModal').classList.add('show')}v30RefreshUI()}
+function checkOpt(el,qId,result,msg){if(!v30RequireExercisesStarted())return;const wrap=document.getElementById(qId),opts=wrap.querySelectorAll('.wopt'),fb=document.getElementById('fb_'+qId),isCorrect=result==='correct';v30RecordAnswer(qId,isCorrect,el.textContent.trim());opts.forEach(o=>o.onclick=null);if(isCorrect){el.classList.add('correct');fb.className='wfb show ok';fb.textContent='✓ '+msg}else{el.classList.add('wrong');fb.className='wfb show bad';fb.textContent='✗ '+msg}}
+function checkInput(qId,correct,hint){if(!v30RequireExercisesStarted())return;const input=document.getElementById('in_'+qId),fb=document.getElementById('fb_'+qId),val=input.value.trim();const norm=s=>String(s).toLowerCase().replace(/\s+/g,' ').trim();const ok=correct.some(c=>norm(val)===norm(c));if(!val){fb.className='wfb show hint';fb.textContent='Escribe algo primero.';return}if(ok){input.className='wq-input ok';input.disabled=true;fb.className='wfb show ok';fb.textContent='✓ Correcto.';v30RecordAnswer(qId,true,val)}else{input.className='wq-input bad';fb.className='wfb show bad';fb.textContent='✗ No es correcto. Pista: '+hint;v30RecordAnswer(qId,false,val);setTimeout(()=>{input.className='wq-input';input.select()},1200)}}
+function downloadNotesPDF(){const content=document.querySelector('main').cloneNode(true);content.querySelectorAll('.part-divider,.v30-start-exam-panel,.warm-block,#v30FinalPanel').forEach(e=>e.remove());const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><title>2-2526 - MRED - U2 - R.A. 2.1 - D | Manejo de Redes</title><style>body{font-family:Arial,sans-serif;color:#111;line-height:1.45;padding:24px}h1{font-size:24px;color:#0f2745;margin-bottom:4px}h2{font-size:18px;color:#0f2745;border-bottom:2px solid #00a98f;padding-bottom:4px}p,li,td{font-size:12px;color:#111}table{width:100%;border-collapse:collapse;margin:10px 0}th{background:#eaf5fb;color:#111;text-align:left;font-size:11px;letter-spacing:1px}td,th{border:1px solid #9aa8b5;padding:6px}pre{background:#f6f8fa;border:1px solid #9aa8b5;padding:10px;font-size:11px;white-space:pre-wrap}.cb,.ib,.pera-box,.line-doc{break-inside:avoid;page-break-inside:avoid;margin:10px 0}.section-title{break-after:avoid;page-break-after:avoid;margin-top:16px}.section-num{display:none}.line-doc-row{display:grid;grid-template-columns:35% 65%;border:1px solid #ccc}.line-code{font-family:Consolas,monospace;background:#f6f8fa;padding:5px}.line-explain{padding:5px}.v30-actions{display:none}@page{margin:12mm}</style></head><body><h1>Apuntes 2.1 - D) Manejo de Redes</h1><p><b>Materia:</b> Manejo de Redes · <b>Unidad 2:</b> Implementación de dispositivos de ruteo y conmutación · <b>Docente:</b> Ing. Santiago Martínez González</p>${content.innerHTML}</body></html>`);w.document.close();setTimeout(()=>w.print(),500)}
+document.addEventListener('DOMContentLoaded',()=>{v30Bootstrap();v30InstallGuards()});
+</script>
+</body>
+</html>
