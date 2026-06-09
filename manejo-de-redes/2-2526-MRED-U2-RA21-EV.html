@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-2526 - MRED - U2 - R.A. 2.1 - EVALUACIÓN | El Técnico de Guardia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#30363d;--accent:#00d4aa;--accent2:#58a6ff;--accent3:#7c6fff;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#ff6b35}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+
+/* ══ TOPBAR ══ */
+.v30-topbar{position:sticky;top:0;z-index:999;background:rgba(13,17,23,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.v30-left,.v30-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.v30-badge,.v30-guard-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.08);border-radius:999px;padding:4px 10px}
+.v30-student{font-size:12px;color:var(--muted)}.v30-student b{color:var(--text)}
+.v30-progress-wrap{width:220px;height:8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);overflow:hidden}
+.v30-progress{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s}
+.v30-score,.v30-timer{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}
+.v30-timer{color:var(--yellow)}
+.v30-btn{background:var(--accent);color:#06110f;border:none;border-radius:7px;padding:8px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.v30-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.v30-btn.secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.v30-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+/* ══ MODALS ══ */
+.v30-modal{position:fixed;inset:0;z-index:2000;background:rgba(1,4,9,.78);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.v30-modal.show{display:flex}
+.v30-card{width:min(590px,100%);background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);padding:28px}
+.v30-card h2{color:#fff;font-size:24px;margin-bottom:8px}.v30-card p{color:var(--muted);font-size:14px}
+.v30-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.v30-field.full{grid-column:1/-1}
+.v30-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.v30-field input,.v30-field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}
+.v30-field input:focus,.v30-field select:focus{border-color:var(--accent)}
+.v30-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.v30-lock-msg{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:#fca5a5;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;display:none}.v30-lock-msg.show{display:block}
+body.v30-locked main,body.v30-locked .toc,body.v30-locked header{filter:blur(4px);pointer-events:none;user-select:none}
+body.v30-exercises-locked .warm-block,body.v30-exercises-locked #v30FinalPanel{filter:blur(3px);opacity:.55;pointer-events:none;user-select:none}
+body.v30-exercises-locked .v30-start-exam-panel{filter:none;opacity:1;pointer-events:auto;user-select:auto}
+body.v30-completed .wopt,body.v30-completed .wq-input,body.v30-completed .wbtn,body.v30-completed .cli-input{pointer-events:none!important;opacity:.65}
+
+/* ══ HEADER ══ */
+header{background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%);border-bottom:3px solid var(--accent);padding:44px 64px 36px;position:relative;overflow:hidden}
+header:before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;border:70px solid rgba(0,212,170,.05)}
+.htag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;display:block}
+header h1{font-size:32px;font-weight:700;color:#fff;line-height:1.25;max-width:860px}header h1 span{color:var(--accent)}
+.header-sub{color:var(--muted);font-size:14px;margin-top:8px;font-weight:300}
+.hpills{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}.hpill b{color:var(--text)}
+
+/* ══ SCENARIO BOX ══ */
+.scenario{background:linear-gradient(135deg,rgba(255,107,53,.06),rgba(13,17,23,0));border:1px solid rgba(255,107,53,.3);border-left:4px solid var(--orange);border-radius:10px;padding:20px 24px;margin:32px 64px 0}
+.scenario-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;display:block}
+.scenario h2{color:#fff;font-size:18px;margin-bottom:10px}
+.scenario p{color:var(--muted);font-size:14px;margin-bottom:8px}
+.scenario p:last-child{margin-bottom:0}
+
+/* ══ TOC ══ */
+.toc{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:6px;margin:32px 64px;padding:22px 30px}
+.toc-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:14px}
+.toc-cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;padding-left:20px}
+.toc-cols li{font-size:13px;margin-bottom:3px}.toc-cols a{color:var(--muted);text-decoration:none}.toc-cols a:hover{color:var(--accent)}
+.toc-section{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5b6470;margin-top:12px;margin-bottom:4px;padding-left:20px}
+
+/* ══ MAIN ══ */
+main{padding:0 64px 80px}
+.section-title{display:flex;align-items:center;gap:12px;margin:48px 0 20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);border-radius:4px;padding:2px 8px;white-space:nowrap}
+.section-title h2{font-size:20px;font-weight:700;color:#fff}
+p{margin-bottom:12px;color:var(--muted);font-weight:300}p strong,p b{color:var(--text);font-weight:500}
+code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:13px;color:var(--accent)}
+
+/* ══ INFO BOXES ══ */
+.ib{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:14px 0;font-size:14px}
+.ib.tip{border-left:4px solid var(--green)}.ib.warn{border-left:4px solid var(--yellow)}.ib.danger{border-left:4px solid var(--red)}.ib.note{border-left:4px solid var(--accent3)}.ib.info{border-left:4px solid var(--accent2)}.ib.scenario{border-left:4px solid var(--orange)}
+.ibl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.ib.tip .ibl{color:var(--green)}.ib.warn .ibl{color:var(--yellow)}.ib.danger .ibl{color:var(--red)}.ib.note .ibl{color:var(--accent3)}.ib.info .ibl{color:var(--accent2)}.ib.scenario .ibl{color:var(--orange)}
+
+/* ══ CODE BLOCKS ══ */
+.cb{background:#010409;border:1px solid var(--border);border-top:3px solid var(--orange);border-radius:0 0 8px 8px;margin:12px 0 20px;overflow:hidden}
+.ch{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#ff5f57}.dot.y{background:#ffbd2e}.dot.g{background:#28ca41}
+pre{padding:18px 20px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.9;color:#c9d1d9}
+.cmd{color:#79c0ff}.val{color:#a5d6ff}.cmt{color:#6e7681;font-style:italic}.ok{color:var(--green)}.wc{color:var(--yellow)}.err{color:var(--red)}.pr{color:var(--accent);user-select:none}
+
+/* ══ FASE DIVIDER ══ */
+.fase-divider{margin:64px -64px 0;padding:28px 64px;border-top:2px solid var(--accent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px}
+.fase-divider.f1{background:linear-gradient(90deg,rgba(0,212,170,.06) 0%,transparent 100%)}
+.fase-divider.f2{background:linear-gradient(90deg,rgba(88,166,255,.06) 0%,transparent 100%);border-top-color:var(--accent2)}
+.fase-divider.f3{background:linear-gradient(90deg,rgba(124,111,255,.06) 0%,transparent 100%);border-top-color:var(--accent3)}
+.fase-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.f1 .fase-badge{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.35);color:var(--accent)}
+.f2 .fase-badge{background:rgba(88,166,255,.12);border:1px solid rgba(88,166,255,.35);color:var(--accent2)}
+.f3 .fase-badge{background:rgba(124,111,255,.12);border:1px solid rgba(124,111,255,.35);color:var(--accent3)}
+.fase-divider h2{font-size:22px;color:#fff}.fase-divider p{font-size:13px;color:var(--muted);margin-top:2px;margin-bottom:0}
+
+/* ══ EJERCICIOS ══ */
+.warm-block{background:linear-gradient(135deg,#0d1a2e,#0d1117);border:1px solid rgba(91,124,250,.25);border-left:4px solid #5b7cfa;border-radius:8px;margin:20px 0 0;overflow:hidden}
+.warm-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(91,124,250,.15);background:rgba(91,124,250,.06)}
+.warm-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8ea2ff;background:rgba(91,124,250,.12);border:1px solid rgba(91,124,250,.3);border-radius:3px;padding:2px 8px}
+.warm-header span{font-size:13px;color:var(--muted)}
+.warm-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.wq{display:flex;flex-direction:column;gap:6px}
+.wq-text{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}
+.wq-context{font-size:12px;color:var(--muted);font-style:italic;margin-top:2px;padding:8px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.18);border-radius:6px;line-height:1.6}
+.wq-opts{display:flex;flex-direction:column;gap:8px}
+.wopt{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:9px 16px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Sans',sans-serif;white-space:normal;text-align:left;line-height:1.5;width:100%}
+.wopt:hover{border-color:rgba(91,124,250,.5);color:var(--text)}
+.wopt.correct{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);pointer-events:none}
+.wopt.wrong{border-color:var(--red);background:rgba(249,81,73,.1);color:var(--red);pointer-events:none}
+.wfb{font-size:12px;padding:6px 10px;border-radius:4px;display:none;line-height:1.5}
+.wfb.show{display:block}.wfb.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:#86efac}
+.wfb.bad{background:rgba(249,81,73,.08);border:1px solid rgba(249,81,73,.2);color:#fca5a5}
+.wfb.hint{background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.2);color:#a5b4fc}
+.wq-input-row{display:flex;gap:8px;align-items:center}
+.wq-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none}
+.wq-input.ok{border-color:var(--green);background:rgba(63,185,80,.05)}
+.wq-input.bad{border-color:var(--red);background:rgba(249,81,73,.05)}
+.wbtn{background:#5b7cfa;color:#fff;border:none;border-radius:5px;padding:8px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer}
+
+/* ══ CLI SIMULATOR ══ */
+.cli-sim-header{background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cli-sim-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.cli-sim-hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#9fb5ff;position:relative;cursor:help}
+.cli-sim-hint:after{content:'¿Te equivocaste? Escribe RESET para reiniciar el simulador.';position:absolute;right:0;top:22px;width:260px;background:#0d1117;border:1px solid var(--accent2);color:var(--text);padding:10px 12px;border-radius:8px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none;z-index:20}
+.cli-sim-hint:hover:after{display:block}
+.cli-output{background:#010409;padding:14px 16px;min-height:140px;max-height:280px;overflow-y:auto;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.9;color:#c9d1d9}
+.cli-line-ok{color:var(--green)}.cli-line-err{color:var(--red)}.cli-line-info{color:#5b7cfa}.cli-line-warn{color:var(--yellow)}
+.cli-input-row{border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;background:rgba(0,212,170,.02)}
+.cli-prompt-label{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--accent);white-space:nowrap;padding:10px 8px 10px 0}
+.cli-input{flex:1;background:transparent;border:none;outline:none;padding:10px 0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text);caret-color:var(--accent)}
+
+/* ══ START PANEL / FINAL PANEL ══ */
+.v30-start-exam-panel,.v30-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:34px 0}
+.v30-start-exam-panel h3,.v30-panel h3{color:#fff;font-size:20px;margin-bottom:8px}
+.v30-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.v30-result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.v30-result-card span{display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.v30-result-card b{font-size:22px;color:#fff}
+
+/* ══ PKT NOTICE ══ */
+.pkt-notice{background:linear-gradient(135deg,rgba(124,111,255,.08),rgba(88,166,255,.04));border:1px solid rgba(124,111,255,.3);border-radius:12px;padding:20px 24px;margin:32px 0}
+.pkt-notice-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:10px;display:block}
+.pkt-notice h3{color:#fff;font-size:17px;margin-bottom:8px}
+.pkt-notice p{color:var(--muted);font-size:13px;margin-bottom:6px}
+.pkt-notice p:last-child{margin-bottom:0}
+.pkt-steps{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.pkt-steps li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted)}
+.pkt-step-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent3);background:rgba(124,111,255,.12);border:1px solid rgba(124,111,255,.3);border-radius:4px;padding:1px 7px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;right:18px;bottom:18px;z-index:3000;max-width:360px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--yellow);border-radius:12px;padding:14px 16px;box-shadow:0 18px 45px rgba(0,0,0,.42);display:none}
+.toast.show{display:block}.toast h4{color:#fff;margin-bottom:4px}.toast p{font-size:13px;margin:0;color:var(--muted)}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px 64px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+
+@media(max-width:768px){
+  header,main,footer{padding-left:20px;padding-right:20px}
+  .toc,.scenario{margin-left:20px;margin-right:20px}
+  .toc-cols{grid-template-columns:1fr}
+  .v30-topbar{padding:10px 20px;align-items:flex-start;flex-direction:column}
+  .v30-progress-wrap{width:100%}
+  .v30-result-grid{grid-template-columns:1fr 1fr}
+  .v30-form{grid-template-columns:1fr}
+  .fase-divider{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="v30-topbar">
+  <div class="v30-left">
+    <span class="v30-badge">Evaluación R.A. 2.1</span>
+    <span class="v30-student" id="v30StudentLabel">Alumno: <b>No registrado</b></span>
+  </div>
+  <div class="v30-right">
+    <div class="v30-progress-wrap" title="Progreso de ejercicios"><div class="v30-progress" id="v30Progress"></div></div>
+    <span class="v30-timer" id="v30Timer">Sin iniciar</span>
+    <span class="v30-guard-pill" id="v30GuardLabel">Alertas: <b>0</b></span>
+    <span class="v30-score" id="v30ScoreLabel">0/20 · 0%</span>
+    <button class="v30-btn secondary" onclick="v30OpenUnlock()">Desbloquear</button>
+  </div>
+</div>
+
+<!-- ══ MODAL REGISTRO ══ -->
+<div class="v30-modal" id="v30StartModal">
+  <div class="v30-card">
+    <h2>Registro del alumno</h2>
+    <p>Antes de iniciar, captura tus datos. Usa tu <b>correo institucional</b>. Esta actividad permite <b>un intento</b>. Al finalizar, tu calificación será enviada al docente.</p>
+    <div class="v30-lock-msg" id="v30LockedMessage">Esta actividad ya fue enviada desde este navegador. Si necesitas una segunda oportunidad, solicita autorización al docente.</div>
+    <div class="v30-form" id="v30StudentForm">
+      <div class="v30-field full"><label>Nombre completo</label><input id="v30Name" autocomplete="name" placeholder="Ej. Juan Pérez López"></div>
+      <div class="v30-field"><label>Grupo</label><input id="v30Group" placeholder="Ej. 611"></div>
+      <div class="v30-field"><label>Turno</label><select id="v30Shift"><option value="">Selecciona...</option><option>Matutino</option><option>Vespertino</option></select></div>
+      <div class="v30-field full"><label>Correo institucional</label><input id="v30Email" type="email" autocomplete="email" placeholder="usuario@tam.conalep.edu.mx"></div>
+    </div>
+    <div class="v30-actions">
+      <button class="v30-btn secondary" onclick="v30OpenUnlock()">Tengo permiso para segunda oportunidad</button>
+      <button class="v30-btn" id="v30StartBtn" onclick="v30StartActivity()">Iniciar actividad</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL DESBLOQUEO ══ -->
+<div class="v30-modal" id="v30UnlockModal">
+  <div class="v30-card"><h2>Desbloqueo docente</h2><p>Solo el docente puede autorizar una segunda oportunidad.</p>
+    <div class="v30-form"><div class="v30-field full"><label>Clave de desbloqueo</label><input id="v30UnlockKey" type="password" placeholder="Clave del docente"></div></div>
+    <div class="v30-lock-msg" id="v30UnlockMsg"></div>
+    <div class="v30-actions"><button class="v30-btn secondary" onclick="v30CloseUnlock()">Cancelar</button><button class="v30-btn" onclick="v30UnlockAttempt()">Desbloquear intento</button></div>
+  </div>
+</div>
+<div class="toast" id="v30Toast"><h4 id="v30ToastTitle"></h4><p id="v30ToastMsg"></p></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <span class="htag">2-2526 · Manejo de Redes · Unidad 2 · R.A. 2.1 · Evaluación Integradora</span>
+  <h1>«El Técnico de <span>Guardia»</span></h1>
+  <p class="header-sub">Evaluación integradora — Incisos A, B, C y D · Ing. Santiago Martínez González</p>
+  <div class="hpills">
+    <div class="hpill">Materia: <b>Manejo de Redes</b></div>
+    <div class="hpill">Herramienta: <b>Cisco Packet Tracer</b></div>
+    <div class="hpill">R.A.: <b>2.1 — A + B + C + D</b></div>
+    <div class="hpill">Ciclo: <b>2 · 2526</b></div>
+    <div class="hpill">Tiempo: <b>50 minutos</b></div>
+  </div>
+</header>
+
+<!-- ══ ESCENARIO ══ -->
+<div class="scenario">
+  <span class="scenario-tag">🚨 Escenario real</span>
+  <h2>Situación: el laboratorio sin técnico</h2>
+  <p>El CONALEP inauguró su nuevo laboratorio de cómputo. El técnico de red que lo configuró se fue sin dejar documentación ni contraseñas. <b>Tú eres el alumno de soporte técnico asignado.</b> El director necesita que el laboratorio funcione antes del primer turno.</p>
+  <p>Responde las preguntas teóricas de cada fase con lo aprendido en los materiales A, B, C y D. Al terminar esta actividad, recibirás las instrucciones para realizar la práctica en Packet Tracer.</p>
+</div>
+
+<!-- ══ TOC ══ -->
+<div class="toc">
+  <div class="toc-title">Contenido de la evaluación</div>
+  <div class="toc-section">── Fase 1: Acceder al router olvidado (Incisos A + B) ──</div>
+  <ol class="toc-cols">
+    <li><a href="#f1q">Modos CLI, acceso y configuración básica</a></li>
+    <li><a href="#f1sim">Simulador CLI — secuencia completa</a></li>
+  </ol>
+  <div class="toc-section">── Fase 2: El laboratorio sin internet (Incisos B + C) ──</div>
+  <ol class="toc-cols" start="3">
+    <li><a href="#f2q">Diagnóstico de conectividad</a></li>
+    <li><a href="#f2sim">Simulador CLI — reparar interfaz</a></li>
+  </ol>
+  <div class="toc-section">── Fase 3: Documentar la red (Inciso D) ──</div>
+  <ol class="toc-cols" start="5">
+    <li><a href="#f3q">Líneas de base y captura de estado</a></li>
+  </ol>
+  <div class="toc-section">── Práctica Packet Tracer ──</div>
+  <ol class="toc-cols" start="6">
+    <li><a href="#pkt">Instrucciones para entrega del .pkt</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- ══ FASE 1 ══ -->
+<div class="fase-divider f1" id="f1"><div class="fase-badge">Fase 1</div><div><h2>Acceder al router olvidado</h2><p>Incisos A y B · Modos CLI, acceso y configuración básica</p></div></div>
+
+<div class="v30-start-exam-panel" id="v30StartExamPanel">
+  <h3>Evaluación bloqueada</h3>
+  <p>Lee el escenario con calma. El temporizador de <b>50 minutos</b> iniciará cuando presiones el botón.</p>
+  <div class="ib warn"><div class="ibl">Aviso</div><p>Al iniciar, tendrás 50 minutos. Si el tiempo termina o cambias de pestaña 3 veces, la actividad se cerrará automáticamente y se tomará en cuenta solo lo contestado.</p></div>
+  <button class="v30-btn" id="v30BeginExercisesBtn" onclick="v30BeginExercises()">Iniciar evaluación y activar temporizador</button>
+</div>
+
+<div class="section-title" id="f1q"><span class="section-num">F1</span><h2>Modos de acceso y configuración básica</h2></div>
+
+<div class="ib scenario"><div class="ibl">Contexto</div>
+<p>Llegaste al laboratorio. El router está encendido. Solo hay un cable de consola disponible conectado a <code>PC-LAB-01</code>. El hostname sigue siendo <code>Router</code> y no hay contraseñas configuradas.</p>
+</div>
+
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Fase 1</span><span>8 preguntas</span></div><div class="warm-body">
+
+<div class="wq" id="wq1">
+  <div class="wq-text">¿Por qué en este momento es IMPOSIBLE usar SSH o Telnet para entrar al router?</div>
+  <div class="wq-context">El router está recién instalado, sin configuración previa.</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq1','wrong','No es un problema de cable. SSH y Telnet son acceso remoto — necesitan red.')">El cable de consola bloquea SSH</div>
+    <div class="wopt" onclick="checkOpt(this,'wq1','correct','Correcto. SSH y Telnet requieren que el router tenga IP configurada en una interfaz activa, contraseña VTY con login, y SSH requiere además nombre de dominio y clave RSA. Sin eso, no hay acceso remoto posible.')">Las interfaces no tienen IP y el acceso VTY no está configurado</div>
+    <div class="wopt" onclick="checkOpt(this,'wq1','wrong','Packet Tracer sí soporta SSH y Telnet, pero el equipo no está listo para recibirlos.')">Packet Tracer no soporta SSH ni Telnet</div>
+  </div>
+  <div class="wfb" id="fb_wq1"></div>
+</div>
+
+<div class="wq" id="wq2">
+  <div class="wq-text">Al abrir la terminal del router por consola, el primer prompt que ves es <code>Router&gt;</code>. ¿Qué modo representa y qué puedes hacer ahí?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq2','wrong','En modo usuario no puedes cambiar configuración ni ver detalles avanzados.')">Modo privilegiado — puedes cambiar toda la configuración</div>
+    <div class="wopt" onclick="checkOpt(this,'wq2','correct','Correcto. Router> es el modo EXEC de usuario. Solo permite comandos básicos como ping, show version limitado, y nada de configuración.')">Modo EXEC de usuario — solo comandos básicos de visualización</div>
+    <div class="wopt" onclick="checkOpt(this,'wq2','wrong','La configuración global tiene el prompt Router(config)#')">Modo configuración global — puedes cambiar hostname y contraseñas</div>
+  </div>
+  <div class="wfb" id="fb_wq2"></div>
+</div>
+
+<div class="wq" id="wq3">
+  <div class="wq-text">¿Qué comando escribes para subir de modo usuario a modo privilegiado?</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq3" placeholder="Escribe el comando exacto..." onkeydown="if(event.key==='Enter')checkInput('wq3',['enable'],'El comando es: enable')">
+    <button class="wbtn" onclick="checkInput('wq3',['enable'],'El comando es: enable')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq3"></div>
+</div>
+
+<div class="wq" id="wq4">
+  <div class="wq-text">El director pide que el router se llame <code>CONALEP-NP</code>. ¿En qué modo IOS se configura el hostname?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq4','wrong','En modo usuario no hay acceso a configuración.')">Router&gt; (modo usuario)</div>
+    <div class="wopt" onclick="checkOpt(this,'wq4','wrong','En privilegiado puedes guardar y ver, pero no editar hostname directamente.')">Router# (modo privilegiado)</div>
+    <div class="wopt" onclick="checkOpt(this,'wq4','correct','Correcto. El hostname se cambia en configuración global con: hostname CONALEP-NP')">Router(config)# (configuración global)</div>
+  </div>
+  <div class="wfb" id="fb_wq4"></div>
+</div>
+
+<div class="wq" id="wq5">
+  <div class="wq-text">Para proteger el acceso al modo privilegiado, escribes <code>enable secret Admin2025</code>. ¿Por qué se prefiere <code>enable secret</code> sobre <code>enable password</code>?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq5','wrong','Ambos comandos hacen lo mismo en cuanto a funcionalidad. La diferencia está en seguridad.')">enable secret solo funciona con cable de consola</div>
+    <div class="wopt" onclick="checkOpt(this,'wq5','correct','Correcto. enable secret aplica hash MD5 a la contraseña en el running-config, por lo que no aparece en texto claro. enable password sí puede verse en texto plano. Además, si ambos están configurados, enable secret tiene prioridad.')">enable secret cifra la contraseña con hash; enable password puede quedar en texto claro</div>
+    <div class="wopt" onclick="checkOpt(this,'wq5','wrong','enable password también funciona — el problema es que no cifra la contraseña de forma segura.')">enable password ya no funciona en versiones modernas de IOS</div>
+  </div>
+  <div class="wfb" id="fb_wq5"></div>
+</div>
+
+<div class="wq" id="wq6">
+  <div class="wq-text">Escribe el comando para configurar un mensaje de aviso (banner) en el router. El mensaje debe ser: <em>ACCESO RESTRINGIDO</em></div>
+  <div class="wq-context">Pista: el comando usa un carácter delimitador antes y después del mensaje.</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq6" placeholder="banner ..." onkeydown="if(event.key==='Enter')checkInput('wq6',['banner motd # acceso restringido #','banner motd #acceso restringido#','banner motd # ACCESO RESTRINGIDO #','banner motd #ACCESO RESTRINGIDO#'],'El comando es: banner motd # ACCESO RESTRINGIDO #')">
+    <button class="wbtn" onclick="checkInput('wq6',['banner motd # acceso restringido #','banner motd #acceso restringido#','banner motd # ACCESO RESTRINGIDO #','banner motd #ACCESO RESTRINGIDO#'],'El comando es: banner motd # ACCESO RESTRINGIDO #')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq6"></div>
+</div>
+
+<div class="wq" id="wq7">
+  <div class="wq-text">Terminaste de configurar el router. ¿Qué comando guardas para que la configuración sobreviva un reinicio?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq7','wrong','Este comando copia en sentido contrario: sobrescribe lo que hiciste con lo que había guardado.')">copy startup-config running-config</div>
+    <div class="wopt" onclick="checkOpt(this,'wq7','correct','Correcto. Este comando copia el running-config (que vive en RAM) al startup-config (que vive en NVRAM y persiste al reiniciar).')">copy running-config startup-config</div>
+    <div class="wopt" onclick="checkOpt(this,'wq7','wrong','Este comando borra la configuración guardada — exactamente lo contrario de lo que necesitas.')">erase startup-config</div>
+  </div>
+  <div class="wfb" id="fb_wq7"></div>
+</div>
+
+<div class="wq" id="wq8">
+  <div class="wq-text">El técnico anterior configuró todo pero NO guardó. Apagaron el router para moverlo. ¿Qué pasó con la configuración al volver a encenderlo?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq8','wrong','La RAM pierde todo lo que no fue guardado en NVRAM. Si no se hizo copy running-config startup-config, no hay nada que cargar.')">El router cargó la configuración desde la RAM automáticamente</div>
+    <div class="wopt" onclick="checkOpt(this,'wq8','correct','Correcto. El running-config vive en RAM, que es volátil. Al apagar el equipo, la RAM se borra. Si no se ejecutó copy running-config startup-config, el router arranca con configuración vacía (o la anterior guardada).')">La configuración se perdió porque la RAM es volátil y no se guardó en NVRAM</div>
+    <div class="wopt" onclick="checkOpt(this,'wq8','wrong','IOS no guarda automáticamente. El técnico debe ejecutar el comando manualmente.')">IOS guarda automáticamente cada 5 minutos en NVRAM</div>
+  </div>
+  <div class="wfb" id="fb_wq8"></div>
+</div>
+
+</div></div><!-- /warm-body /warm-block -->
+
+<!-- ══ SIMULADOR FASE 1 ══ -->
+<div class="section-title" id="f1sim"><span class="section-num">SIM 1</span><h2>Simulador CLI — Configuración básica del router</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Simulador</span><span>Secuencia completa · 6 pasos</span></div>
+<div class="warm-body">
+  <div class="wq">
+    <div class="wq-text">Ejecuta esta secuencia paso a paso en el simulador:</div>
+    <div class="wq-context">
+      1. <code>enable</code> → entrar a modo privilegiado<br>
+      2. <code>configure terminal</code> → entrar a configuración global<br>
+      3. <code>hostname CONALEP-NP</code> → renombrar el router<br>
+      4. <code>enable secret Admin2025</code> → contraseña segura<br>
+      5. <code>service password-encryption</code> → encriptar contraseñas<br>
+      6. <code>copy running-config startup-config</code> → guardar cambios
+    </div>
+  </div>
+</div>
+<div class="cli-sim-header"><span class="cli-sim-title">Simulador CLI – Configuración básica</span><span class="cli-sim-hint">Ayuda RESET</span></div>
+<div class="cli-output" id="sim1-out"><span class="cli-line-info">Cisco IOS Simulator · Escribe los comandos en orden</span></div>
+<div class="cli-input-row">
+  <span class="cli-prompt-label" id="sim1-prompt">Router&gt;</span>
+  <input class="cli-input" id="sim1-in" placeholder="Escribe un comando y presiona Enter..." onkeydown="handleCLI1(event)" autocomplete="off" spellcheck="false">
+</div>
+</div>
+
+<!-- ══ FASE 2 ══ -->
+<div class="fase-divider f2" id="f2"><div class="fase-badge">Fase 2</div><div><h2>El laboratorio sin internet</h2><p>Incisos B y C · Diagnóstico y verificación de conectividad</p></div></div>
+
+<div class="section-title" id="f2q"><span class="section-num">F2</span><h2>Diagnóstico de conectividad</h2></div>
+
+<div class="ib scenario"><div class="ibl">Contexto</div>
+<p>Ya entraste al router. Ahora el director te dice: <em>"las PCs del laboratorio no tienen internet."</em> Ejecutas <code>show ip interface brief</code> y ves esto:</p>
+</div>
+
+<div class="cb"><div class="ch"><span>Router — show ip interface brief</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div>
+<pre><span class="pr">CONALEP-NP#</span> <span class="cmd">show ip interface brief</span>
+
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     <span class="val">10.0.0.1</span>        YES manual <span class="ok">up                    up</span>
+GigabitEthernet0/1     <span class="err">unassigned</span>      YES unset  <span class="err">administratively down down</span>
+</pre></div>
+
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Fase 2</span><span>6 preguntas</span></div><div class="warm-body">
+
+<div class="wq" id="wq9">
+  <div class="wq-text">Analiza el output anterior. ¿Cuál es exactamente el problema con la interfaz <code>G0/1</code>?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq9','wrong','Si fuera falla de cable el estado sería down/down, no administratively down.')">El cable de red está desconectado físicamente</div>
+    <div class="wopt" onclick="checkOpt(this,'wq9','wrong','El método dice unset, pero eso no significa que esté rota. El problema real es que está apagada por configuración y sin IP.')">La interfaz está dañada y debe reemplazarse</div>
+    <div class="wopt" onclick="checkOpt(this,'wq9','correct','Correcto. Administratively down significa que la interfaz fue apagada intencionalmente por configuración (o nunca se activó). Además no tiene IP asignada. Ambas cosas deben corregirse.')">La interfaz está apagada por configuración y sin IP asignada</div>
+  </div>
+  <div class="wfb" id="fb_wq9"></div>
+</div>
+
+<div class="wq" id="wq10">
+  <div class="wq-text">¿Qué comando activa una interfaz que está en estado <code>administratively down</code>?</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq10" placeholder="no ..." onkeydown="if(event.key==='Enter')checkInput('wq10',['no shutdown','no shut'],'El comando es: no shutdown (dentro de la interfaz)')">
+    <button class="wbtn" onclick="checkInput('wq10',['no shutdown','no shut'],'El comando es: no shutdown (dentro de la interfaz)')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq10"></div>
+</div>
+
+<div class="wq" id="wq11">
+  <div class="wq-text">La PC-LAB-01 tiene IP <code>192.168.10.5/24</code> y gateway <code>192.168.10.1</code>. Un alumno hace <code>ping 127.0.0.1</code> y responde bien, pero <code>ping 192.168.10.1</code> falla. ¿Qué significa eso?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq11','correct','Correcto. Si 127.0.0.1 responde, el stack TCP/IP de la PC funciona bien. Si el gateway no responde, el problema está fuera de la PC: la interfaz G0/1 del router no está activa o no tiene IP configurada.')">La PC funciona bien. El problema está en el router (G0/1 no responde)</div>
+    <div class="wopt" onclick="checkOpt(this,'wq11','wrong','Si 127.0.0.1 responde, la tarjeta de red y el stack TCP/IP de la PC están bien.')">La tarjeta de red de la PC está dañada</div>
+    <div class="wopt" onclick="checkOpt(this,'wq11','wrong','El ping al loopback no prueba conectividad de red — solo prueba que el stack TCP/IP local funciona.')">El ping a 127.0.0.1 prueba la conexión a internet</div>
+  </div>
+  <div class="wfb" id="fb_wq11"></div>
+</div>
+
+<div class="wq" id="wq12">
+  <div class="wq-text">Después de corregir G0/1, el ping al gateway ya responde. Pero la PC aún no puede llegar a <code>10.0.0.10</code> (un servidor externo). En el proceso de verificación de 6 pasos, ¿en qué paso estás fallando?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq12','wrong','El paso 2 es ping 127.0.0.1 — ese ya respondía bien desde el inicio.')">Paso 2 — prueba de loopback local</div>
+    <div class="wopt" onclick="checkOpt(this,'wq12','wrong','El paso 4 es ping al gateway (192.168.10.1) — ese ya funciona.')">Paso 4 — prueba al gateway</div>
+    <div class="wopt" onclick="checkOpt(this,'wq12','correct','Correcto. El paso 6 es probar un host remoto (fuera de tu red). Si el gateway responde pero el host remoto no, el problema está más allá del router: puede ser una ruta faltante, el servidor externo apagado, o un firewall.')">Paso 6 — prueba a host remoto</div>
+  </div>
+  <div class="wfb" id="fb_wq12"></div>
+</div>
+
+<div class="wq" id="wq13">
+  <div class="wq-text">Un ping desde el router muestra <code>.....</code> (cinco puntos). ¿Qué indica cada punto en la CLI de Cisco IOS?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq13','wrong','El símbolo ! significa éxito en IOS. El punto es exactamente lo contrario.')">Cada punto indica un paquete exitoso</div>
+    <div class="wopt" onclick="checkOpt(this,'wq13','correct','Correcto. En IOS Cisco, cada punto (.) representa un paquete que no recibió respuesta dentro del tiempo de espera. Cinco puntos = 5 timeouts = sin conectividad hacia ese destino.')">Cada punto representa un timeout — el paquete no recibió respuesta</div>
+    <div class="wopt" onclick="checkOpt(this,'wq13','wrong','La U indica "Destination Unreachable" — es diferente al punto que significa timeout.')">Cada punto indica que el destino está apagado (unreachable)</div>
+  </div>
+  <div class="wfb" id="fb_wq13"></div>
+</div>
+
+<div class="wq" id="wq14">
+  <div class="wq-text">¿Cuál es el estado correcto que debe mostrar una interfaz completamente operativa en el output de <code>show ip interface brief</code>?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq14','wrong','up/down significa que la capa física está bien pero el protocolo de línea falla.')">up / down</div>
+    <div class="wopt" onclick="checkOpt(this,'wq14','wrong','administratively down / down significa que fue apagada por configuración.')">administratively down / down</div>
+    <div class="wopt" onclick="checkOpt(this,'wq14','correct','Correcto. up/up significa que la capa física (cable/señal) está activa Y el protocolo de línea funciona. Es el único estado que indica operación normal.')">up / up</div>
+  </div>
+  <div class="wfb" id="fb_wq14"></div>
+</div>
+
+</div></div><!-- /warm-body /warm-block -->
+
+<!-- ══ SIMULADOR FASE 2 ══ -->
+<div class="section-title" id="f2sim"><span class="section-num">SIM 2</span><h2>Simulador CLI — Reparar la interfaz G0/1</h2></div>
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Simulador</span><span>Secuencia completa · 4 pasos</span></div>
+<div class="warm-body">
+  <div class="wq">
+    <div class="wq-text">El router ya se llama <code>CONALEP-NP</code>. Ahora repara la interfaz G0/1 para que las PCs del lab puedan conectarse:</div>
+    <div class="wq-context">
+      1. <code>configure terminal</code> → entrar a configuración global<br>
+      2. <code>interface g0/1</code> → seleccionar la interfaz<br>
+      3. <code>ip address 192.168.10.1 255.255.255.0</code> → asignar IP<br>
+      4. <code>no shutdown</code> → activar la interfaz
+    </div>
+  </div>
+</div>
+<div class="cli-sim-header"><span class="cli-sim-title">Simulador CLI – Reparar G0/1</span><span class="cli-sim-hint">Ayuda RESET</span></div>
+<div class="cli-output" id="sim2-out"><span class="cli-line-info">Cisco IOS Simulator · El router ya está en modo privilegiado</span></div>
+<div class="cli-input-row">
+  <span class="cli-prompt-label" id="sim2-prompt">CONALEP-NP#</span>
+  <input class="cli-input" id="sim2-in" placeholder="Escribe un comando y presiona Enter..." onkeydown="handleCLI2(event)" autocomplete="off" spellcheck="false">
+</div>
+</div>
+
+<!-- ══ FASE 3 ══ -->
+<div class="fase-divider f3" id="f3"><div class="fase-badge">Fase 3</div><div><h2>Documentar la red</h2><p>Inciso D · Líneas de base de red</p></div></div>
+
+<div class="section-title" id="f3q"><span class="section-num">F3</span><h2>Líneas de base y captura del estado de la red</h2></div>
+
+<div class="ib scenario"><div class="ibl">Contexto</div>
+<p>El laboratorio ya funciona. El director te pide: <em>"deja documentado cómo quedó la red para que el próximo técnico no pase por lo mismo."</em> Es tu última tarea antes de salir.</p>
+</div>
+
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Fase 3</span><span>6 preguntas</span></div><div class="warm-body">
+
+<div class="wq" id="wq15">
+  <div class="wq-text">¿Qué es una línea de base de red?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq15','wrong','Una topología muestra cómo están conectados los dispositivos, pero no documenta el estado operativo en un momento dado.')">Un diagrama de cómo están conectados los dispositivos</div>
+    <div class="wopt" onclick="checkOpt(this,'wq15','correct','Correcto. La línea de base es una "fotografía" del estado de la red cuando todo funciona bien. Sirve como referencia para comparar en el futuro cuando algo falle.')">Un registro del estado normal de la red para usar como punto de comparación cuando algo falle</div>
+    <div class="wopt" onclick="checkOpt(this,'wq15','wrong','La lista de contraseñas es importante pero no es una línea de base. La línea de base documenta el estado operativo completo.')">Una lista de contraseñas y usuarios del router</div>
+  </div>
+  <div class="wfb" id="fb_wq15"></div>
+</div>
+
+<div class="wq" id="wq16">
+  <div class="wq-text">¿Qué comando ejecutas en Windows para capturar la información completa de red de una PC (IP, máscara, gateway, DNS, MAC)?</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq16" placeholder="ipconfig ..." onkeydown="if(event.key==='Enter')checkInput('wq16',['ipconfig /all','ipconfig/all'],'El comando es: ipconfig /all')">
+    <button class="wbtn" onclick="checkInput('wq16',['ipconfig /all','ipconfig/all'],'El comando es: ipconfig /all')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq16"></div>
+</div>
+
+<div class="wq" id="wq17">
+  <div class="wq-text">Analiza este output de <code>ipconfig /all</code>. ¿Qué está mal?</div>
+  <div class="wq-context">
+    IPv4 Address: 192.168.10.5<br>
+    Subnet Mask: <strong>255.255.0.0</strong><br>
+    Default Gateway: <strong>(en blanco)</strong><br>
+    DHCP Enabled: Yes
+  </div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq17','wrong','La IP 192.168.10.5 es perfectamente válida para esa red.')">La dirección IP no es válida para esta red</div>
+    <div class="wopt" onclick="checkOpt(this,'wq17','correct','Correcto. Hay dos errores: (1) la máscara debería ser 255.255.255.0 para una red /24, no 255.255.0.0 que corresponde a /16; (2) el gateway está vacío, por lo que la PC no puede salir de su red local aunque el router esté bien configurado.')">La máscara es incorrecta (/16 en lugar de /24) y falta el gateway</div>
+    <div class="wopt" onclick="checkOpt(this,'wq17','wrong','DNS no es el único problema. La máscara y el gateway son más críticos para la conectividad.')">Solo falta el servidor DNS</div>
+  </div>
+  <div class="wfb" id="fb_wq17"></div>
+</div>
+
+<div class="wq" id="wq18">
+  <div class="wq-text">¿Cuál es el comando del router que muestra la configuración activa completa — ideal para incluir en la línea de base?</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq18" placeholder="show ..." onkeydown="if(event.key==='Enter')checkInput('wq18',['show running-config','show run'],'El comando es: show running-config')">
+    <button class="wbtn" onclick="checkInput('wq18',['show running-config','show run'],'El comando es: show running-config')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq18"></div>
+</div>
+
+<div class="wq" id="wq19">
+  <div class="wq-text">¿Por qué hubiera sido tan útil tener una línea de base <em>antes</em> de que el técnico anterior se fuera sin documentar?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq19','wrong','La línea de base no reemplaza contraseñas — sirve para comparar el estado de la red, no para recuperar acceso.')">Con la línea de base hubiéramos tenido las contraseñas</div>
+    <div class="wopt" onclick="checkOpt(this,'wq19','correct','Correcto. Con una línea de base tendríamos: las IPs configuradas en cada interfaz, el hostname, la topología, el estado de cada interfaz y el output de ipconfig de las PCs. Todo eso que tuvimos que reconstruir desde cero.')">Tendríamos las IPs, el estado de las interfaces y la configuración de las PCs ya documentados — no habría necesidad de reconstruir todo desde cero</div>
+    <div class="wopt" onclick="checkOpt(this,'wq19','wrong','Una línea de base es documentación del estado operativo, no previene errores del técnico.')">La línea de base habría evitado que el técnico cometiera errores</div>
+  </div>
+  <div class="wfb" id="fb_wq19"></div>
+</div>
+
+<div class="wq" id="wq20">
+  <div class="wq-text">Para completar la línea de base del router, ¿cuál de estos comandos te da el resumen más rápido del estado actual de todas las interfaces (IP, estado y protocolo)?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq20','wrong','show version muestra información del IOS, hardware y tiempo de uptime, pero no el estado de interfaces.')">show version</div>
+    <div class="wopt" onclick="checkOpt(this,'wq20','correct','Correcto. show ip interface brief es el comando ideal para la línea de base: muestra en una tabla todas las interfaces, su IP asignada, y el estado (up/down) de capa física y protocolo.')">show ip interface brief</div>
+    <div class="wopt" onclick="checkOpt(this,'wq20','wrong','show startup-config muestra la configuración guardada en NVRAM, no el estado actual de las interfaces.')">show startup-config</div>
+  </div>
+  <div class="wfb" id="fb_wq20"></div>
+</div>
+
+</div></div><!-- /warm-body /warm-block -->
+
+<!-- ══ PANEL PKT ══ -->
+<div id="pkt" style="display:none">
+
+<div style="background:linear-gradient(135deg,rgba(0,212,170,.1),rgba(13,17,23,0));border:2px solid var(--accent);border-radius:16px;padding:28px 30px;margin:32px 0;text-align:center">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">✅ Parte teórica completada</div>
+  <div style="font-size:26px;font-weight:700;color:#fff;margin-bottom:8px">¡Buen trabajo! Ahora viene la práctica</div>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:24px">Descarga el archivo de Packet Tracer y sigue las instrucciones paso a paso. Vale <b style="color:var(--accent)">20 puntos</b> adicionales.</p>
+  <a href="https://raw.githubusercontent.com/profesantiagomtz/mi-ruta-de-aprendizaje/main/manejo-de-redes/2-2526_MRED_U2_RA21_EL-TECNICO-DE-GUARDIA.pkt" download style="display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#06110f;border-radius:10px;padding:14px 28px;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;text-decoration:none;transition:filter .15s" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='none'">
+    ⬇ Descargar archivo .pkt
+  </a>
+  <p style="color:var(--muted);font-size:12px;margin-top:12px">Archivo: <code>2-2526_MRED_U2_RA21_EL-TECNICO-DE-GUARDIA.pkt</code></p>
+</div>
+
+<div style="margin:0 0 12px">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:16px">📋 Instrucciones de la práctica — léelas completas antes de abrir Packet Tracer</div>
+
+  <!-- PASO 1 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 1</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Abre el archivo en Packet Tracer</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:8px">Descarga el archivo de arriba. Luego abre <b style="color:var(--text)">Cisco Packet Tracer</b> y haz doble clic sobre el archivo descargado — se abrirá automáticamente.</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:12px 16px;font-size:13px;color:var(--muted)">
+      Verás una red con: <b style="color:var(--text)">2 PCs</b> → <b style="color:var(--text)">1 Switch</b> → <b style="color:var(--text)">1 Router</b>.<br>
+      La red tiene <b style="color:var(--red)">errores intencionales</b> que tú debes encontrar y corregir.
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 2</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Corrige el gateway de las PCs</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Las dos PCs no tienen gateway configurado. Debes hacerlo en <b style="color:var(--text)">PC-LAB-01</b> y <b style="color:var(--text)">PC-LAB-02</b>.</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2">
+      <span style="color:var(--accent)">①</span> Haz clic en <b style="color:var(--text)">PC-LAB-01</b><br>
+      <span style="color:var(--accent)">②</span> Ve a la pestaña <b style="color:var(--text)">Desktop</b><br>
+      <span style="color:var(--accent)">③</span> Haz clic en <b style="color:var(--text)">IP Configuration</b><br>
+      <span style="color:var(--accent)">④</span> En el campo <b style="color:var(--text)">Default Gateway</b> escribe: <code>192.168.10.1</code><br>
+      <span style="color:var(--accent)">⑤</span> Cierra la ventana y repite lo mismo en <b style="color:var(--text)">PC-LAB-02</b>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 3</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Entra al router por consola</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">El router se llama <b style="color:var(--text)">Router</b> (sin nombre). Tienes que entrar a su CLI y configurarlo.</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2">
+      <span style="color:var(--accent)">①</span> Haz clic en el router (el dispositivo grande de la derecha)<br>
+      <span style="color:var(--accent)">②</span> Ve a la pestaña <b style="color:var(--text)">CLI</b><br>
+      <span style="color:var(--accent)">③</span> Si aparece una pregunta en inglés, escribe <code>no</code> y presiona <b style="color:var(--text)">Enter</b><br>
+      <span style="color:var(--accent)">④</span> Presiona <b style="color:var(--text)">Enter</b> una vez más hasta ver: <code style="color:var(--accent)">Router&gt;</code>
+    </div>
+  </div>
+
+  <!-- PASO 4 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 4</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Configura el router — escribe estos comandos en orden</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Escribe <b style="color:var(--text)">un comando a la vez</b> y presiona <b style="color:var(--text)">Enter</b> después de cada uno. El prompt cambia conforme avanzas — eso es normal.</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:16px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2.2">
+      <div><span style="color:var(--accent);user-select:none">Router&gt; </span><span style="color:#79c0ff">enable</span> <span style="color:#6e7681">← sube a modo privilegiado</span></div>
+      <div><span style="color:var(--accent);user-select:none">Router# </span><span style="color:#79c0ff">configure terminal</span> <span style="color:#6e7681">← entra a configuración</span></div>
+      <div><span style="color:var(--accent);user-select:none">Router(config)# </span><span style="color:#79c0ff">hostname CONALEP-NP</span> <span style="color:#6e7681">← cambia el nombre</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config)# </span><span style="color:#79c0ff">enable secret Admin2025</span> <span style="color:#6e7681">← contraseña segura</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config)# </span><span style="color:#79c0ff">banner motd # ACCESO RESTRINGIDO. SOLO PERSONAL AUTORIZADO. #</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config)# </span><span style="color:#79c0ff">interface GigabitEthernet0/1</span> <span style="color:#6e7681">← selecciona la interfaz</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config-if)# </span><span style="color:#79c0ff">ip address 192.168.10.1 255.255.255.0</span> <span style="color:#6e7681">← asigna IP</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config-if)# </span><span style="color:#79c0ff">no shutdown</span> <span style="color:#6e7681">← enciende la interfaz</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP(config-if)# </span><span style="color:#79c0ff">end</span> <span style="color:#6e7681">← regresa a modo privilegiado</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP# </span><span style="color:#79c0ff">copy running-config startup-config</span> <span style="color:#6e7681">← guarda todo</span></div>
+      <div style="margin-top:4px"><span style="color:#6e7681">Cuando pregunte </span><span style="color:#a5d6ff">Destination filename [startup-config]?</span><span style="color:#6e7681"> solo presiona Enter</span></div>
+    </div>
+  </div>
+
+  <!-- PASO 5 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 5</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Verifica que todo funciona</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Desde el router, escribe este comando y confirma que G0/1 ya aparece <b style="color:var(--green)">up / up</b>:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2;margin-bottom:12px">
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP# </span><span style="color:#79c0ff">show ip interface brief</span></div>
+      <div style="color:#6e7681">Debes ver G0/1 con IP <span style="color:var(--green)">192.168.10.1</span> y estado <span style="color:var(--green)">up / up</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Luego ve a <b style="color:var(--text)">PC-LAB-01</b> → Desktop → Command Prompt y prueba:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2">
+      <div><span style="color:#c9d1d9">C:\&gt; </span><span style="color:#79c0ff">ping 192.168.10.1</span> <span style="color:#6e7681">← debe responder con Reply from...</span></div>
+      <div><span style="color:#c9d1d9">C:\&gt; </span><span style="color:#79c0ff">ping 192.168.10.6</span> <span style="color:#6e7681">← debe responder (PC-LAB-02)</span></div>
+    </div>
+  </div>
+
+  <!-- PASO 6 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 6</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Documenta la línea de base</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Antes de entregar, captura el estado final de la red. En el router escribe:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2;margin-bottom:12px">
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP# </span><span style="color:#79c0ff">show running-config</span></div>
+      <div><span style="color:var(--accent);user-select:none">CONALEP-NP# </span><span style="color:#79c0ff">show ip interface brief</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">En <b style="color:var(--text)">PC-LAB-01</b> → Desktop → Command Prompt:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2">
+      <div><span style="color:#c9d1d9">C:\&gt; </span><span style="color:#79c0ff">ipconfig /all</span></div>
+    </div>
+  </div>
+
+  <!-- PASO 7 -->
+  <div style="background:linear-gradient(135deg,rgba(124,111,255,.08),rgba(13,17,23,0));border:1px solid rgba(124,111,255,.35);border-left:4px solid var(--accent3);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent3);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px;white-space:nowrap">PASO 7</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Guarda y entrega tu archivo</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Este es el último paso. Guarda el archivo con tu nombre y mándalo por correo al docente para que pueda revisarlo.</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2.2;color:var(--muted)">
+      <span style="color:var(--accent3)">①</span> En Packet Tracer ve a <b style="color:var(--text)">File → Save As</b><br>
+      <span style="color:var(--accent3)">②</span> Guarda el archivo con este nombre exacto:<br>
+      <div style="margin:8px 0 8px 20px;background:rgba(124,111,255,.1);border:1px solid rgba(124,111,255,.3);border-radius:5px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#c9d1d9">PRACTICA_RA21_<span style="color:var(--accent3)">TuNombre</span>_<span style="color:var(--accent3)">TuGrupo</span>.pkt</div>
+      <span style="color:var(--accent3)">③</span> Abre tu correo y redacta un mensaje nuevo<br>
+      <span style="color:var(--accent3)">④</span> En el destinatario escribe: <b style="color:var(--text)">profesantiagomtzglez@gmail.com</b><br>
+      <span style="color:var(--accent3)">⑤</span> En el asunto escribe exactamente: <b style="color:var(--text)">ACTIVIDAD DE EVALUACIÓN R.A. 2.1 - TuNombre - TuGrupo</b><br>
+      <span style="color:var(--accent3)">⑥</span> Adjunta el archivo <code>.pkt</code> que guardaste y envía el correo
+    </div>
+    <div style="margin-top:10px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;font-size:13px;color:#86efac">
+      💡 Asegúrate de que el archivo adjunto tenga extensión <code>.pkt</code> antes de enviar. Si no aparece la extensión, busca el archivo en tu carpeta de Documentos o Descargas.
+    </div>
+    <div style="margin-top:8px;background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.2);border-radius:6px;padding:10px 14px;font-size:13px;color:#fca5a5">
+      ⚠️ Si no envías el archivo <code>.pkt</code> por correo, los 20 puntos de práctica quedan en cero aunque hayas terminado esta parte teórica.
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ PANEL FINAL ══ -->
+<div class="v30-panel" id="v30FinalPanel">
+  <h3>Entrega final de la actividad</h3>
+  <p>Cuando hayas terminado todos los ejercicios, envía tu resultado. Recuerda: solo se permite un intento, salvo autorización del docente.</p>
+  <div class="v30-result-grid">
+    <div class="v30-result-card"><span>Contestadas</span><b id="v30Answered">0</b></div>
+    <div class="v30-result-card"><span>Correctas</span><b id="v30Correct">0</b></div>
+    <div class="v30-result-card"><span>Incorrectas</span><b id="v30Wrong">0</b></div>
+    <div class="v30-result-card"><span>Teoría (de 40)</span><b id="v30Grade">0</b></div>
+  </div>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--accent3);border-radius:8px;padding:16px 20px;margin:14px 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+    <div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Teoría (este HTML)</div><div style="font-size:22px;font-weight:700;color:#fff" id="v30GradePkt1">0 / 40</div></div>
+    <div style="border-left:1px solid var(--border);border-right:1px solid var(--border)"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent3);margin-bottom:6px">Práctica .pkt</div><div style="font-size:22px;font-weight:700;color:var(--muted)">? / 20</div><div style="font-size:11px;color:var(--muted);margin-top:4px">El docente la evalúa</div></div>
+    <div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:6px">Total final</div><div style="font-size:22px;font-weight:700;color:var(--yellow)" id="v30GradeTotal">? / 60</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Teoría + Práctica</div></div>
+  </div>
+  <div class="ib warn"><div class="ibl">Antes de enviar</div><p>Revisa tus datos. Después de enviar, la actividad quedará bloqueada en este navegador. Recuerda enviar tu archivo <code>.pkt</code> por correo a <b>profesantiagomtzglez@gmail.com</b> para completar los 20 pts restantes.</p></div>
+  <button class="v30-btn" id="v30SubmitBtn" onclick="v30SubmitResults()">Enviar calificación al docente</button>
+  <button class="v30-btn secondary" onclick="v30DownloadBackup()">Descargar respaldo</button>
+  <p id="v30SubmitStatus" style="margin-top:12px;"></p>
+</div>
+
+</main>
+
+<footer>
+  <span>Manejo de Redes · Unidad 2 · R.A. 2.1 — Evaluación Integradora</span>
+  <span>Ing. Santiago Martínez González</span>
+  <span>CONALEP Extensión Nuevo Progreso · 2-2526</span>
+</footer>
+
+<script>
+// ══ CONFIG ══
+const V30_CONFIG={
+  activityId:'MRED_22526_U2_RA21_EV',
+  teacherEmail:'profesantiagomtzglez@gmail.com',
+  unlockKey:'REDES22526',
+  formsubmitEndpoint:'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',
+  totalQuestions:20,
+  timeLimitSeconds:50*60,
+  requiredDomain:'@tam.conalep.edu.mx'
+};
+const v30Keys={
+  student:V30_CONFIG.activityId+'_student',
+  answers:V30_CONFIG.activityId+'_answers',
+  completed:V30_CONFIG.activityId+'_completed',
+  startedAt:V30_CONFIG.activityId+'_startedAt',
+  guard:V30_CONFIG.activityId+'_guard',
+  timeLeft:V30_CONFIG.activityId+'_timeLeft',
+  exerciseStarted:V30_CONFIG.activityId+'_exerciseStarted',
+  timeExpired:V30_CONFIG.activityId+'_timeExpired'
+};
+let v30Answers={};
+let v30TimerHandle=null;
+
+// ══ CORE ══
+function v30LoadAnswers(){try{v30Answers=JSON.parse(localStorage.getItem(v30Keys.answers)||'{}')}catch(e){v30Answers={}}}
+function v30SaveAnswers(){localStorage.setItem(v30Keys.answers,JSON.stringify(v30Answers))}
+function v30GetStudent(){try{return JSON.parse(localStorage.getItem(v30Keys.student)||'null')}catch(e){return null}}
+function v30IsCompleted(){return localStorage.getItem(v30Keys.completed)==='1'}
+function v30ExercisesStarted(){return localStorage.getItem(v30Keys.exerciseStarted)==='1'}
+function v30TimeExpired(){return localStorage.getItem(v30Keys.timeExpired)==='1'}
+function v30NormalizeEmail(e){return String(e||'').trim().toLowerCase()}
+function v30StudentFingerprint(s){return btoa(unescape(encodeURIComponent(`${s.name}|${s.group}|${s.shift}|${v30NormalizeEmail(s.email)}`))).slice(0,32)}
+
+function v30StartActivity(){
+  const student={
+    name:document.getElementById('v30Name').value.trim(),
+    group:document.getElementById('v30Group').value.trim(),
+    shift:document.getElementById('v30Shift').value.trim(),
+    email:v30NormalizeEmail(document.getElementById('v30Email').value)
+  };
+  if(!student.name||!student.group||!student.shift||!student.email){alert('Completa todos los datos.');return}
+  if(!/^\S+@\S+\.\S+$/.test(student.email)){alert('Escribe un correo válido.');return}
+  if(!student.email.endsWith(V30_CONFIG.requiredDomain)){alert('Debes usar tu correo institucional que termine en '+V30_CONFIG.requiredDomain);return}
+  student.fingerprint=v30StudentFingerprint(student);
+  localStorage.setItem(v30Keys.student,JSON.stringify(student));
+  document.getElementById('v30StartModal').classList.remove('show');
+  document.body.classList.remove('v30-locked');
+  v30RefreshUI();
+}
+
+function v30BeginExercises(){
+  if(!v30GetStudent()){alert('Primero registra tus datos.');return}
+  if(v30ExercisesStarted()){v30RefreshUI();return}
+  const ok=confirm('Al iniciar se activará el temporizador de 50 minutos. Si el tiempo termina, se cerrará la actividad. ¿Deseas iniciar ahora?');
+  if(!ok)return;
+  localStorage.setItem(v30Keys.exerciseStarted,'1');
+  localStorage.setItem(v30Keys.startedAt,new Date().toISOString());
+  localStorage.setItem(v30Keys.timeLeft,String(V30_CONFIG.timeLimitSeconds));
+  document.body.classList.remove('v30-exercises-locked');
+  v30StartTimer();
+  v30RefreshUI();
+}
+
+function v30RequireExercisesStarted(){
+  if(!v30GetStudent()){alert('Primero registra tus datos.');return false}
+  if(!v30ExercisesStarted()){alert('Primero activa los ejercicios.');return false}
+  if(v30IsCompleted()){return false}
+  return true;
+}
+
+function v30StartTimer(){
+  clearInterval(v30TimerHandle);
+  v30TimerHandle=setInterval(()=>{
+    if(!v30ExercisesStarted()||v30IsCompleted()){clearInterval(v30TimerHandle);return}
+    let left=parseInt(localStorage.getItem(v30Keys.timeLeft)||V30_CONFIG.timeLimitSeconds,10);
+    left--;
+    localStorage.setItem(v30Keys.timeLeft,String(left));
+    const timer=document.getElementById('v30Timer');
+    if(timer){const m=Math.max(0,Math.floor(left/60));const s=Math.max(0,left%60);timer.textContent=`${m}:${String(s).padStart(2,'0')}`}
+    if(left<=300&&left>0&&left%60===0)v30Toast('Tiempo','Quedan '+Math.ceil(left/60)+' minutos.');
+    if(left<=0){clearInterval(v30TimerHandle);localStorage.setItem(v30Keys.timeExpired,'1');v30Toast('Tiempo agotado','Se tomará en cuenta solo lo contestado.');v30SubmitResults(true)}
+  },1000);
+}
+
+// ══ GUARDS ══
+function v30LoadGuard(){try{return JSON.parse(localStorage.getItem(v30Keys.guard)||'{}')}catch(e){return {}}}
+function v30SaveGuard(g){localStorage.setItem(v30Keys.guard,JSON.stringify(g))}
+function v30Toast(title,msg){const t=document.getElementById('v30Toast');document.getElementById('v30ToastTitle').textContent=title;document.getElementById('v30ToastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5200)}
+function v30GuardEvent(type,detail){
+  const g=v30LoadGuard();g[type+'s']=(g[type+'s']||0)+1;g.events=g.events||[];g.events.push({type,detail,at:new Date().toISOString()});v30SaveGuard(g);v30RefreshUI();
+  if(type==='tab'){
+    if((g.tabs||0)===1)v30Toast('Primera advertencia','Se detectó cambio de pestaña. Evita salir.');
+    else if((g.tabs||0)===2)v30Toast('Segunda advertencia','A la tercera salida se cerrará la actividad.');
+    else if((g.tabs||0)>=3){localStorage.setItem(V30_CONFIG.activityId+'_closedByTab','1');v30SubmitResults(true)}
+  }
+}
+function v30InstallGuards(){
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30GuardEvent('tab','Cambio de pestaña')});
+  document.addEventListener('contextmenu',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('rightClick','Clic derecho');v30Toast('Clic derecho bloqueado','Usa el material para razonar.')}});
+  document.addEventListener('copy',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('copyPaste','Copiar')}});
+  document.addEventListener('paste',e=>{if(v30GetStudent()&&!v30IsCompleted()){if(e.target&&e.target.classList&&e.target.classList.contains('wq-input')){e.preventDefault();v30GuardEvent('copyPaste','Pegar');v30Toast('Pegar bloqueado','Escribe tu respuesta directamente.')}}});
+}
+
+// ══ UNLOCK ══
+function v30OpenUnlock(){document.getElementById('v30UnlockModal').classList.add('show');document.getElementById('v30UnlockMsg').className='v30-lock-msg'}
+function v30CloseUnlock(){document.getElementById('v30UnlockModal').classList.remove('show')}
+function v30UnlockAttempt(){
+  const key=document.getElementById('v30UnlockKey').value.trim(),msg=document.getElementById('v30UnlockMsg');
+  if(key!==V30_CONFIG.unlockKey){msg.textContent='Clave incorrecta. Solicita autorización al docente.';msg.className='v30-lock-msg show';return}
+  Object.values(v30Keys).forEach(k=>localStorage.removeItem(k));
+  localStorage.removeItem(V30_CONFIG.activityId+'_closedByTab');
+  v30Answers={};
+  msg.textContent='Actividad desbloqueada.';msg.className='v30-lock-msg show';
+  setTimeout(()=>location.reload(),900);
+}
+
+// ══ ANSWERS ══
+function v30RecordAnswer(qId,isCorrect,detail){
+  if(!v30RequireExercisesStarted())return;
+  v30Answers[qId]={correct:!!isCorrect,detail:detail||'',answeredAt:new Date().toISOString()};
+  v30SaveAnswers();v30RefreshUI();
+}
+function v30Stats(){
+  const answered=Object.keys(v30Answers).length,correct=Object.values(v30Answers).filter(a=>a.correct).length,wrong=answered-correct,grade=Math.round((correct/V30_CONFIG.totalQuestions)*40);
+  return{answered,correct,wrong,grade};
+}
+function v30RefreshUI(){
+  const s=v30GetStudent(),st=v30Stats(),pct=Math.round((st.answered/V30_CONFIG.totalQuestions)*100);
+  document.getElementById('v30StudentLabel').innerHTML=s?`Alumno: <b>${s.name}</b> · ${s.group} · ${s.shift}`:'Alumno: <b>No registrado</b>';
+  document.getElementById('v30Progress').style.width=pct+'%';
+  document.getElementById('v30ScoreLabel').textContent=`${st.correct}/${V30_CONFIG.totalQuestions} · ${st.grade}/40 pts`;
+  const g=v30LoadGuard();
+  document.getElementById('v30GuardLabel').innerHTML=`Alertas: <b>${(g.tabs||0)+(g.copyPastes||0)+(g.rightClicks||0)}</b>`;
+  document.getElementById('v30Answered').textContent=st.answered;
+  document.getElementById('v30Correct').textContent=st.correct;
+  document.getElementById('v30Wrong').textContent=st.wrong;
+  document.getElementById('v30Grade').textContent=st.grade+' / 40 pts';const pkt1=document.getElementById('v30GradePkt1');if(pkt1)pkt1.textContent=st.grade+' / 40';const tot=document.getElementById('v30GradeTotal');if(tot)tot.textContent='? / 60';
+  const timer=document.getElementById('v30Timer');
+  if(timer&&!v30ExercisesStarted()&&!v30IsCompleted())timer.textContent='Sin iniciar';
+  const panel=document.getElementById('v30StartExamPanel');
+  if(panel&&v30ExercisesStarted())panel.style.display='none';
+  if(!v30ExercisesStarted()&&!v30IsCompleted())document.body.classList.add('v30-exercises-locked');
+  else document.body.classList.remove('v30-exercises-locked');
+  const pktPanel=document.getElementById('pkt');if(pktPanel)pktPanel.style.display=v30IsCompleted()?'block':'none';const btn=document.getElementById('v30SubmitBtn');
+  if(btn){
+    btn.disabled=(!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions)||v30IsCompleted()||!v30ExercisesStarted();
+    btn.textContent=v30IsCompleted()?'Actividad enviada y bloqueada':(v30TimeExpired()?'Enviar respuestas contestadas':'Enviar calificación al docente');
+  }
+}
+
+// ══ SUBMIT ══
+async function v30SubmitResults(auto=false){
+  const s=v30GetStudent();if(!s){alert('Primero registra tus datos.');return}
+  const st=v30Stats();
+  if(!auto&&!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions){alert(`Aún faltan preguntas por contestar: ${V30_CONFIG.totalQuestions-st.answered}`);return}
+  const status=document.getElementById('v30SubmitStatus');
+  const startedAt=localStorage.getItem(v30Keys.startedAt)||'';
+  const guard=v30LoadGuard();
+  const payload={
+    _subject:`MRED R.A.2.1 EV — ${s.name} — Teoria:${st.grade}/40`,
+    docente:V30_CONFIG.teacherEmail,
+    actividad:'2-2526 · MRED · U2 · R.A. 2.1 · Evaluación Integradora',
+    nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,
+    calificacion:st.grade,correctas:st.correct,incorrectas:st.wrong,
+    contestadas:st.answered,total_preguntas:V30_CONFIG.totalQuestions,
+    inicio:startedAt,envio:new Date().toISOString(),
+    cierre_automatico:auto?'SI':'NO',tiempo_expirado:v30TimeExpired()?'SI':'NO',
+    cerrado_por_pestanas:localStorage.getItem(V30_CONFIG.activityId+'_closedByTab')==='1'?'SI':'NO',
+    alertas_json:JSON.stringify(guard,null,2),
+    respuestas_json:JSON.stringify(v30Answers,null,2),
+    navegador:navigator.userAgent,huella_alumno:s.fingerprint,_captcha:'false',_template:'table'
+  };
+  try{
+    status.textContent='Enviando resultado...';
+    const res=await fetch(V30_CONFIG.formsubmitEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error('Error al enviar');
+    localStorage.setItem(v30Keys.completed,'1');
+    document.body.classList.add('v30-completed');
+    status.innerHTML='<span style="color:var(--green)">Resultado enviado correctamente. La actividad quedó bloqueada.</span>';
+    v30RefreshUI();
+  }catch(err){
+    status.innerHTML='<span style="color:var(--red)">No se pudo enviar. Revisa tu conexión. Puedes descargar respaldo.</span>';
+    v30DownloadBackup();
+  }
+}
+function v30DownloadBackup(){
+  const s=v30GetStudent()||{name:'sin_registro'},st=v30Stats();
+  const data={actividad:V30_CONFIG.activityId,alumno:s,resultado:st,respuestas:v30Answers,guard:v30LoadGuard(),generado:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`resultado_MRED_RA21_EV_${(s.name||'alumno').replace(/\s+/g,'_')}.json`;a.click();URL.revokeObjectURL(a.href);
+}
+
+// ══ QUESTION HANDLERS ══
+function checkOpt(el,qId,result,msg){
+  if(!v30RequireExercisesStarted())return;
+  const wrap=document.getElementById(qId),opts=wrap.querySelectorAll('.wopt'),fb=document.getElementById('fb_'+qId),isCorrect=result==='correct';
+  v30RecordAnswer(qId,isCorrect,el.textContent.trim());
+  opts.forEach(o=>o.onclick=null);
+  if(isCorrect){el.classList.add('correct');fb.className='wfb show ok';fb.textContent='✓ '+msg}
+  else{el.classList.add('wrong');fb.className='wfb show bad';fb.textContent='✗ '+msg}
+}
+function checkInput(qId,correct,hint){
+  if(!v30RequireExercisesStarted())return;
+  const input=document.getElementById('in_'+qId),fb=document.getElementById('fb_'+qId),val=input.value.trim();
+  const norm=s=>String(s).toLowerCase().replace(/\s+/g,' ').trim();
+  const ok=correct.some(c=>norm(val)===norm(c));
+  if(!val){fb.className='wfb show hint';fb.textContent='Escribe algo primero.';return}
+  if(ok){input.className='wq-input ok';input.disabled=true;fb.className='wfb show ok';fb.textContent='✓ Correcto.';v30RecordAnswer(qId,true,val)}
+  else{input.className='wq-input bad';fb.className='wfb show bad';fb.textContent='✗ No es correcto. Pista: '+hint;v30RecordAnswer(qId,false,val);setTimeout(()=>{input.className='wq-input';input.select()},1200)}
+}
+
+// ══ SIMULADOR 1 — Configuración básica ══
+const sim1={mode:'user',host:'Router',step:0};
+const sim1Expected=[
+  ['enable','Entraste al modo privilegiado.'],
+  ['configure terminal','Entraste a configuración global.'],
+  ['hostname conalep-np','Hostname configurado. El prompt cambia.'],
+  ['enable secret admin2025','Contraseña secreta configurada con hash MD5.'],
+  ['service password-encryption','Contraseñas encriptadas en el running-config.'],
+  ['copy running-config startup-config','Configuración guardada en NVRAM.']
+];
+function sim1Prompt(){return sim1.mode==='user'?sim1.host+'>':sim1.mode==='priv'?sim1.host+'#':sim1.host+'(config)#'}
+function sim1Print(text,cls=''){const out=document.getElementById('sim1-out');const d=document.createElement('div');if(cls)d.className=cls;d.textContent=text;out.appendChild(d);out.scrollTop=out.scrollHeight}
+function sim1UpdatePrompt(){document.getElementById('sim1-prompt').textContent=sim1Prompt()}
+function sim1Reset(){sim1.mode='user';sim1.host='Router';sim1.step=0;document.getElementById('sim1-out').innerHTML='<span class="cli-line-info">Cisco IOS Simulator · Escribe los comandos en orden</span>';sim1UpdatePrompt()}
+function handleCLI1(e){
+  if(e.key!=='Enter')return;
+  if(!v30RequireExercisesStarted())return;
+  const input=document.getElementById('sim1-in'),raw=input.value.trim();input.value='';
+  if(!raw)return;
+  const cmd=raw.toLowerCase().replace(/\s+/g,' ').trim();
+  if(cmd==='reset'){sim1Reset();return}
+  sim1Print(sim1Prompt()+' '+raw);
+  const exp=sim1Expected[sim1.step];
+  if(!exp){sim1Print('Simulador completado. Bien hecho.','cli-line-ok');return}
+  if(cmd===exp[0]){
+    if(cmd==='enable')sim1.mode='priv';
+    if(cmd==='configure terminal')sim1.mode='config';
+    if(cmd==='hostname conalep-np')sim1.host='CONALEP-NP';
+    if(cmd==='copy running-config startup-config')sim1.mode='priv';
+    sim1Print('✓ '+exp[1],'cli-line-ok');
+    v30RecordAnswer('sim1_'+(sim1.step+1),true,raw);
+    sim1.step++;
+    if(sim1.step===sim1Expected.length)sim1Print('✅ Configuración básica completada correctamente.','cli-line-info');
+  }else{
+    sim1Print('✗ Comando incorrecto o en el orden equivocado. Revisa la secuencia.','cli-line-err');
+    v30RecordAnswer('sim1_'+(sim1.step+1),false,raw);
+  }
+  sim1UpdatePrompt();
+}
+
+// ══ SIMULADOR 2 — Reparar G0/1 ══
+const sim2={mode:'priv',host:'CONALEP-NP',step:0};
+const sim2Expected=[
+  ['configure terminal','Entraste a configuración global.'],
+  ['interface g0/1','Interfaz G0/1 seleccionada.'],
+  ['ip address 192.168.10.1 255.255.255.0','Dirección IP asignada a G0/1.'],
+  ['no shutdown','Interfaz G0/1 activada. Estado: up/up.']
+];
+function sim2Prompt(){
+  if(sim2.mode==='priv')return sim2.host+'#';
+  if(sim2.mode==='config')return sim2.host+'(config)#';
+  return sim2.host+'(config-if)#';
+}
+function sim2Print(text,cls=''){const out=document.getElementById('sim2-out');const d=document.createElement('div');if(cls)d.className=cls;d.textContent=text;out.appendChild(d);out.scrollTop=out.scrollHeight}
+function sim2UpdatePrompt(){document.getElementById('sim2-prompt').textContent=sim2Prompt()}
+function sim2Reset(){sim2.mode='priv';sim2.step=0;document.getElementById('sim2-out').innerHTML='<span class="cli-line-info">Cisco IOS Simulator · El router ya está en modo privilegiado</span>';sim2UpdatePrompt()}
+function handleCLI2(e){
+  if(e.key!=='Enter')return;
+  if(!v30RequireExercisesStarted())return;
+  const input=document.getElementById('sim2-in'),raw=input.value.trim();input.value='';
+  if(!raw)return;
+  const cmd=raw.toLowerCase().replace(/\s+/g,' ').trim();
+  if(cmd==='reset'){sim2Reset();return}
+  sim2Print(sim2Prompt()+' '+raw);
+  const exp=sim2Expected[sim2.step];
+  if(!exp){sim2Print('Simulador completado. G0/1 reparada.','cli-line-ok');return}
+  if(cmd===exp[0]){
+    if(cmd==='configure terminal')sim2.mode='config';
+    if(cmd==='interface g0/1')sim2.mode='if';
+    if(cmd==='no shutdown'){
+      sim2Print('%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up','cli-line-warn');
+    }
+    sim2Print('✓ '+exp[1],'cli-line-ok');
+    v30RecordAnswer('sim2_'+(sim2.step+1),true,raw);
+    sim2.step++;
+    if(sim2.step===sim2Expected.length)sim2Print('✅ Interfaz G0/1 operativa. Las PCs del laboratorio ahora tienen gateway.','cli-line-info');
+  }else{
+    sim2Print('✗ Comando incorrecto o fuera de lugar. Revisa el modo actual y la secuencia.','cli-line-err');
+    v30RecordAnswer('sim2_'+(sim2.step+1),false,raw);
+  }
+  sim2UpdatePrompt();
+}
+
+// ══ BOOTSTRAP ══
+function v30Bootstrap(){
+  v30LoadAnswers();
+  const s=v30GetStudent();
+  if(v30IsCompleted()){
+    document.body.classList.add('v30-completed');
+    document.getElementById('v30StartModal').classList.add('show');
+    document.getElementById('v30LockedMessage').classList.add('show');
+    document.getElementById('v30StudentForm').style.display='none';
+    document.getElementById('v30StartBtn').style.display='none';
+  }else if(!s){
+    document.body.classList.add('v30-locked');
+    document.getElementById('v30StartModal').classList.add('show');
+  }
+  v30RefreshUI();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  v30Bootstrap();
+  v30InstallGuards();
+  sim1Reset();
+  sim2Reset();
+  if(v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30StartTimer();
+});
+</script>
+</body>
+</html>
