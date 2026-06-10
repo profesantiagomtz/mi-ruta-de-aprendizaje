@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-2526 - MRED - U2 - R.A. 2.2 - B | Manejo de Redes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#30363d;--accent:#00d4aa;--accent2:#58a6ff;--accent3:#7c6fff;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#ff6b35}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+.v30-topbar{position:sticky;top:0;z-index:999;background:rgba(13,17,23,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.v30-left,.v30-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.v30-badge,.v30-guard-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,170,.25);background:rgba(0,212,170,.08);border-radius:999px;padding:4px 10px}
+.v30-student{font-size:12px;color:var(--muted)}.v30-student b{color:var(--text)}
+.v30-progress-wrap{width:220px;height:8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);overflow:hidden}
+.v30-progress{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s}
+.v30-score,.v30-timer{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}
+.v30-timer{color:var(--yellow)}
+.v30-btn{background:var(--accent);color:#06110f;border:none;border-radius:7px;padding:8px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.v30-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.v30-btn.secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.v30-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.v30-modal{position:fixed;inset:0;z-index:2000;background:rgba(1,4,9,.78);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.v30-modal.show{display:flex}.v30-card{width:min(590px,100%);background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.45);padding:28px}
+.v30-card h2{color:#fff;font-size:24px;margin-bottom:8px}.v30-card p{color:var(--muted);font-size:14px}.v30-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.v30-field.full{grid-column:1/-1}
+.v30-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.v30-field input,.v30-field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}
+.v30-field input:focus,.v30-field select:focus{border-color:var(--accent)}.v30-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.v30-lock-msg{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:#fca5a5;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;display:none}.v30-lock-msg.show{display:block}
+body.v30-locked main,body.v30-locked .toc,body.v30-locked header{filter:blur(4px);pointer-events:none;user-select:none}
+body.v30-exercises-locked .warm-block,body.v30-exercises-locked #v30FinalPanel{filter:blur(3px);opacity:.55;pointer-events:none;user-select:none}
+body.v30-exercises-locked .v30-start-exam-panel{filter:none;opacity:1;pointer-events:auto;user-select:auto}
+body.v30-completed .wopt,body.v30-completed .wq-input,body.v30-completed .wbtn{pointer-events:none!important;opacity:.65}
+header{background:linear-gradient(135deg,#050c1a 0%,#0a1628 55%,#0d2040 100%);border-bottom:3px solid var(--accent);padding:44px 64px 36px;position:relative;overflow:hidden}.header-content{max-width:1060px;margin:0 auto}
+header:before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;border:70px solid rgba(0,212,170,.05)}
+.htag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;display:block}
+header h1{font-size:32px;font-weight:700;color:#fff;line-height:1.25;max-width:860px}header h1 span{color:var(--accent)}
+.header-sub{color:var(--muted);font-size:14px;margin-top:8px;font-weight:300}.hpills{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}.hpill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}.hpill b{color:var(--text)}
+main{padding:40px 64px 60px;max-width:1060px;margin:0 auto}
+.toc{margin:28px auto 0;max-width:1060px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 32px}
+.toc-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.toc-section{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:1px}
+.toc-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 20px;list-style:none;counter-reset:toc-counter}
+.toc-cols li{counter-increment:toc-counter;font-size:13px;padding:3px 0;color:var(--muted)}
+.toc-cols li:before{content:counter(toc-counter)'. ';color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px}
+.toc-cols a{color:var(--muted);text-decoration:none}.toc-cols a:hover{color:var(--accent)}
+.section-title{display:flex;align-items:center;gap:12px;margin:40px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);border-radius:4px;padding:2px 8px;white-space:nowrap}
+.section-title h2{font-size:20px;font-weight:700;color:#fff}
+p{margin-bottom:14px;color:var(--muted);font-weight:300}p b,p strong{color:var(--text);font-weight:500}
+code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:13px;color:var(--accent)}
+table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13px}
+th{background:rgba(0,212,170,.08);color:var(--accent);text-align:left;padding:10px 12px;border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+td{padding:9px 12px;border:1px solid var(--border);color:var(--muted);vertical-align:top}
+tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.cb{background:#010409;border:1px solid var(--border);border-radius:8px;margin:14px 0 22px;overflow:hidden}
+.ch{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.dots{display:flex;gap:5px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#f85149}.dot.y{background:#d29922}.dot.g{background:#3fb950}
+pre{padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;color:#c9d1d9;white-space:pre-wrap;word-break:break-all}
+.pr{color:var(--accent)}.cmd{color:#79c0ff}.val{color:#ffa657}.cmt{color:var(--muted)}.ok{color:var(--green)}.err{color:var(--red)}.kw{color:#ff7b72}
+.ib{border-radius:8px;padding:14px 16px;margin:14px 0 22px;display:flex;gap:12px;flex-direction:column}
+.ib.info{background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-left:4px solid var(--accent2)}
+.ib.warn{background:rgba(210,153,34,.06);border:1px solid rgba(210,153,34,.2);border-left:4px solid var(--yellow)}
+.ib.ok{background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);border-left:4px solid var(--green)}
+.ib.danger{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.2);border-left:4px solid var(--red)}
+.ibl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.ib.info .ibl{color:var(--accent2)}.ib.warn .ibl{color:var(--yellow)}.ib.ok .ibl{color:var(--green)}.ib.danger .ibl{color:var(--red)}
+.ib p{margin:0;font-size:13px}
+.pera-box{background:linear-gradient(135deg,rgba(0,212,170,.04),rgba(88,166,255,.04));border:1px solid rgba(0,212,170,.15);border-left:4px solid var(--accent);border-radius:8px;padding:16px 18px;margin:14px 0 22px}
+.pera-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.pera-box p{margin:0;font-size:13px;color:var(--text)}
+.line-doc{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:12px 0 22px;overflow:hidden}.line-doc-title{background:rgba(0,212,170,.08);border-bottom:1px solid var(--border);padding:10px 14px;color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px}.line-doc-row{display:grid;grid-template-columns:minmax(260px,420px) 1fr;border-bottom:1px solid rgba(255,255,255,.05)}.line-doc-row:last-child{border-bottom:none}.line-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c9d1d9;background:#010409;padding:9px 12px;white-space:pre-wrap}.line-explain{font-size:13px;color:var(--muted);padding:9px 12px}
+.part-divider{margin:64px -64px 0;padding:28px 64px;background:linear-gradient(90deg,rgba(0,212,170,.06) 0%,transparent 100%);border-top:2px solid var(--accent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px}.part-badge{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.35);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:4px;white-space:nowrap;flex-shrink:0}.part-divider h2{font-size:22px;color:#fff}.part-divider p{font-size:13px;color:var(--muted);margin-top:2px}
+.warm-block{background:linear-gradient(135deg,#0d1a2e,#0d1117);border:1px solid rgba(91,124,250,.25);border-left:4px solid #5b7cfa;border-radius:8px;margin:28px 0 0;overflow:hidden}.warm-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(91,124,250,.15);background:rgba(91,124,250,.06)}.warm-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8ea2ff;background:rgba(91,124,250,.12);border:1px solid rgba(91,124,250,.3);border-radius:3px;padding:2px 8px}.warm-header span{font-size:13px;color:var(--muted)}.warm-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}.wq{display:flex;flex-direction:column;gap:6px}.wq-text{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}.wq-opts{display:flex;flex-direction:column;gap:8px}.wopt{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:9px 16px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'IBM Plex Sans',sans-serif;white-space:normal;text-align:left;line-height:1.5;width:100%}.wopt:hover{border-color:rgba(91,124,250,.5);color:var(--text)}.wopt.correct{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);pointer-events:none}.wopt.wrong{border-color:var(--red);background:rgba(249,81,73,.1);color:var(--red);pointer-events:none}.wfb{font-size:12px;padding:6px 10px;border-radius:4px;display:none;line-height:1.5}.wfb.show{display:block}.wfb.ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);color:#86efac}.wfb.bad{background:rgba(249,81,73,.08);border:1px solid rgba(249,81,73,.2);color:#fca5a5}.wfb.hint{background:rgba(91,124,250,.08);border:1px solid rgba(91,124,250,.2);color:#a5b4fc}.wq-input-row{display:flex;gap:8px;align-items:center}.wq-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none}.wq-input.ok{border-color:var(--green);background:rgba(63,185,80,.05)}.wq-input.bad{border-color:var(--red);background:rgba(249,81,73,.05)}.wbtn{background:#5b7cfa;color:#fff;border:none;border-radius:5px;padding:8px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer}
+.v30-start-exam-panel,.v30-panel{background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:24px 26px;margin:34px 0}.v30-start-exam-panel h3,.v30-panel h3{color:#fff;font-size:20px;margin-bottom:8px}.v30-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.v30-result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}.v30-result-card span{display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}.v30-result-card b{font-size:22px;color:#fff}
+.toast{position:fixed;right:18px;bottom:18px;z-index:3000;max-width:360px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--yellow);border-radius:12px;padding:14px 16px;box-shadow:0 18px 45px rgba(0,0,0,.42);display:none}.toast.show{display:block}.toast h4{color:#fff;margin-bottom:4px}.toast p{font-size:13px;margin:0;color:var(--muted)}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px 64px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace}.footer-inner,.topbar-inner{max-width:1060px;margin:0 auto;width:100%}
+@media(max-width:768px){header,main,footer{padding-left:20px;padding-right:20px}.toc{margin-left:20px;margin-right:20px}.toc-cols{grid-template-columns:1fr}.v30-topbar{padding:10px 20px;align-items:flex-start;flex-direction:column}.v30-progress-wrap{width:100%}.v30-result-grid{grid-template-columns:1fr 1fr}.v30-form{grid-template-columns:1fr}.line-doc-row{grid-template-columns:1fr}.part-divider{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="v30-topbar">
+  <div class="v30-left"><span class="v30-badge">Actividad 2.0</span><span class="v30-student" id="v30StudentLabel">Alumno: <b>No registrado</b></span></div>
+  <div class="v30-right"><div class="v30-progress-wrap" title="Progreso de ejercicios"><div class="v30-progress" id="v30Progress"></div></div><span class="v30-timer" id="v30Timer">Sin iniciar</span><span class="v30-guard-pill" id="v30GuardLabel">Alertas: <b>0</b></span><span class="v30-score" id="v30ScoreLabel">0/10 · 0%</span><button class="v30-btn secondary" onclick="v30OpenUnlock()">Desbloquear</button></div>
+</div>
+
+<!-- ══ MODAL REGISTRO ══ -->
+<div class="v30-modal" id="v30StartModal">
+  <div class="v30-card">
+    <h2>Registro del alumno</h2>
+    <p>Antes de iniciar, captura tus datos. Usa tu <b>correo institucional</b>. Esta actividad permite <b>un intento</b>. Al finalizar, tu calificación será enviada al docente.</p>
+    <div class="v30-lock-msg" id="v30LockedMessage">Esta actividad ya fue enviada desde este navegador. Si necesitas una segunda oportunidad, solicita autorización al docente.</div>
+    <div class="v30-form" id="v30StudentForm">
+      <div class="v30-field full"><label>Nombre completo</label><input id="v30Name" autocomplete="name" placeholder="Ej. Juan Pérez López"></div>
+      <div class="v30-field"><label>Grupo</label><input id="v30Group" placeholder="Ej. 611"></div>
+      <div class="v30-field"><label>Turno</label><select id="v30Shift"><option value="">Selecciona...</option><option>Matutino</option><option>Vespertino</option></select></div>
+      <div class="v30-field full"><label>Correo institucional</label><input id="v30Email" type="email" autocomplete="email" placeholder="usuario@tam.conalep.edu.mx"></div>
+    </div>
+    <div class="v30-actions"><button class="v30-btn secondary" onclick="v30OpenUnlock()">Tengo permiso para segunda oportunidad</button><button class="v30-btn" id="v30StartBtn" onclick="v30StartActivity()">Iniciar material</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL DESBLOQUEO ══ -->
+<div class="v30-modal" id="v30UnlockModal">
+  <div class="v30-card"><h2>Desbloqueo docente</h2><p>Solo el docente puede autorizar una segunda oportunidad. Ingresa la clave proporcionada.</p><div class="v30-form"><div class="v30-field full"><label>Clave de desbloqueo</label><input id="v30UnlockKey" type="password" placeholder="Clave del docente"></div></div><div class="v30-lock-msg" id="v30UnlockMsg"></div><div class="v30-actions"><button class="v30-btn secondary" onclick="v30CloseUnlock()">Cancelar</button><button class="v30-btn" onclick="v30UnlockAttempt()">Desbloquear intento</button></div></div>
+</div>
+
+<div class="toast" id="v30Toast"><h4 id="v30ToastTitle"></h4><p id="v30ToastMsg"></p></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+<div class="header-content">
+  <span class="htag">2-2526 · Manejo de Redes · Unidad 2 · R.A. 2.2 · B</span>
+  <h1>Configuración de un <span>Switch</span></h1>
+  <p class="header-sub">Material didáctico desarrollado por: Ing. Santiago Martínez González</p>
+  <div class="hpills">
+    <div class="hpill">Materia: <b>Manejo de Redes</b></div>
+    <div class="hpill">Herramienta: <b>Cisco Packet Tracer</b></div>
+    <div class="hpill">Contenido: <b>B</b></div>
+    <div class="hpill">R.A.: <b>2.2</b></div>
+    <div class="hpill">Ciclo: <b>2 · 2526</b></div>
+  </div>
+</div>
+</header>
+
+<!-- ══ TOC ══ -->
+<div class="toc">
+  <div class="toc-title">Contenido del material</div>
+  <div class="toc-section">── B) Configuración de un Switch ──</div>
+  <ol class="toc-cols">
+    <li><a href="#b1">¿Qué es un Switch y para qué sirve?</a></li>
+    <li><a href="#b2">Conexión física del switch</a></li>
+    <li><a href="#b3">Configuración inicial del switch</a></li>
+    <li><a href="#b4">Conexión del switch al router</a></li>
+    <li><a href="#b5">Protocolo CDP</a></li>
+    <li><a href="#b6">Asignación de red con CDP</a></li>
+    <li><a href="#ejercicios">Ejercicios de repaso</a></li>
+  </ol>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+<div class="v30-actions" style="justify-content:flex-start;margin:22px 0 0">
+  <button class="v30-btn secondary" onclick="downloadNotesPDF()">📘 Descargar apuntes PDF</button>
+</div>
+
+<!-- B-01 -->
+<div class="section-title" id="b1"><span class="section-num">B-01</span><h2>¿Qué es un Switch y para qué sirve?</h2></div>
+<p>Un <b>switch</b> (conmutador) es un dispositivo de red de capa 2 que conecta múltiples dispositivos dentro de una misma red local (LAN). A diferencia de un hub, el switch aprende las direcciones MAC de cada dispositivo conectado y envía los datos únicamente al puerto de destino correcto, no a todos los puertos.</p>
+<div class="pera-box"><div class="pera-title">Explicación clara</div><p>Imagina una oficina donde todos los empleados hablan al mismo tiempo por el intercomunicador — eso es un hub. Un switch es como una recepcionista inteligente que sabe exactamente en qué oficina está cada persona y conecta solo a los dos que necesitan hablar. El resultado: menos ruido, más eficiencia.</p></div>
+<table>
+<tr><th>Característica</th><th>Hub (obsoleto)</th><th>Switch (actual)</th></tr>
+<tr><td>Capa OSI</td><td>Capa 1 — Física</td><td>Capa 2 — Enlace de datos</td></tr>
+<tr><td>Envío de datos</td><td>A todos los puertos (broadcast)</td><td>Solo al puerto de destino</td></tr>
+<tr><td>Tabla de direcciones</td><td>No tiene</td><td>Tabla MAC (aprende automáticamente)</td></tr>
+<tr><td>Ancho de banda</td><td>Compartido entre todos</td><td>Dedicado por puerto</td></tr>
+<tr><td>Colisiones</td><td>Frecuentes</td><td>Elimina colisiones por segmentación</td></tr>
+</table>
+<div class="ib info"><div class="ibl">Modelos en Packet Tracer</div><p>En el laboratorio usarás principalmente el <b>Switch 2960</b>, que es un switch gestionable de capa 2 con 24 puertos FastEthernet y 2 puertos GigabitEthernet. Soporta VLANs, STP, CDP y configuración completa por CLI.</p></div>
+
+<!-- B-02 -->
+<div class="section-title" id="b2"><span class="section-num">B-02</span><h2>Conexión física del switch</h2></div>
+<p>El switch 2960 tiene diferentes tipos de puertos y acepta distintos cables según el dispositivo al que se conecte. Es importante conocer cuándo usar cable directo y cuándo cable cruzado.</p>
+<div class="pera-box"><div class="pera-title">Regla rápida para elegir el cable</div><p><b>Dispositivos iguales</b> (PC-PC, Switch-Switch, Router-Router) → Cable <b>cruzado</b>. <b>Dispositivos diferentes</b> (PC-Switch, Router-Switch) → Cable <b>directo</b>. En Packet Tracer puedes usar <b>cable automático</b> y él elige el correcto por ti.</p></div>
+<table>
+<tr><th>Conexión</th><th>Tipo de cable</th><th>Puertos usados</th></tr>
+<tr><td>PC → Switch</td><td>Cable directo (Straight-Through)</td><td>FastEthernet0 → Fa0/X</td></tr>
+<tr><td>Router → Switch</td><td>Cable directo (Straight-Through)</td><td>Gi0/X → Gi0/1 (switch)</td></tr>
+<tr><td>Switch → Switch</td><td>Cable cruzado o fibra</td><td>Gi0/1 → Gi0/1</td></tr>
+<tr><td>Switch → PC (consola)</td><td>Cable rollover (azul)</td><td>RS-232 PC → Console switch</td></tr>
+</table>
+<div class="ib warn"><div class="ibl">Indicadores de estado en Packet Tracer</div><p>Los puntos de los cables cambian de color según el estado: <b>🟠 Naranja/Ámbar</b> = enlace inicializando (espera ~30 seg). <b>🟢 Verde</b> = enlace activo y funcionando. <b>🔴 Rojo</b> = enlace caído (cable incorrecto o dispositivo apagado).</p></div>
+
+<!-- B-03 -->
+<div class="section-title" id="b3"><span class="section-num">B-03</span><h2>Configuración inicial del switch</h2></div>
+<p>Al igual que el router, el switch 2960 se configura por primera vez mediante el <b>cable de consola</b>. La configuración inicial incluye hostname, contraseñas, gestión de la IP de administración (SVI) y guardar la configuración.</p>
+<div class="cb"><div class="ch"><span>Switch 2960 — Configuración inicial completa</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="pr">Switch&gt;</span> <span class="cmd">enable</span>
+<span class="pr">Switch#</span> <span class="cmd">configure terminal</span>
+<span class="pr">Switch(config)#</span> <span class="cmd">hostname</span> <span class="val">SW-LAB</span>
+<span class="pr">SW-LAB(config)#</span> <span class="cmd">enable secret</span> <span class="val">Admin2025</span>
+<span class="pr">SW-LAB(config)#</span> <span class="cmd">line console 0</span>
+<span class="pr">SW-LAB(config-line)#</span> <span class="cmd">password</span> <span class="val">Consola123</span>
+<span class="pr">SW-LAB(config-line)#</span> <span class="cmd">login</span>
+<span class="pr">SW-LAB(config-line)#</span> <span class="cmd">exit</span>
+<span class="cmt">! ── IP de administración (SVI) ──</span>
+<span class="pr">SW-LAB(config)#</span> <span class="cmd">interface vlan 1</span>
+<span class="pr">SW-LAB(config-if)#</span> <span class="cmd">ip address</span> <span class="val">192.168.1.2 255.255.255.0</span>
+<span class="pr">SW-LAB(config-if)#</span> <span class="cmd">no shutdown</span>
+<span class="pr">SW-LAB(config-if)#</span> <span class="cmd">exit</span>
+<span class="pr">SW-LAB(config)#</span> <span class="cmd">ip default-gateway</span> <span class="val">192.168.1.1</span>
+<span class="pr">SW-LAB(config)#</span> <span class="cmd">end</span>
+<span class="pr">SW-LAB#</span> <span class="cmd">copy running-config startup-config</span>
+<span class="ok">Building configuration... [OK]</span></pre></div>
+<div class="line-doc"><div class="line-doc-title">Comandos clave de configuración inicial del switch</div>
+<div class="line-doc-row"><div class="line-code">interface vlan 1</div><div class="line-explain"><b>SVI (Switch Virtual Interface)</b> — es la interfaz de administración del switch. Asignarle IP permite accederlo por red (SSH/Telnet).</div></div>
+<div class="line-doc-row"><div class="line-code">ip default-gateway 192.168.1.1</div><div class="line-explain">Define la puerta de enlace del switch para tráfico fuera de su red local. Necesario para acceso remoto desde otra red.</div></div>
+<div class="line-doc-row"><div class="line-code">show mac address-table</div><div class="line-explain">Muestra la tabla de direcciones MAC aprendidas: qué MAC está en qué puerto. Es la "inteligencia" central del switch.</div></div>
+<div class="line-doc-row"><div class="line-code">show interfaces status</div><div class="line-explain">Muestra el estado de todos los puertos: conectado, desconectado, velocidad y dúplex.</div></div>
+<div class="line-doc-row"><div class="line-code">show vlan brief</div><div class="line-explain">Lista las VLANs configuradas y qué puertos pertenecen a cada una. Útil para verificar la asignación de puertos.</div></div>
+</div>
+
+<!-- B-04 -->
+<div class="section-title" id="b4"><span class="section-num">B-04</span><h2>Conexión del switch al router</h2></div>
+<p>Conectar el switch al router es el paso que integra la LAN con el router para que las PCs tengan salida a otras redes o internet. La conexión se hace entre un puerto GigabitEthernet del switch y una interfaz GigabitEthernet del router.</p>
+<div class="pera-box"><div class="pera-title">Topología típica de laboratorio</div><p>La topología más común en el laboratorio es: <b>PCs → Switch → Router → (WAN/Internet)</b>. El switch actúa como concentrador de la LAN y el router como puerta de salida. Todas las PCs tienen como gateway la IP del router en la interfaz conectada al switch.</p></div>
+<div class="cb"><div class="ch"><span>Verificación de la conexión Switch-Router</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="cmt">! En el switch — verificar enlace con el router</span>
+<span class="pr">SW-LAB#</span> <span class="cmd">show interfaces GigabitEthernet0/1</span>
+GigabitEthernet0/1 is <span class="ok">up</span>, line protocol is <span class="ok">up</span>
+  Hardware is Gigabit Ethernet, address is 00aa.bbcc.dd01
+  MTU 1500 bytes, BW 1000000 Kbit, DLY 10 usec
+
+<span class="cmt">! En el router — verificar interfaz LAN</span>
+<span class="pr">ISR-LAB#</span> <span class="cmd">show ip interface brief</span>
+GigabitEthernet0/0  <span class="val">192.168.1.1</span>  YES manual <span class="ok">up   up</span>
+
+<span class="cmt">! Prueba de conectividad desde PC</span>
+<span class="pr">C:\&gt;</span> <span class="cmd">ping</span> <span class="val">192.168.1.1</span>
+Reply from 192.168.1.1: bytes=32 time&lt;1ms TTL=128 <span class="ok">✓</span></pre></div>
+<div class="ib ok"><div class="ibl">Proceso de verificación completo</div><p>Después de conectar el switch al router, verifica en este orden: (1) <code>show interfaces Gi0/1</code> en el switch — debe estar <b>up/up</b>. (2) <code>show ip interface brief</code> en el router — la interfaz LAN debe estar <b>up/up</b> con IP. (3) Ping desde una PC al gateway — debe responder.</p></div>
+
+<!-- B-05 -->
+<div class="section-title" id="b5"><span class="section-num">B-05</span><h2>Protocolo CDP — Cisco Discovery Protocol</h2></div>
+<p>El <b>CDP</b> (Cisco Discovery Protocol) es un protocolo propietario de Cisco que permite que los dispositivos Cisco descubran automáticamente a sus vecinos directamente conectados. Opera en la capa 2, por lo que funciona independientemente de la capa de red (no necesita IP configurada).</p>
+<div class="pera-box"><div class="pera-title">¿Para qué sirve CDP en la práctica?</div><p>Imagina que llegas a un laboratorio y no sabes cómo está conectada la red. Con <code>show cdp neighbors</code> en cualquier dispositivo Cisco ves exactamente qué otros dispositivos están conectados, en qué puertos y qué modelo son. Es como tener un mapa de la red sin haberlo dibujado.</p></div>
+<div class="cb"><div class="ch"><span>CDP — Comandos principales</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="cmt">! Ver vecinos directamente conectados</span>
+<span class="pr">SW-LAB#</span> <span class="cmd">show cdp neighbors</span>
+
+Capability Codes: R - Router, T - Trans Bridge, S - Switch
+
+Device ID    Local Intrfce  Holdtme  Capability  Platform  Port ID
+<span class="val">ISR-LAB</span>      Gi0/1          <span class="ok">156</span>      R           2911      Gi0/0
+
+<span class="cmt">! Ver detalles completos de un vecino</span>
+<span class="pr">SW-LAB#</span> <span class="cmd">show cdp neighbors detail</span>
+
+Device ID: <span class="val">ISR-LAB</span>
+  IP address: <span class="val">192.168.1.1</span>
+  Platform: cisco 2911, Capabilities: Router
+  Interface: GigabitEthernet0/1, Port ID (outgoing port): GigabitEthernet0/0
+  Version: Cisco IOS Software, Version 15.1</pre></div>
+<table>
+<tr><th>Comando CDP</th><th>¿Qué muestra?</th></tr>
+<tr><td><code>show cdp neighbors</code></td><td>Lista resumida: nombre, puerto local, puerto remoto, plataforma</td></tr>
+<tr><td><code>show cdp neighbors detail</code></td><td>Información completa incluyendo IP, versión IOS y capacidades</td></tr>
+<tr><td><code>show cdp interface</code></td><td>En qué interfaces está activo CDP y cada cuánto envía anuncios</td></tr>
+<tr><td><code>no cdp run</code></td><td>Desactiva CDP globalmente (seguridad — evita que extraños vean la topología)</td></tr>
+<tr><td><code>no cdp enable</code></td><td>Desactiva CDP en una interfaz específica</td></tr>
+</table>
+<div class="ib warn"><div class="ibl">CDP y seguridad</div><p>CDP revela información sensible de la red (modelos de equipos, versiones IOS, IPs). En redes de producción se recomienda <b>desactivar CDP en interfaces externas</b> o hacia usuarios con <code>no cdp enable</code> en esa interfaz, dejándolo activo solo entre dispositivos de infraestructura.</p></div>
+
+<!-- B-06 -->
+<div class="section-title" id="b6"><span class="section-num">B-06</span><h2>Asignación de una red con CDP</h2></div>
+<p>Una de las aplicaciones más útiles de CDP es <b>descubrir y documentar la topología de red</b> cuando no existe documentación previa. Con los datos que CDP reporta puedes reconstruir el mapa completo de la red.</p>
+<div class="pera-box"><div class="pera-title">Caso real</div><p>Un técnico llega a una empresa y nadie sabe cómo está conectada la red. Usando <code>show cdp neighbors detail</code> en cada dispositivo Cisco, puede ir "saltando" de dispositivo en dispositivo y reconstruir toda la topología sin necesitar acceso físico a cada sala.</p></div>
+<div class="cb"><div class="ch"><span>Proceso de mapeo de red con CDP</span><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div></div><pre><span class="cmt">! Paso 1: Desde el router, ver qué switch está conectado</span>
+<span class="pr">ISR-LAB#</span> <span class="cmd">show cdp neighbors detail</span>
+  Device ID: <span class="val">SW-LAB</span>, IP: <span class="val">192.168.1.2</span>
+  Platform: cisco WS-C2960, Interface: Gi0/0 → Gi0/1
+
+<span class="cmt">! Paso 2: Acceder al switch y ver qué PCs hay</span>
+<span class="pr">SW-LAB#</span> <span class="cmd">show mac address-table</span>
+  Vlan  Mac Address      Type    Ports
+     1  00aa.1234.5678   DYNAMIC Fa0/1   <span class="cmt">← PC-Admin</span>
+     1  00bb.abcd.ef01   DYNAMIC Fa0/2   <span class="cmt">← PC-User</span>
+
+<span class="cmt">! Paso 3: Documentar la red descubierta</span>
+<span class="cmt">!   ISR-LAB (192.168.1.1) Gi0/0 ──── Gi0/1 SW-LAB (192.168.1.2)</span>
+<span class="cmt">!   SW-LAB Fa0/1 ──── PC-Admin (192.168.1.10)</span>
+<span class="cmt">!   SW-LAB Fa0/2 ──── PC-User  (192.168.1.20)</span></pre></div>
+<div class="ib info"><div class="ibl">CDP como herramienta de línea de base</div><p>La información de <code>show cdp neighbors detail</code> es parte de una <b>línea de base de red</b> completa. Al documentar qué dispositivo está conectado a qué puerto desde el inicio, cualquier cambio no autorizado será detectable inmediatamente al comparar con el registro original.</p></div>
+
+<!-- ══ DIVIDER EJERCICIOS ══ -->
+<div class="part-divider" id="ejercicios"><span class="part-badge">Ejercicios</span><div><h2>Repaso del material</h2><p>Responde con base en lo que acabas de estudiar. Sin copiar, sin buscar — a partir de tu comprensión.</p></div></div>
+
+<!-- PANEL INICIO -->
+<div class="v30-start-exam-panel" id="v30StartExamPanel">
+  <h3>Ejercicios bloqueados</h3>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Lee todo el material antes de iniciar. El temporizador de <b>40 minutos</b> arrancará al presionar el botón y no se puede pausar.</p>
+  <div class="ib warn"><div class="ibl">Aviso importante</div><p>Cambiar de pestaña o ventana durante los ejercicios cuenta como alerta. A la tercera alerta la actividad se cerrará automáticamente.</p></div>
+  <button class="v30-btn" id="v30BeginExercisesBtn" onclick="v30BeginExercises()">Iniciar ejercicios y activar temporizador</button>
+</div>
+
+<div class="warm-block"><div class="warm-header"><span class="warm-tag">Repaso B</span><span>10 preguntas</span></div><div class="warm-body">
+
+<div class="wq" id="wq1">
+  <div class="wq-text">¿En qué capa del modelo OSI opera un switch?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq1','wrong','No. La capa 1 es la física — ahí operan los hubs y los repetidores, no los switches.')">Capa 1 — Física</div>
+    <div class="wopt" onclick="checkOpt(this,'wq1','correct','Correcto. El switch opera en la capa 2 del modelo OSI — la capa de enlace de datos. Trabaja con direcciones MAC para decidir a qué puerto enviar cada trama.')">Capa 2 — Enlace de datos</div>
+    <div class="wopt" onclick="checkOpt(this,'wq1','wrong','No. La capa 3 es la de red — ahí operan los routers con direcciones IP.')">Capa 3 — Red</div>
+  </div>
+  <div class="wfb" id="fb_wq1"></div>
+</div>
+
+<div class="wq" id="wq2">
+  <div class="wq-text">¿Cuál es la diferencia principal entre un switch y un hub?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq2','wrong','No. Ambos tienen puertos físicos. La diferencia está en cómo manejan el tráfico de datos.')">El switch tiene más puertos físicos que el hub</div>
+    <div class="wopt" onclick="checkOpt(this,'wq2','correct','Correcto. El hub envía los datos a todos los puertos (broadcast), lo que genera colisiones y desperdicia ancho de banda. El switch aprende las MACs y envía solo al puerto de destino correcto.')">El switch envía datos solo al puerto de destino; el hub los envía a todos los puertos</div>
+    <div class="wopt" onclick="checkOpt(this,'wq2','wrong','No. El switch es más nuevo pero la diferencia fundamental es inteligencia de conmutación, no velocidad.')">El switch es más rápido porque usa Wi-Fi interno</div>
+  </div>
+  <div class="wfb" id="fb_wq2"></div>
+</div>
+
+<div class="wq" id="wq3">
+  <div class="wq-text">¿Qué tipo de cable se usa para conectar una PC a un switch?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq3','correct','Correcto. La regla es: dispositivos diferentes → cable directo. PC y switch son dispositivos diferentes, por lo tanto se usa cable directo (Straight-Through).')">Cable directo (Straight-Through)</div>
+    <div class="wopt" onclick="checkOpt(this,'wq3','wrong','No. El cable cruzado se usa entre dispositivos del mismo tipo, como PC-PC o Switch-Switch.')">Cable cruzado (Crossover)</div>
+    <div class="wopt" onclick="checkOpt(this,'wq3','wrong','No. El cable rollover es para conectar una PC al puerto de consola del switch, no a sus puertos de red.')">Cable rollover</div>
+  </div>
+  <div class="wfb" id="fb_wq3"></div>
+</div>
+
+<div class="wq" id="wq4">
+  <div class="wq-text">¿Qué significa que un puerto del switch muestre el indicador en color <strong>ámbar/naranja</strong> en Packet Tracer?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq4','wrong','No. El cable incorrecto generaría el puerto en rojo, no en ámbar.')">El cable está incorrecto o desconectado</div>
+    <div class="wopt" onclick="checkOpt(this,'wq4','wrong','No. Verde significa que el enlace está activo y funcionando correctamente.')">El enlace está activo y funcionando</div>
+    <div class="wopt" onclick="checkOpt(this,'wq4','correct','Correcto. El color ámbar/naranja indica que el enlace está inicializando — el switch está ejecutando el protocolo STP (Spanning Tree) antes de activar el puerto. Espera unos 30 segundos y cambiará a verde.')">El enlace está inicializando — STP en proceso, espera unos segundos</div>
+  </div>
+  <div class="wfb" id="fb_wq4"></div>
+</div>
+
+<div class="wq" id="wq5">
+  <div class="wq-text">¿Qué es la SVI (Switch Virtual Interface) en un switch gestionable?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq5','wrong','No. Los puertos físicos son FastEthernet o GigabitEthernet, no la SVI.')">Un puerto físico especial de alta velocidad</div>
+    <div class="wopt" onclick="checkOpt(this,'wq5','correct','Correcto. La SVI es una interfaz virtual (normalmente VLAN 1) a la que se le asigna una IP para administrar el switch por red. Sin SVI con IP, el switch no puede ser accedido por SSH o Telnet.')">Una interfaz virtual (VLAN 1) a la que se asigna IP para administrar el switch por red</div>
+    <div class="wopt" onclick="checkOpt(this,'wq5','wrong','No. CDP es un protocolo de descubrimiento, diferente de la SVI.')">El protocolo CDP que descubre dispositivos vecinos</div>
+  </div>
+  <div class="wfb" id="fb_wq5"></div>
+</div>
+
+<div class="wq" id="wq6">
+  <div class="wq-text">¿Para qué sirve el comando <code>ip default-gateway</code> en un switch?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq6','wrong','No. El switch no enruta paquetes — eso lo hace el router. El default-gateway solo sirve para el tráfico de administración del propio switch.')">Para que el switch enrute paquetes entre diferentes redes</div>
+    <div class="wopt" onclick="checkOpt(this,'wq6','correct','Correcto. El switch necesita un default-gateway para que su tráfico de administración (como respuestas SSH) pueda salir hacia otras redes. Sin él, solo puedes accederlo desde la misma red local.')">Para que el switch pueda ser administrado remotamente desde otra red</div>
+    <div class="wopt" onclick="checkOpt(this,'wq6','wrong','No. Las VLANs se configuran con comandos específicos como vlan y switchport access vlan, no con ip default-gateway.')">Para crear VLANs en el switch automáticamente</div>
+  </div>
+  <div class="wfb" id="fb_wq6"></div>
+</div>
+
+<div class="wq" id="wq7">
+  <div class="wq-text">¿Qué significa CDP y en qué capa OSI opera?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq7','wrong','No. CDP no tiene nada que ver con el protocolo DHCP de asignación de IPs.')">Cisco DHCP Protocol — Capa 3</div>
+    <div class="wopt" onclick="checkOpt(this,'wq7','correct','Correcto. CDP es el Cisco Discovery Protocol, opera en capa 2 (enlace de datos) y permite que dispositivos Cisco se descubran mutuamente sin necesitar IPs configuradas.')">Cisco Discovery Protocol — Capa 2</div>
+    <div class="wopt" onclick="checkOpt(this,'wq7','wrong','No. CDP es un protocolo de descubrimiento de vecinos, no de configuración dinámica.')">Cisco Dynamic Protocol — Capa 4</div>
+  </div>
+  <div class="wfb" id="fb_wq7"></div>
+</div>
+
+<div class="wq" id="wq8">
+  <div class="wq-text">Un técnico ejecuta <code>show cdp neighbors</code> en un switch y ve al router ISR-LAB conectado por Gi0/1 local hacia Gi0/0 del router. ¿Qué información adicional puede obtener con <code>show cdp neighbors detail</code>?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq8','wrong','No. La tabla MAC muestra qué dispositivos hay en cada puerto, no información de la capa de red como IPs.')">La tabla MAC completa de todos los dispositivos</div>
+    <div class="wopt" onclick="checkOpt(this,'wq8','correct','Correcto. El comando detail agrega información de capa 3: la IP del vecino, versión del IOS, modelo exacto del hardware y capacidades del dispositivo — información invaluable para documentar la red.')">La dirección IP del router, versión IOS y modelo exacto de hardware</div>
+    <div class="wopt" onclick="checkOpt(this,'wq8','wrong','No. CDP no muestra el tráfico en tiempo real. Para eso se usan herramientas como Wireshark o los contadores de interfaces.')">El tráfico en tiempo real que pasa por cada interfaz</div>
+  </div>
+  <div class="wfb" id="fb_wq8"></div>
+</div>
+
+<div class="wq" id="wq9">
+  <div class="wq-text">¿Por qué se recomienda desactivar CDP en las interfaces externas o hacia usuarios finales?</div>
+  <div class="wq-opts">
+    <div class="wopt" onclick="checkOpt(this,'wq9','correct','Correcto. CDP revela el modelo del equipo, versión del IOS y topología de red. Un atacante puede usar esa información para buscar vulnerabilidades específicas de esa versión o equipo. En interfaces hacia usuarios o internet, CDP debe desactivarse.')">CDP revela información sensible como modelos y versiones IOS que pueden ser usados por atacantes</div>
+    <div class="wopt" onclick="checkOpt(this,'wq9','wrong','No. CDP usa muy poco ancho de banda — envía pequeños paquetes cada 60 segundos. No es un problema de rendimiento.')">CDP consume demasiado ancho de banda y degrada el rendimiento</div>
+    <div class="wopt" onclick="checkOpt(this,'wq9','wrong','No. CDP funciona perfectamente con todos los dispositivos Cisco, independientemente de la versión.')">CDP no es compatible con versiones modernas de IOS</div>
+  </div>
+  <div class="wfb" id="fb_wq9"></div>
+</div>
+
+<div class="wq" id="wq10">
+  <div class="wq-text">¿Qué comando muestra la tabla de direcciones MAC aprendidas por el switch — incluyendo en qué puerto está cada MAC?</div>
+  <div class="wq-input-row">
+    <input class="wq-input" id="in_wq10" placeholder="show ..." onkeydown="if(event.key==='Enter')checkInput('wq10',['show mac address-table','show mac-address-table'],'El comando es: show mac address-table')">
+    <button class="wbtn" onclick="checkInput('wq10',['show mac address-table','show mac-address-table'],'El comando es: show mac address-table')">Verificar</button>
+  </div>
+  <div class="wfb" id="fb_wq10"></div>
+</div>
+
+</div></div><!-- /warm-body /warm-block -->
+
+<!-- ══ PANEL FINAL ══ -->
+<div class="v30-panel" id="v30FinalPanel">
+  <h3>Resultado del material</h3>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:4px">Cuando termines todos los ejercicios, envía tu resultado. Recuerda que solo se permite un intento.</p>
+  <div class="v30-result-grid">
+    <div class="v30-result-card"><span>Contestadas</span><b id="v30Answered">0</b></div>
+    <div class="v30-result-card"><span>Correctas</span><b id="v30Correct">0</b></div>
+    <div class="v30-result-card"><span>Incorrectas</span><b id="v30Wrong">0</b></div>
+    <div class="v30-result-card"><span>Calificación</span><b id="v30Grade">0</b></div>
+  </div>
+  <div class="v30-actions" style="justify-content:flex-start;gap:10px;flex-wrap:wrap">
+    <button class="v30-btn" id="v30SubmitBtn" onclick="v30SubmitResults()">Enviar calificación al docente</button>
+    <button class="v30-btn secondary" onclick="v30DownloadBackup()">Descargar respaldo</button>
+  </div>
+  <p id="v30SubmitStatus" style="margin-top:12px;font-size:13px"></p>
+</div>
+
+<!-- ══ PRÁCTICA PACKET TRACER ══ -->
+<div id="pktSection" style="display:none">
+
+  <div class="part-divider" style="background:linear-gradient(90deg,rgba(124,111,255,.06) 0%,transparent 100%);border-top-color:var(--accent3)">
+    <span class="part-badge" style="background:rgba(124,111,255,.12);border-color:rgba(124,111,255,.35);color:var(--accent3)">Práctica</span>
+    <div><h2>Práctica guiada en Packet Tracer</h2><p>Construye la red desde cero y aplica todo lo aprendido del Switch 2960.</p></div>
+  </div>
+
+  <div style="background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.25);border-radius:8px;padding:14px 18px;margin:20px 0;font-size:13px;color:var(--muted)">
+    <b style="color:var(--orange)">Antes de iniciar:</b> Abre Cisco Packet Tracer y crea un archivo nuevo (<b style="color:var(--text)">File → New</b>). Armarás toda la topología y configurarás el switch desde cero.
+  </div>
+
+  <!-- PASO 0 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--orange);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px">PASO 0</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Arma la topología desde cero</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Agrega los dispositivos y conéctalos exactamente como se indica:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2.2;color:var(--muted);margin-bottom:12px">
+      <span style="color:var(--orange);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:8px">Dispositivos</span>
+      <span style="color:var(--accent)">①</span> <b style="color:var(--text)">Routers → 2911</b> → renómbralo <b style="color:var(--text)">ISR-LAB</b><br>
+      <span style="color:var(--accent)">②</span> <b style="color:var(--text)">Switches → 2960</b> → renómbralo <b style="color:var(--text)">SW-LAB</b><br>
+      <span style="color:var(--accent)">③</span> <b style="color:var(--text)">End Devices → PC</b> × 3 → nómbralas <b style="color:var(--text)">PC-Admin</b>, <b style="color:var(--text)">PC-User1</b> y <b style="color:var(--text)">PC-User2</b>
+    </div>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2.2;color:var(--muted);margin-bottom:12px">
+      <span style="color:var(--orange);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:8px">Cables</span>
+      <span style="color:var(--accent)">④</span> <b style="color:var(--text)">Cable rollover</b> → PC-Admin (RS-232) → SW-LAB (Console)<br>
+      <span style="color:var(--accent)">⑤</span> <b style="color:var(--text)">Cable directo</b> → PC-Admin (Fa0) → SW-LAB (Fa0/1)<br>
+      <span style="color:var(--accent)">⑥</span> <b style="color:var(--text)">Cable directo</b> → PC-User1 (Fa0) → SW-LAB (Fa0/2)<br>
+      <span style="color:var(--accent)">⑦</span> <b style="color:var(--text)">Cable directo</b> → PC-User2 (Fa0) → SW-LAB (Fa0/3)<br>
+      <span style="color:var(--accent)">⑧</span> <b style="color:var(--text)">Cable directo</b> → SW-LAB (Gi0/1) → ISR-LAB (Gi0/0)
+    </div>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:13px;line-height:2.2;color:var(--muted)">
+      <span style="color:var(--orange);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:8px">IPs de las PCs (Desktop → IP Configuration → Static)</span>
+      <span style="color:var(--accent)">⑨</span> PC-Admin → IP: <b style="color:#ffa657">192.168.1.10</b> · Máscara: <b style="color:#ffa657">255.255.255.0</b> · GW: <b style="color:#ffa657">192.168.1.1</b><br>
+      <span style="color:var(--accent)">⑩</span> PC-User1 → IP: <b style="color:#ffa657">192.168.1.20</b> · Máscara: <b style="color:#ffa657">255.255.255.0</b> · GW: <b style="color:#ffa657">192.168.1.1</b><br>
+      <span style="color:var(--accent)">⑪</span> PC-User2 → IP: <b style="color:#ffa657">192.168.1.30</b> · Máscara: <b style="color:#ffa657">255.255.255.0</b> · GW: <b style="color:#ffa657">192.168.1.1</b>
+    </div>
+    <div style="margin-top:10px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;font-size:13px;color:#86efac">
+      💡 Toma el <b>Screenshot 1</b> aquí — topología completa con todos los dispositivos y cables visibles.
+    </div>
+  </div>
+
+  <!-- PASO 1 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px">PASO 1</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Configura el router ISR-LAB</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Clic en el router → pestaña <b style="color:var(--text)">CLI</b> → escribe <code>no</code> si aparece el diálogo inicial:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2.2">
+      <div><span style="color:var(--accent);user-select:none">Router&gt; </span><span style="color:#79c0ff">enable</span></div>
+      <div><span style="color:var(--accent);user-select:none">Router# </span><span style="color:#79c0ff">configure terminal</span></div>
+      <div><span style="color:var(--accent);user-select:none">Router(config)# </span><span style="color:#79c0ff">hostname ISR-LAB</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB(config)# </span><span style="color:#79c0ff">enable secret Admin2025</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB(config)# </span><span style="color:#79c0ff">interface GigabitEthernet0/0</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB(config-if)# </span><span style="color:#79c0ff">ip address 192.168.1.1 255.255.255.0</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB(config-if)# </span><span style="color:#79c0ff">no shutdown</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB(config-if)# </span><span style="color:#79c0ff">end</span></div>
+      <div><span style="color:var(--accent);user-select:none">ISR-LAB# </span><span style="color:#79c0ff">copy running-config startup-config</span></div>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px">PASO 2</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Configura el switch SW-LAB</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Clic en SW-LAB → pestaña <b style="color:var(--text)">CLI</b>:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2.2">
+      <div><span style="color:var(--accent);user-select:none">Switch&gt; </span><span style="color:#79c0ff">enable</span></div>
+      <div><span style="color:var(--accent);user-select:none">Switch# </span><span style="color:#79c0ff">configure terminal</span></div>
+      <div><span style="color:var(--accent);user-select:none">Switch(config)# </span><span style="color:#79c0ff">hostname SW-LAB</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config)# </span><span style="color:#79c0ff">enable secret Admin2025</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config)# </span><span style="color:#79c0ff">interface vlan 1</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config-if)# </span><span style="color:#79c0ff">ip address 192.168.1.2 255.255.255.0</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config-if)# </span><span style="color:#79c0ff">no shutdown</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config-if)# </span><span style="color:#79c0ff">exit</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config)# </span><span style="color:#79c0ff">ip default-gateway 192.168.1.1</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB(config)# </span><span style="color:#79c0ff">end</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB# </span><span style="color:#79c0ff">copy running-config startup-config</span></div>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:18px 20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="background:var(--accent);color:#06110f;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;border-radius:5px;padding:3px 10px">PASO 3</span>
+      <span style="font-size:15px;font-weight:600;color:#fff">Verifica con CDP y toma evidencias</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:10px">Ejecuta estos comandos y toma screenshot de cada resultado:</p>
+    <div style="background:#010409;border:1px solid var(--border);border-radius:6px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:2.2">
+      <div><span style="color:var(--accent);user-select:none">SW-LAB# </span><span style="color:#79c0ff">show interfaces status</span> <span style="color:#6e7681">← Screenshot 2</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB# </span><span style="color:#79c0ff">show cdp neighbors detail</span> <span style="color:#6e7681">← Screenshot 3</span></div>
+      <div><span style="color:var(--accent);user-select:none">SW-LAB# </span><span style="color:#79c0ff">show mac address-table</span> <span style="color:#6e7681">← Screenshot 4 (después de hacer pings)</span></div>
+      <div style="margin-top:8px;color:#6e7681">! Desde PC-Admin → Desktop → Command Prompt:</div>
+      <div><span style="color:#c9d1d9">C:\&gt; </span><span style="color:#79c0ff">ping 192.168.1.20</span> <span style="color:#6e7681">← ping a PC-User1</span></div>
+      <div><span style="color:#c9d1d9">C:\&gt; </span><span style="color:#79c0ff">ping 192.168.1.1</span> <span style="color:#6e7681">← ping al router — Screenshot 5</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHECKLIST IA ══ -->
+  <div class="part-divider" style="background:linear-gradient(90deg,rgba(88,166,255,.06) 0%,transparent 100%);border-top-color:var(--accent2);margin-top:48px">
+    <span class="part-badge" style="background:rgba(88,166,255,.12);border-color:rgba(88,166,255,.35);color:var(--accent2)">Checklist IA</span>
+    <div><h2>Verificación automática de evidencias</h2><p>Sube tus screenshots y la IA verificará cada ítem automáticamente.</p></div>
+  </div>
+
+  <div style="background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-radius:10px;padding:16px 20px;margin:20px 0 28px">
+    <p style="color:var(--muted);font-size:13px;margin:0">Sube el screenshot correspondiente a cada ítem. La IA lo analizará y marcará si está correcto. <b style="color:var(--text)">Los screenshots deben ser de pantalla completa de Packet Tracer.</b></p>
+  </div>
+
+  <div id="checklistContainer" style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px">
+
+    <!-- ITEM 1 -->
+    <div class="checklist-item" id="ci1" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="ci-status" id="cs1" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⬜</div>
+        <div><div style="font-size:14px;font-weight:600;color:#fff">Topología completa en Packet Tracer</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Screenshot del área de trabajo con todos los dispositivos y cables visibles</div></div>
+      </div>
+      <div style="padding:14px 20px">
+        <div style="background:#010409;border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--muted)">
+          <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px">¿Qué debe mostrar tu screenshot?</span>
+          ✔ Router <b style="color:#c9d1d9">ISR-LAB</b> y Switch <b style="color:#c9d1d9">SW-LAB</b> visibles y etiquetados<br>
+          ✔ Tres PCs: <b style="color:#c9d1d9">PC-Admin</b>, <b style="color:#c9d1d9">PC-User1</b> y <b style="color:#c9d1d9">PC-User2</b><br>
+          ✔ Cable rollover entre PC-Admin y el switch (consola)<br>
+          ✔ Cables directos de las 3 PCs al switch y del switch al router<br>
+          ✔ Los indicadores de enlace deben estar en <b style="color:#3fb950">verde</b>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="background:var(--accent2);color:#fff;border-radius:6px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">📎 Subir screenshot<input type="file" accept="image/*" style="display:none" onchange="analyzeScreenshot(1,this)"></label>
+          <span id="cf1" style="font-size:12px;color:var(--muted)">Sin archivo</span>
+        </div>
+      </div>
+      <div id="cr1" style="display:none;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;line-height:1.6"></div>
+    </div>
+
+    <!-- ITEM 2 -->
+    <div class="checklist-item" id="ci2" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="ci-status" id="cs2" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⬜</div>
+        <div><div style="font-size:14px;font-weight:600;color:#fff">show interfaces status — Puertos del switch</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Los puertos Fa0/1, Fa0/2, Fa0/3 y Gi0/1 deben aparecer conectados</div></div>
+      </div>
+      <div style="padding:14px 20px">
+        <div style="background:#010409;border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--muted)">
+          <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px">¿Qué debe mostrar tu screenshot?</span>
+          ✔ Prompt <b style="color:#c9d1d9">SW-LAB#</b> visible<br>
+          ✔ Comando <b style="color:#c9d1d9">show interfaces status</b> ejecutado<br>
+          ✔ Puertos <b style="color:#c9d1d9">Fa0/1, Fa0/2, Fa0/3</b> con estado <b style="color:#3fb950">connected</b><br>
+          ✔ Puerto <b style="color:#c9d1d9">Gi0/1</b> con estado <b style="color:#3fb950">connected</b> (enlace al router)
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="background:var(--accent2);color:#fff;border-radius:6px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">📎 Subir screenshot<input type="file" accept="image/*" style="display:none" onchange="analyzeScreenshot(2,this)"></label>
+          <span id="cf2" style="font-size:12px;color:var(--muted)">Sin archivo</span>
+        </div>
+      </div>
+      <div id="cr2" style="display:none;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;line-height:1.6"></div>
+    </div>
+
+    <!-- ITEM 3 -->
+    <div class="checklist-item" id="ci3" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="ci-status" id="cs3" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⬜</div>
+        <div><div style="font-size:14px;font-weight:600;color:#fff">show cdp neighbors detail — Router detectado</div><div style="font-size:12px;color:var(--muted);margin-top:2px">CDP debe mostrar el router ISR-LAB con su IP y modelo</div></div>
+      </div>
+      <div style="padding:14px 20px">
+        <div style="background:#010409;border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--muted)">
+          <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px">¿Qué debe mostrar tu screenshot?</span>
+          ✔ Comando <b style="color:#c9d1d9">show cdp neighbors detail</b> ejecutado en SW-LAB<br>
+          ✔ <b style="color:#c9d1d9">Device ID: ISR-LAB</b> visible en la salida<br>
+          ✔ <b style="color:#c9d1d9">IP address: 192.168.1.1</b> del router presente<br>
+          ✔ Información de plataforma y puertos de conexión visible
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="background:var(--accent2);color:#fff;border-radius:6px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">📎 Subir screenshot<input type="file" accept="image/*" style="display:none" onchange="analyzeScreenshot(3,this)"></label>
+          <span id="cf3" style="font-size:12px;color:var(--muted)">Sin archivo</span>
+        </div>
+      </div>
+      <div id="cr3" style="display:none;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;line-height:1.6"></div>
+    </div>
+
+    <!-- ITEM 4 -->
+    <div class="checklist-item" id="ci4" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="ci-status" id="cs4" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⬜</div>
+        <div><div style="font-size:14px;font-weight:600;color:#fff">show mac address-table — MACs aprendidas</div><div style="font-size:12px;color:var(--muted);margin-top:2px">La tabla debe mostrar las MACs de las PCs en sus puertos correspondientes</div></div>
+      </div>
+      <div style="padding:14px 20px">
+        <div style="background:#010409;border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--muted)">
+          <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px">¿Qué debe mostrar tu screenshot?</span>
+          ✔ Comando <b style="color:#c9d1d9">show mac address-table</b> ejecutado<br>
+          ✔ Al menos 3 entradas tipo <b style="color:#c9d1d9">DYNAMIC</b> en VLAN 1<br>
+          ✔ Las MACs asignadas a los puertos <b style="color:#c9d1d9">Fa0/1, Fa0/2, Fa0/3</b><br>
+          ✗ Si la tabla está vacía, primero haz ping entre PCs y vuelve a ejecutar el comando
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="background:var(--accent2);color:#fff;border-radius:6px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">📎 Subir screenshot<input type="file" accept="image/*" style="display:none" onchange="analyzeScreenshot(4,this)"></label>
+          <span id="cf4" style="font-size:12px;color:var(--muted)">Sin archivo</span>
+        </div>
+      </div>
+      <div id="cr4" style="display:none;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;line-height:1.6"></div>
+    </div>
+
+    <!-- ITEM 5 -->
+    <div class="checklist-item" id="ci5" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="ci-status" id="cs5" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⬜</div>
+        <div><div style="font-size:14px;font-weight:600;color:#fff">Ping exitoso desde PC-Admin al router</div><div style="font-size:12px;color:var(--muted);margin-top:2px">El ping a 192.168.1.1 debe mostrar Reply from con 0% de pérdida</div></div>
+      </div>
+      <div style="padding:14px 20px">
+        <div style="background:#010409;border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--muted)">
+          <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:6px">¿Qué debe mostrar tu screenshot?</span>
+          ✔ Ventana de <b style="color:#c9d1d9">Command Prompt</b> de PC-Admin<br>
+          ✔ Comando <b style="color:#c9d1d9">ping 192.168.1.1</b> ejecutado<br>
+          ✔ Cuatro líneas de <b style="color:#3fb950">Reply from 192.168.1.1</b><br>
+          ✔ Estadísticas con <b style="color:#3fb950">0% de paquetes perdidos</b><br>
+          ✗ No debe mostrar Request timed out
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="background:var(--accent2);color:#fff;border-radius:6px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">📎 Subir screenshot<input type="file" accept="image/*" style="display:none" onchange="analyzeScreenshot(5,this)"></label>
+          <span id="cf5" style="font-size:12px;color:var(--muted)">Sin archivo</span>
+        </div>
+      </div>
+      <div id="cr5" style="display:none;padding:12px 20px;border-top:1px solid var(--border);font-size:13px;line-height:1.6"></div>
+    </div>
+
+  </div>
+
+  <!-- RESUMEN CHECKLIST -->
+  <div style="background:linear-gradient(135deg,#081b18,#0d1117);border:1px solid rgba(0,212,170,.25);border-left:4px solid var(--accent);border-radius:12px;padding:22px 24px;margin-bottom:40px">
+    <h3 style="color:#fff;font-size:18px;margin-bottom:12px">Resultado de la práctica</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+        <span style="display:block;font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Verificados</span>
+        <b id="pktVerified" style="font-size:26px;color:#fff">0</b><span style="color:var(--muted);font-size:14px"> / 5</span>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+        <span style="display:block;font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Correctos</span>
+        <b id="pktCorrect" style="font-size:26px;color:var(--green)">0</b>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+        <span style="display:block;font-family:'IBM Plex Mono',monospace;color:var(--yellow);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Calificación práctica</span>
+        <b id="pktGrade" style="font-size:26px;color:var(--yellow)">0%</b>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Al completar todos los ítems, envía el resultado de la práctica al docente.</p>
+    <button class="v30-btn" id="pktSubmitBtn" onclick="submitPktResults()" style="opacity:.5;pointer-events:none">Enviar resultado de práctica</button>
+    <p id="pktSubmitStatus" style="margin-top:10px;font-size:13px"></p>
+  </div>
+
+</div><!-- /pktSection -->
+</main>
+
+<footer>
+  <span>Manejo de Redes · Unidad 2 · R.A. 2.2 — B</span>
+  <span>Ing. Santiago Martínez González</span>
+  <span>CONALEP Extensión Nuevo Progreso · 2-2526</span>
+</footer>
+
+<script>
+const V30_CONFIG={activityId:'MRED_22526_U2_RA22_B',teacherEmail:'profesantiagomtzglez@gmail.com',unlockKey:'SWT22526B',formSubmitEndpoint:'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',totalQuestions:10,timeLimitSeconds:40*60,requiredDomain:'@tam.conalep.edu.mx'};
+const v30Keys={student:V30_CONFIG.activityId+'_student',answers:V30_CONFIG.activityId+'_answers',completed:V30_CONFIG.activityId+'_completed',startedAt:V30_CONFIG.activityId+'_startedAt',guard:V30_CONFIG.activityId+'_guard',timeLeft:V30_CONFIG.activityId+'_timeLeft',exerciseStarted:V30_CONFIG.activityId+'_exerciseStarted',timeExpired:V30_CONFIG.activityId+'_timeExpired'};
+let v30Answers={};let v30TimerHandle=null;
+function v30LoadAnswers(){try{v30Answers=JSON.parse(localStorage.getItem(v30Keys.answers)||'{}')}catch(e){v30Answers={}}}
+function v30SaveAnswers(){localStorage.setItem(v30Keys.answers,JSON.stringify(v30Answers))}
+function v30GetStudent(){try{return JSON.parse(localStorage.getItem(v30Keys.student)||'null')}catch(e){return null}}
+function v30IsCompleted(){return localStorage.getItem(v30Keys.completed)==='1'}
+function v30ExercisesStarted(){return localStorage.getItem(v30Keys.exerciseStarted)==='1'}
+function v30TimeExpired(){return localStorage.getItem(v30Keys.timeExpired)==='1'}
+function v30NormalizeEmail(e){return String(e||'').trim().toLowerCase()}
+function v30StudentFingerprint(s){return btoa(unescape(encodeURIComponent(`${s.name}|${s.group}|${s.shift}|${v30NormalizeEmail(s.email)}`))).slice(0,32)}
+function v30StartActivity(){const student={name:document.getElementById('v30Name').value.trim(),group:document.getElementById('v30Group').value.trim(),shift:document.getElementById('v30Shift').value.trim(),email:v30NormalizeEmail(document.getElementById('v30Email').value)};if(!student.name||!student.group||!student.shift||!student.email){alert('Completa todos los datos.');return}if(!/^\S+@\S+\.\S+$/.test(student.email)){alert('Escribe un correo válido.');return}if(!student.email.endsWith(V30_CONFIG.requiredDomain)){alert('Debes usar tu correo institucional que termine en '+V30_CONFIG.requiredDomain);return}student.fingerprint=v30StudentFingerprint(student);localStorage.setItem(v30Keys.student,JSON.stringify(student));document.getElementById('v30StartModal').classList.remove('show');document.body.classList.remove('v30-locked');v30RefreshUI()}
+function v30BeginExercises(){if(!v30GetStudent()){alert('Primero registra tus datos.');return}if(v30ExercisesStarted()){v30RefreshUI();return}const ok=confirm('Al iniciar se activará el temporizador de 40 minutos. No se puede pausar. ¿Deseas iniciar ahora?');if(!ok)return;localStorage.setItem(v30Keys.exerciseStarted,'1');localStorage.setItem(v30Keys.startedAt,new Date().toISOString());localStorage.setItem(v30Keys.timeLeft,String(V30_CONFIG.timeLimitSeconds));document.body.classList.remove('v30-exercises-locked');v30StartTimer();v30RefreshUI()}
+function v30RequireExercisesStarted(){if(!v30GetStudent()){alert('Primero registra tus datos.');return false}if(!v30ExercisesStarted()){alert('Primero activa los ejercicios. El temporizador iniciará cuando aceptes el aviso.');return false}if(v30IsCompleted()){return false}return true}
+function v30StartTimer(){clearInterval(v30TimerHandle);v30TimerHandle=setInterval(()=>{if(!v30ExercisesStarted()||v30IsCompleted()){clearInterval(v30TimerHandle);return}let left=parseInt(localStorage.getItem(v30Keys.timeLeft)||V30_CONFIG.timeLimitSeconds,10);left--;localStorage.setItem(v30Keys.timeLeft,String(left));const timer=document.getElementById('v30Timer');if(timer){const m=Math.max(0,Math.floor(left/60));const s=Math.max(0,left%60);timer.textContent=`${m}:${String(s).padStart(2,'0')}`}if(left<=0){clearInterval(v30TimerHandle);localStorage.setItem(v30Keys.timeExpired,'1');v30Toast('Tiempo agotado','Se tomará en cuenta solo lo contestado.');v30SubmitResults(true)}},1000)}
+function v30LoadGuard(){try{return JSON.parse(localStorage.getItem(v30Keys.guard)||'{}')}catch(e){return {}}}function v30SaveGuard(g){localStorage.setItem(v30Keys.guard,JSON.stringify(g))}function v30Toast(title,msg){const t=document.getElementById('v30Toast');document.getElementById('v30ToastTitle').textContent=title;document.getElementById('v30ToastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5200)}
+function v30GuardEvent(type,detail){const g=v30LoadGuard();g[type+'s']=(g[type+'s']||0)+1;g.events=g.events||[];g.events.push({type,detail,at:new Date().toISOString()});v30SaveGuard(g);v30RefreshUI();if(type==='tab'){if((g.tabs||0)===1)v30Toast('Primera advertencia','Se detectó cambio de pestaña. Evita salir de la actividad.');else if((g.tabs||0)===2)v30Toast('Segunda advertencia','A la tercera salida se cerrará la actividad y se enviará lo contestado.');else if((g.tabs||0)>=3){localStorage.setItem(V30_CONFIG.activityId+'_closedByTab','1');v30SubmitResults(true)}}}
+function v30InstallGuards(){document.addEventListener('visibilitychange',()=>{if(document.hidden&&v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30GuardEvent('tab','Cambio de pestaña o ventana')});document.addEventListener('contextmenu',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('rightClick','Clic derecho');v30Toast('Clic derecho bloqueado','Usa el material para razonar y responder.')}});document.addEventListener('copy',e=>{if(v30GetStudent()&&!v30IsCompleted()){e.preventDefault();v30GuardEvent('copyPaste','Copiar')}});document.addEventListener('paste',e=>{if(v30GetStudent()&&!v30IsCompleted()){if(e.target&&e.target.classList&&e.target.classList.contains('wq-input')){e.preventDefault();v30GuardEvent('copyPaste','Pegar');v30Toast('Pegar bloqueado','Escribe tu respuesta directamente.')}}})}
+function v30OpenUnlock(){document.getElementById('v30UnlockModal').classList.add('show');document.getElementById('v30UnlockMsg').className='v30-lock-msg'}function v30CloseUnlock(){document.getElementById('v30UnlockModal').classList.remove('show')}function v30UnlockAttempt(){const key=document.getElementById('v30UnlockKey').value.trim(),msg=document.getElementById('v30UnlockMsg');if(key!==V30_CONFIG.unlockKey){msg.textContent='Clave incorrecta. Solicita autorización al docente.';msg.className='v30-lock-msg show';return}Object.values(v30Keys).forEach(k=>localStorage.removeItem(k));localStorage.removeItem(V30_CONFIG.activityId+'_closedByTab');v30Answers={};msg.textContent='Actividad desbloqueada. Puedes iniciar una nueva oportunidad.';msg.className='v30-lock-msg show';setTimeout(()=>location.reload(),900)}
+function v30RecordAnswer(qId,isCorrect,detail){if(!v30RequireExercisesStarted())return;v30Answers[qId]={correct:!!isCorrect,detail:detail||'',answeredAt:new Date().toISOString()};v30SaveAnswers();v30RefreshUI()}
+function v30Stats(){const answered=Object.keys(v30Answers).length,correct=Object.values(v30Answers).filter(a=>a.correct).length,wrong=answered-correct,grade=Math.round((correct/V30_CONFIG.totalQuestions)*100);return{answered,correct,wrong,grade}}
+function v30RefreshUI(){const s=v30GetStudent(),st=v30Stats(),pct=Math.round((st.answered/V30_CONFIG.totalQuestions)*100);document.getElementById('v30StudentLabel').innerHTML=s?`Alumno: <b>${s.name}</b> · ${s.group} · ${s.shift}`:'Alumno: <b>No registrado</b>';document.getElementById('v30Progress').style.width=pct+'%';document.getElementById('v30ScoreLabel').textContent=`${st.correct}/${V30_CONFIG.totalQuestions} · ${st.grade}%`;const g=v30LoadGuard();document.getElementById('v30GuardLabel').innerHTML=`Alertas: <b>${(g.tabs||0)+(g.copyPastes||0)+(g.rightClicks||0)}</b>`;document.getElementById('v30Answered').textContent=st.answered;document.getElementById('v30Correct').textContent=st.correct;document.getElementById('v30Wrong').textContent=st.wrong;document.getElementById('v30Grade').textContent=st.grade;const timer=document.getElementById('v30Timer');if(timer&&!v30ExercisesStarted()&&!v30IsCompleted())timer.textContent='Sin iniciar';const panel=document.getElementById('v30StartExamPanel');if(panel&&v30ExercisesStarted())panel.style.display='none';if(!v30ExercisesStarted()&&!v30IsCompleted())document.body.classList.add('v30-exercises-locked');else document.body.classList.remove('v30-exercises-locked');const btn=document.getElementById('v30SubmitBtn');if(btn){btn.disabled=(!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions)||v30IsCompleted()||!v30ExercisesStarted();btn.textContent=v30IsCompleted()?'Actividad enviada y bloqueada':(v30TimeExpired()?'Enviar respuestas contestadas':'Enviar calificación al docente')}}
+async function v30SubmitResults(auto=false){const s=v30GetStudent();if(!s){alert('Primero registra tus datos.');return}const st=v30Stats();if(!auto&&!v30TimeExpired()&&st.answered<V30_CONFIG.totalQuestions){alert(`Aún faltan preguntas por contestar: ${V30_CONFIG.totalQuestions-st.answered}`);return}const status=document.getElementById('v30SubmitStatus');const startedAt=localStorage.getItem(v30Keys.startedAt)||'';const guard=v30LoadGuard();const payload={_subject:`MRED R.A.2.2 B - ${s.name} - ${st.grade}%`,_captcha:'false',_template:'table',_autoresponse:'Tu actividad de Manejo de Redes fue recibida correctamente.',docente:V30_CONFIG.teacherEmail,actividad:'2-2526 - MRED - U2 - R.A. 2.2 - B',nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,calificacion:st.grade,correctas:st.correct,incorrectas:st.wrong,contestadas:st.answered,total_preguntas:V30_CONFIG.totalQuestions,inicio:startedAt,envio:new Date().toISOString(),cierre_automatico:auto?'SI':'NO',tiempo_expirado:v30TimeExpired()?'SI':'NO',cerrado_por_pestanas:localStorage.getItem(V30_CONFIG.activityId+'_closedByTab')==='1'?'SI':'NO',alertas_json:JSON.stringify(guard,null,2),respuestas_json:JSON.stringify(v30Answers,null,2),navegador:navigator.userAgent,huella_alumno:s.fingerprint};try{status.textContent='Enviando resultado...';const res=await fetch(V30_CONFIG.formSubmitEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify(payload)});if(!res.ok)throw new Error('No se pudo enviar');localStorage.setItem(v30Keys.completed,'1');document.body.classList.add('v30-completed');status.innerHTML='<span style="color:var(--green)">Resultado enviado correctamente. La actividad quedó bloqueada.</span>';v30RefreshUI();checkShowPkt();}catch(err){status.innerHTML='<span style="color:var(--red)">No se pudo enviar. Revisa conexión o FormSubmit.co. Puedes descargar respaldo.</span>';v30DownloadBackup()}}
+function v30DownloadBackup(){const s=v30GetStudent()||{name:'sin_registro'},st=v30Stats();const data={actividad:V30_CONFIG.activityId,alumno:s,resultado:st,respuestas:v30Answers,guard:v30LoadGuard(),generado:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`resultado_MRED_RA22_B_${(s.name||'alumno').replace(/\s+/g,'_')}.json`;a.click();URL.revokeObjectURL(a.href)}
+function v30Bootstrap(){v30LoadAnswers();const s=v30GetStudent();if(v30IsCompleted()){document.body.classList.add('v30-completed');document.getElementById('v30StartModal').classList.add('show');document.getElementById('v30LockedMessage').classList.add('show');document.getElementById('v30StudentForm').style.display='none';document.getElementById('v30StartBtn').style.display='none'}else if(!s){document.body.classList.add('v30-locked');document.getElementById('v30StartModal').classList.add('show')}v30RefreshUI()}
+function checkOpt(el,qId,result,msg){if(!v30RequireExercisesStarted())return;const wrap=document.getElementById(qId),opts=wrap.querySelectorAll('.wopt'),fb=document.getElementById('fb_'+qId),isCorrect=result==='correct';v30RecordAnswer(qId,isCorrect,el.textContent.trim());opts.forEach(o=>o.onclick=null);if(isCorrect){el.classList.add('correct');fb.className='wfb show ok';fb.textContent='✓ '+msg}else{el.classList.add('wrong');fb.className='wfb show bad';fb.textContent='✗ '+msg}}
+function checkInput(qId,correct,hint){if(!v30RequireExercisesStarted())return;const input=document.getElementById('in_'+qId),fb=document.getElementById('fb_'+qId),val=input.value.trim();const norm=s=>String(s).toLowerCase().replace(/\s+/g,' ').trim();const ok=correct.some(c=>norm(val)===norm(c));if(!val){fb.className='wfb show hint';fb.textContent='Escribe algo primero.';return}if(ok){input.className='wq-input ok';input.disabled=true;fb.className='wfb show ok';fb.textContent='✓ Correcto.';v30RecordAnswer(qId,true,val)}else{input.className='wq-input bad';fb.className='wfb show bad';fb.textContent='✗ No es correcto. Pista: '+hint;v30RecordAnswer(qId,false,val);setTimeout(()=>{input.className='wq-input';input.select()},1200)}}
+function downloadNotesPDF(){
+const html=`<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Apuntes R.A. 2.2-B — Configuración de un Switch</title>
+<style>
+@page{size:letter;margin:12mm 14mm 12mm 14mm}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Times New Roman',Times,serif;color:#111;font-size:9.5px;line-height:1.5;text-align:justify}
+
+/* ── ENCABEZADO PORTADA (primera hoja) ── */
+.doc-header{background:#0f2745;color:#fff;padding:7mm 10mm;margin:-12mm -14mm 6mm;display:flex;flex-direction:column;gap:2mm}
+.dh-top{display:flex;justify-content:space-between;align-items:flex-start}
+.dh-inst{font-family:Arial,sans-serif;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.5px;text-transform:uppercase}
+.dh-pages{font-family:Arial,sans-serif;font-size:7px;color:rgba(255,255,255,.4)}
+.dh-materia{font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:1mm}
+.dh-unit{font-family:Arial,sans-serif;font-size:8.5px;color:rgba(255,255,255,.7);margin-bottom:1mm}
+.dh-ra{font-family:Arial,sans-serif;font-size:8.5px;color:#00d4aa;margin-bottom:1mm}
+.dh-inciso{font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#fff;background:rgba(0,212,170,.15);border-left:3px solid #00d4aa;padding:3px 8px;margin-top:1mm;display:inline-block}
+.dh-topics{display:flex;flex-wrap:wrap;gap:3px;margin-top:3mm}
+.dh-topic{font-family:Arial,sans-serif;font-size:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:2px;padding:2px 6px;color:rgba(255,255,255,.65)}
+
+/* ── ENCABEZADO PÁGINAS 2-3 ── */
+.page-header{font-family:Arial,sans-serif;font-size:7.5px;color:#888;border-bottom:1px solid #dde3ea;padding-bottom:2.5mm;margin-bottom:5mm;display:flex;justify-content:space-between}
+.page-header b{color:#0f2745}
+
+/* ── SECCIONES ── */
+.sec{margin-bottom:5mm;break-inside:avoid}
+.sec-head{display:flex;align-items:center;gap:5px;margin-bottom:2.5mm;padding-bottom:1.5mm;border-bottom:2px solid #00a98f}
+.sec-num{font-family:Arial,sans-serif;font-size:6.5px;letter-spacing:1.5px;text-transform:uppercase;background:#dff0eb;color:#0a3d2e;border-radius:3px;padding:2px 5px;white-space:nowrap}
+.sec-title{font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:#0f2745}
+p{margin-bottom:2.5mm;font-size:9.5px;text-align:justify}
+b,strong{color:#0f2745}
+code{font-family:Consolas,monospace;font-size:8px;background:#f0f4f8;border:1px solid #c8d4e0;border-radius:2px;padding:0 3px}
+
+/* ── TABLA ── */
+table{width:100%;border-collapse:collapse;margin:2mm 0 3.5mm;font-size:8px;break-inside:avoid}
+th{background:#0f2745;color:#fff;text-align:left;padding:3px 5px;font-family:Arial,sans-serif;font-size:7px;letter-spacing:.3px;text-transform:uppercase;border:1px solid #0f2745}
+td{padding:3px 5px;border:1px solid #c8d4e0;vertical-align:top;line-height:1.35}
+tr:nth-child(even) td{background:#f4f8fb}
+td b{color:#0a3d2e}
+
+/* ── CÓDIGO ── */
+.code-title{font-family:Arial,sans-serif;font-size:6.5px;text-transform:uppercase;letter-spacing:1px;color:#fff;background:#0f2745;padding:2px 7px;display:inline-block;border-radius:3px 3px 0 0}
+.code-block{background:#f4f8fb;border:1px solid #c8d4e0;border-left:3px solid #00a98f;padding:4px 7px;margin:0 0 3.5mm;font-family:Consolas,monospace;font-size:7.5px;line-height:1.75;break-inside:avoid;white-space:pre-wrap;word-break:break-all}
+.cmd{color:#0055aa;font-weight:bold}.val{color:#a04000}.cmt{color:#888;font-style:italic}
+
+/* ── INFO BOXES ── */
+.ib{border-radius:3px;padding:4px 7px;margin:2mm 0 3.5mm;font-size:8.5px;break-inside:avoid}
+.ib-info{background:#f0f6ff;border-left:3px solid #58a6ff}
+.ib-warn{background:#fff8e6;border-left:3px solid #d29922}
+.ib-ok{background:#f0faf2;border-left:3px solid #2e8b57}
+.ib-tag{font-family:Arial,sans-serif;font-size:6.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5mm;display:block}
+.ib-info .ib-tag{color:#1a5276}.ib-warn .ib-tag{color:#7d6608}.ib-ok .ib-tag{color:#1e6e1e}
+.ib p{margin:0;font-size:8.5px}
+
+/* ── DOS COLUMNAS ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:2mm 0 3.5mm;break-inside:avoid}
+.col-box{border:1px solid #c8d4e0;border-radius:3px;overflow:hidden}
+.col-head{font-family:Arial,sans-serif;font-size:7.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:3px 7px;text-align:center}
+.col-hub .col-head{background:#c0392b;color:#fff}
+.col-sw .col-head{background:#0f2745;color:#fff}
+.col-body{padding:4px 7px;font-size:8px;line-height:1.6}
+.col-item{display:flex;gap:3px;margin-bottom:.8mm}
+.chk{color:#2e8b57;font-weight:bold;flex-shrink:0}
+.xmark{color:#c0392b;font-weight:bold;flex-shrink:0}
+
+/* ── TARJETAS PUERTOS ── */
+.port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:2mm 0 3.5mm;break-inside:avoid}
+.port-card{background:#f4f8fb;border:1px solid #c8d4e0;border-radius:3px;padding:4px 6px}
+.port-name{font-family:Consolas,monospace;font-size:7.5px;font-weight:700;color:#0f2745;margin-bottom:.8mm}
+.port-cable{font-size:7px;color:#555;margin-bottom:.8mm}
+.port-use{font-size:7px;color:#333}
+
+/* ── RESUMEN GRID ── */
+.cmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 5mm;font-size:8px;line-height:1.5;margin-top:2mm}
+
+/* ── PIE ── */
+.page-footer{font-family:Arial,sans-serif;font-size:7px;color:#888;border-top:1px solid #dde3ea;padding-top:2.5mm;margin-top:5mm;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<!-- ══ PÁGINA 1 ══ -->
+<div class="doc-header">
+  <div class="dh-top">
+    <div>
+      <div class="dh-inst">CONALEP Extensión Nuevo Progreso · Ciclo 2-2526 · 6° Semestre</div>
+      <div class="dh-materia">Manejo de Redes</div>
+      <div class="dh-unit">Unidad 2. Implementación de dispositivos de ruteo y conmutación de red</div>
+      <div class="dh-ra">R.A. 2.2. Configura los servicios integrados en dispositivos de ruteo y conmutación (12%)</div>
+      <div class="dh-inciso">B) Configuración de un Switch</div>
+    </div>
+    <div class="dh-pages">Apuntes · 3 hojas</div>
+  </div>
+  <div class="dh-topics">
+    <span class="dh-topic">B-01 · Switch vs Hub</span>
+    <span class="dh-topic">B-02 · Conexión física</span>
+    <span class="dh-topic">B-03 · Config. inicial y SVI</span>
+    <span class="dh-topic">B-04 · Switch al router</span>
+    <span class="dh-topic">B-05 · Protocolo CDP</span>
+    <span class="dh-topic">B-06 · Mapeo con CDP</span>
+  </div>
+</div>
+
+<!-- B-01 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-01</span><span class="sec-title">¿Qué es un Switch y para qué sirve?</span></div>
+  <p>Un <b>switch</b> es un dispositivo de <b>capa 2</b> del modelo OSI que conecta múltiples dispositivos en una LAN. Aprende las MACs de cada puerto y envía datos solo al destino correcto, eliminando colisiones y optimizando el ancho de banda.</p>
+  <div class="two-col">
+    <div class="col-box col-hub">
+      <div class="col-head">Hub — Obsoleto</div>
+      <div class="col-body">
+        <div class="col-item"><span class="xmark">✘</span><span>Envía datos a TODOS los puertos</span></div>
+        <div class="col-item"><span class="xmark">✘</span><span>Genera colisiones — Capa 1</span></div>
+        <div class="col-item"><span class="xmark">✘</span><span>Ancho de banda compartido</span></div>
+        <div class="col-item"><span class="xmark">✘</span><span>Sin tabla de direcciones MAC</span></div>
+      </div>
+    </div>
+    <div class="col-box col-sw">
+      <div class="col-head">Switch 2960 — Actual</div>
+      <div class="col-body">
+        <div class="col-item"><span class="chk">✔</span><span>Envía datos solo al puerto correcto</span></div>
+        <div class="col-item"><span class="chk">✔</span><span>Elimina colisiones — Capa 2</span></div>
+        <div class="col-item"><span class="chk">✔</span><span>Ancho de banda dedicado por puerto</span></div>
+        <div class="col-item"><span class="chk">✔</span><span>Tabla MAC dinámica y configurable</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B-02 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-02</span><span class="sec-title">Conexión física del switch</span></div>
+  <p><b>Regla:</b> dispositivos <b>diferentes</b> (PC-Switch, Router-Switch) → cable <b>directo</b>. Dispositivos <b>iguales</b> (Switch-Switch) → cable <b>cruzado</b>. En PT usa cable automático.</p>
+  <div class="port-grid">
+    <div class="port-card"><div class="port-name">PC → Switch</div><div class="port-cable">Cable directo</div><div class="port-use">Fa0 → Fa0/X</div></div>
+    <div class="port-card"><div class="port-name">Router → Switch</div><div class="port-cable">Cable directo</div><div class="port-use">Gi0/X → Gi0/1</div></div>
+    <div class="port-card"><div class="port-name">Switch → Switch</div><div class="port-cable">Cable cruzado</div><div class="port-use">Gi0/1 → Gi0/1</div></div>
+    <div class="port-card"><div class="port-name">Consola (CON)</div><div class="port-cable">Cable rollover azul</div><div class="port-use">PC RS-232 → Console</div></div>
+    <div class="port-card"><div class="port-name">🟠 Ámbar</div><div class="port-cable">Inicializando</div><div class="port-use">STP activo, espera 30 seg</div></div>
+    <div class="port-card"><div class="port-name">🟢 Verde</div><div class="port-cable">Activo</div><div class="port-use">Enlace funcionando OK</div></div>
+  </div>
+</div>
+
+<!-- B-03 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-03</span><span class="sec-title">Configuración inicial del switch</span></div>
+  <p>La configuración inicial se realiza por <b>consola</b>. La <b>SVI</b> (Switch Virtual Interface) es la interfaz lógica que recibe la IP de administración del switch.</p>
+  <div class="code-title">Switch 2960 — Configuración inicial</div>
+  <div class="code-block"><span class="cmd">enable</span> / <span class="cmd">configure terminal</span>
+<span class="cmd">hostname</span> <span class="val">SW-LAB</span>
+<span class="cmd">enable secret</span> <span class="val">Admin2025</span>
+<span class="cmt">! SVI — IP de administración</span>
+<span class="cmd">interface vlan 1</span>
+ <span class="cmd">ip address</span> <span class="val">192.168.1.2 255.255.255.0</span>
+ <span class="cmd">no shutdown</span>
+<span class="cmd">exit</span>
+<span class="cmd">ip default-gateway</span> <span class="val">192.168.1.1</span>   <span class="cmt">← para acceso remoto</span>
+<span class="cmd">end</span> / <span class="cmd">copy running-config startup-config</span></div>
+  <div class="ib ib-warn"><span class="ib-tag">Sin SVI no hay acceso remoto</span>Sin IP en la VLAN 1, el switch no acepta SSH ni Telnet. Solo podrás configurarlo por cable de consola físico.</div>
+</div>
+
+<div class="page-footer"><span>Apuntes R.A. 2.2 · Inciso B — Configuración de un Switch</span><span>Hoja 1 / 3 · Ing. Santiago Martínez González · CONALEP NP</span></div>
+
+<!-- ══ PÁGINA 2 ══ -->
+<div style="page-break-before:always"></div>
+<div class="page-header"><span><b>Manejo de Redes</b> · R.A. 2.2 · B — Configuración de un Switch</span><span>Ing. Santiago Martínez González · CONALEP NP · 2-2526</span></div>
+
+<!-- B-04 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-04</span><span class="sec-title">Conexión del switch al router</span></div>
+  <p>El switch conecta la LAN con el router vía GigabitEthernet. El router es el <b>gateway</b> de todas las PCs. Topología estándar: <b>PCs → Switch → Router → WAN</b>.</p>
+  <table>
+    <tr><th>Comando</th><th>¿Dónde?</th><th>Resultado esperado</th></tr>
+    <tr><td><code>show interfaces Gi0/1</code></td><td>Switch</td><td>up, line protocol is up</td></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Router</td><td>G0/0 up/up con IP 192.168.1.1</td></tr>
+    <tr><td><code>show interfaces status</code></td><td>Switch</td><td>Puertos en estado connected</td></tr>
+    <tr><td><code>ping 192.168.1.1</code></td><td>PC</td><td>Reply from... 0% pérdida</td></tr>
+  </table>
+  <div class="ib ib-ok"><span class="ib-tag">Proceso de verificación</span><p>Sigue este orden: (1) <code>show interfaces Gi0/1</code> en switch — up/up. (2) <code>show ip interface brief</code> en router — G0/0 up/up con IP. (3) Ping desde PC al gateway — 0% pérdida.</p></div>
+</div>
+
+<!-- B-05 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-05</span><span class="sec-title">Protocolo CDP — Cisco Discovery Protocol</span></div>
+  <p>CDP es un protocolo <b>propietario Cisco</b> que opera en <b>capa 2</b>. Permite descubrir automáticamente dispositivos vecinos sin necesitar IPs. Envía anuncios cada 60 segundos.</p>
+  <table>
+    <tr><th>Comando</th><th>¿Qué muestra?</th></tr>
+    <tr><td><code>show cdp neighbors</code></td><td>Lista: nombre vecino, puertos local/remoto, plataforma</td></tr>
+    <tr><td><code>show cdp neighbors detail</code></td><td>IP del vecino, versión IOS, modelo exacto del hardware</td></tr>
+    <tr><td><code>show cdp interface</code></td><td>Interfaces donde CDP está activo y temporizadores</td></tr>
+    <tr><td><code>no cdp run</code></td><td>Desactiva CDP globalmente en el dispositivo</td></tr>
+    <tr><td><code>no cdp enable</code></td><td>Desactiva CDP en una interfaz (recomendado en puertos externos)</td></tr>
+  </table>
+  <div class="code-title">Ejemplo — show cdp neighbors detail</div>
+  <div class="code-block">SW-LAB# <span class="cmd">show cdp neighbors detail</span>
+
+Device ID: <b>ISR-LAB</b>
+  IP address: <span class="val">192.168.1.1</span>
+  Platform: cisco 2911,  Capabilities: Router
+  Interface: GigabitEthernet0/1, Port ID (outgoing): GigabitEthernet0/0</div>
+  <div class="ib ib-warn"><span class="ib-tag">CDP y seguridad</span><p>CDP revela modelo, versión IOS y topología — información útil para atacantes. Desactívalo en puertos hacia usuarios o internet con <code>no cdp enable</code>.</p></div>
+</div>
+
+<div class="page-footer"><span>Apuntes R.A. 2.2 · Inciso B — Configuración de un Switch</span><span>Hoja 2 / 3 · Ing. Santiago Martínez González · CONALEP NP</span></div>
+
+<!-- ══ PÁGINA 3 ══ -->
+<div style="page-break-before:always"></div>
+<div class="page-header"><span><b>Manejo de Redes</b> · R.A. 2.2 · B — Configuración de un Switch</span><span>Ing. Santiago Martínez González · CONALEP NP · 2-2526</span></div>
+
+<!-- B-06 -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-num">B-06</span><span class="sec-title">Asignación de red con CDP — Mapeo de topología</span></div>
+  <p>CDP permite <b>reconstruir el mapa de red</b> sin documentación previa. Combinando <code>show cdp neighbors detail</code> con <code>show mac address-table</code> se documenta toda la topología.</p>
+  <div class="code-title">Proceso completo de mapeo con CDP</div>
+  <div class="code-block"><span class="cmt">! Paso 1: Desde el router — descubrir el switch</span>
+ISR-LAB# <span class="cmd">show cdp neighbors detail</span>
+  Device ID: <span class="val">SW-LAB</span>    IP: <span class="val">192.168.1.2</span>
+  Platform: WS-C2960   Interface: Gi0/0 → Gi0/1
+
+<span class="cmt">! Paso 2: En el switch — ver qué PCs están conectadas</span>
+SW-LAB# <span class="cmd">show mac address-table</span>
+  Vlan  Mac Address       Type      Ports
+     1  00aa.1234.5678    DYNAMIC   Fa0/1   <span class="cmt">← PC-Admin</span>
+     1  00bb.abcd.ef01    DYNAMIC   Fa0/2   <span class="cmt">← PC-User1</span>
+     1  00cc.1111.2222    DYNAMIC   Fa0/3   <span class="cmt">← PC-User2</span>
+
+<span class="cmt">! Resultado — mapa documentado</span>
+<span class="cmt">!  ISR-LAB(192.168.1.1) Gi0/0 ── Gi0/1 SW-LAB(192.168.1.2)</span>
+<span class="cmt">!  SW-LAB Fa0/1 ── PC-Admin(192.168.1.10)</span>
+<span class="cmt">!  SW-LAB Fa0/2 ── PC-User1(192.168.1.20)</span>
+<span class="cmt">!  SW-LAB Fa0/3 ── PC-User2(192.168.1.30)</span></div>
+
+  <div class="ib ib-ok"><span class="ib-tag">Resumen de comandos clave — Inciso B</span>
+    <div class="cmd-grid">
+      <div><code>show mac address-table</code> — MACs aprendidas</div>
+      <div><code>show interfaces status</code> — Estado de puertos</div>
+      <div><code>show cdp neighbors</code> — Vecinos Cisco</div>
+      <div><code>show cdp neighbors detail</code> — IP y modelo</div>
+      <div><code>interface vlan 1</code> — Configurar SVI</div>
+      <div><code>ip default-gateway</code> — Gateway del switch</div>
+      <div><code>no cdp enable</code> — Desactivar en interfaz</div>
+      <div><code>show vlan brief</code> — VLANs y puertos</div>
+    </div>
+  </div>
+
+  <div class="ib ib-info"><span class="ib-tag">CDP como herramienta de línea de base</span><p><code>show cdp neighbors detail</code> forma parte de la línea de base de red. Documentar desde el inicio qué dispositivo está en qué puerto permite detectar cualquier cambio no autorizado en la topología al comparar con el registro original.</p></div>
+</div>
+
+<div class="page-footer"><span>Apuntes R.A. 2.2 · Inciso B — Configuración de un Switch</span><span>Hoja 3 / 3 · CONALEP Extensión Nuevo Progreso · Ciclo 2-2526</span></div>
+
+</body>
+</html>`;
+const w=window.open('','_blank');
+w.document.write(html);
+w.document.close();
+setTimeout(()=>w.print(),800);
+}
+
+// ══ CHECKLIST IA ══
+const pktResults={};
+const pktPrompts={
+  1:'Analiza esta imagen de Cisco Packet Tracer. Verifica si muestra una topología de red con: un Router 2911 etiquetado ISR-LAB, un Switch 2960 etiquetado SW-LAB, tres PCs (PC-Admin, PC-User1, PC-User2), cable rollover entre PC-Admin y el switch, cables directos de las PCs al switch y del switch al router, y todos los indicadores de enlace en verde. Responde en español con CORRECTO o INCORRECTO y explica brevemente.',
+  2:'Analiza esta imagen que debe mostrar el output del comando show interfaces status en un switch Cisco 2960. Verifica que los puertos Fa0/1, Fa0/2 y Fa0/3 aparezcan en estado connected, y el puerto Gi0/1 también aparezca connected. Responde en español con CORRECTO o INCORRECTO y explica qué ves.',
+  3:'Analiza esta imagen que debe mostrar el output del comando show cdp neighbors detail en un switch. Verifica que aparezca el dispositivo vecino ISR-LAB con su dirección IP 192.168.1.1 y información de plataforma y puertos. Responde en español con CORRECTO o INCORRECTO y explica lo que encuentras.',
+  4:'Analiza esta imagen que debe mostrar el output del comando show mac address-table en un switch Cisco. Verifica que haya al menos 3 entradas de tipo DYNAMIC en VLAN 1 con MACs asignadas a puertos FastEthernet. Responde en español con CORRECTO si hay entradas dinámicas, o INCORRECTO si la tabla está vacía.',
+  5:'Analiza esta imagen que debe mostrar el resultado de un ping desde una PC en Packet Tracer hacia la IP 192.168.1.1. Verifica que el ping sea exitoso: Reply from 192.168.1.1 en cada línea y 0% de paquetes perdidos. Responde en español con CORRECTO o INCORRECTO y explica lo que ves.'
+};
+
+
+function updatePktSummary(){
+  const verified=Object.keys(pktResults).length;
+  const correct=Object.values(pktResults).filter(r=>r).length;
+  const grade=Math.round((correct/5)*100);
+  document.getElementById('pktVerified').textContent=verified;
+  document.getElementById('pktCorrect').textContent=correct;
+  document.getElementById('pktGrade').textContent=grade+'%';
+  const btn=document.getElementById('pktSubmitBtn');
+  if(verified>=5){btn.style.opacity='1';btn.style.pointerEvents='auto'}
+}
+
+async function analyzeScreenshot(itemNum, input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  document.getElementById('cf'+itemNum).textContent=file.name;
+  const statusEl=document.getElementById('cs'+itemNum);
+  const resultEl=document.getElementById('cr'+itemNum);
+  statusEl.textContent='⏳';statusEl.style.borderColor=var_yellow;
+  resultEl.style.display='block';
+  resultEl.style.background='rgba(210,153,34,.06)';
+  resultEl.style.borderTop='1px solid rgba(210,153,34,.2)';
+  resultEl.style.color='var(--yellow)';
+  resultEl.textContent='Analizando imagen con IA... esto puede tomar unos segundos.';
+
+  try{
+    const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Error al leer'));r.readAsDataURL(file)});
+    const mediaType=file.type||'image/png';
+    const response=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mediaType,data:base64}},{type:'text',text:pktPrompts[itemNum]}]}]})});
+    const data=await response.json();
+    const text=data.content.map(i=>i.text||'').join('');
+    const isCorrect=text.toUpperCase().includes('CORRECTO')&&!text.toUpperCase().startsWith('INCORRECTO')&&!text.includes('INCORRECTO:');
+    pktResults[itemNum]=isCorrect;
+    if(isCorrect){
+      statusEl.textContent='✅';statusEl.style.borderColor='var(--green)';statusEl.style.background='rgba(63,185,80,.15)';
+      resultEl.style.background='rgba(63,185,80,.06)';resultEl.style.borderTop='1px solid rgba(63,185,80,.2)';resultEl.style.color='#86efac';
+      document.getElementById('ci'+itemNum).style.borderColor='rgba(63,185,80,.4)';
+    }else{
+      statusEl.textContent='❌';statusEl.style.borderColor='var(--red)';statusEl.style.background='rgba(248,81,73,.15)';
+      resultEl.style.background='rgba(248,81,73,.06)';resultEl.style.borderTop='1px solid rgba(248,81,73,.2)';resultEl.style.color='#fca5a5';
+      document.getElementById('ci'+itemNum).style.borderColor='rgba(248,81,73,.4)';
+    }
+    resultEl.textContent=text;
+    updatePktSummary();
+  }catch(err){
+    statusEl.textContent='⚠️';
+    resultEl.style.color='var(--yellow)';
+    resultEl.textContent='Error al analizar la imagen. Verifica tu conexión e intenta de nuevo. ('+err.message+')';
+  }
+}
+
+const var_yellow='#d29922';
+
+async function submitPktResults(){
+  const s=v30GetStudent();if(!s){alert('Primero registra tus datos en la parte teórica.');return}
+  const correct=Object.values(pktResults).filter(r=>r).length;
+  const grade=Math.round((correct/5)*100);
+  const status=document.getElementById('pktSubmitStatus');
+  const payload={_subject:`MRED R.A.2.2 B PRÁCTICA - ${s.name} - ${grade}%`,_captcha:'false',_template:'table',docente:V30_CONFIG.teacherEmail,actividad:'2-2526 - MRED - U2 - R.A. 2.2 - B - PRÁCTICA',nombre:s.name,grupo:s.group,turno:s.shift,correo_alumno:s.email,calificacion_practica:grade,items_correctos:correct,total_items:5,detalle_items:JSON.stringify(pktResults),envio:new Date().toISOString()};
+  try{
+    status.textContent='Enviando resultado de práctica...';
+    const res=await fetch(V30_CONFIG.formSubmitEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error('Error al enviar');
+    status.innerHTML='<span style="color:var(--green)">Resultado de práctica enviado correctamente.</span>';
+    document.getElementById('pktSubmitBtn').disabled=true;
+  }catch(err){
+    status.innerHTML='<span style="color:var(--red)">No se pudo enviar. Descarga el respaldo e intenta más tarde.</span>';
+  }
+}
+
+// Mostrar sección PKT cuando se complete la teoría
+function checkShowPkt(){if(v30IsCompleted()){const s=document.getElementById('pktSection');if(s)s.style.display='block'}}
+document.addEventListener('DOMContentLoaded',()=>{v30Bootstrap();v30InstallGuards();if(v30GetStudent()&&!v30IsCompleted()&&v30ExercisesStarted())v30StartTimer();checkShowPkt();});
+</script>
+</body>
+</html>
