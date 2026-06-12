@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COBD Classroom · Cuaderno Digital de Aprendizaje · RA 2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#0E86C4;
+  --azul-osc:#084F75;
+  --azul-tinte:#E5F3FB;
+  --ink:#152230;
+  --gris:#5A6B78;
+  --bg:#F1F6F9;
+  --surface:#FFFFFF;
+  --line:#D8E5EE;
+  --code-bg:#0A2233;
+  --code-ink:#D6ECF8;
+  --kw:#5BC8F5;
+  --str:#F0C674;
+  --num:#8FE3AC;
+  --amber-bg:#FFF4E0;
+  --amber:#8A5300;
+  --rojo:#A33B2E;
+  --rojo-bg:#FBEAE7;
+  --ok:#0B6B3A;
+  --radius:10px;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}
+
+/* ===== LAYOUT ===== */
+.app{display:grid;grid-template-columns:292px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--line);padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:32px clamp(20px,5vw,64px) 96px;max-width:980px;width:100%}
+
+/* ===== SIDEBAR ===== */
+.brand{padding:22px 22px 18px;border-bottom:1px solid var(--line)}
+.brand .logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:38px;height:38px;border-radius:8px;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:-.5px}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.brand .sub{font-size:12.5px;color:var(--gris);margin-top:2px}
+.brand .inst{margin-top:10px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--azul);font-weight:600}
+
+.student-chip{margin:14px 18px 0;padding:10px 12px;background:var(--azul-tinte);border:1px solid #C9E2F2;border-radius:8px;font-size:13px;display:none}
+.student-chip strong{display:block;font-size:13.5px}
+.student-chip span{color:var(--gris);font-size:12px}
+.student-chip button{margin-top:6px;background:none;border:none;color:var(--azul);font-size:12px;font-weight:600;cursor:pointer;padding:0;font-family:var(--sans)}
+
+.progress-wrap{padding:16px 22px 6px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--gris);margin-bottom:6px;font-weight:500}
+.progress-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:var(--azul);border-radius:99px;transition:width .4s ease}
+
+nav.toc{padding:12px 12px 24px;flex:1}
+.toc-group{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--gris);padding:14px 10px 6px;font-weight:600}
+.toc a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:14px;cursor:pointer}
+.toc a:hover{background:var(--bg)}
+.toc a.active{background:var(--azul-tinte);color:var(--azul-osc);font-weight:600}
+.toc .dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;background:#fff}
+.toc a.done .dot{background:var(--azul);border-color:var(--azul)}
+.sidebar-foot{padding:14px 22px;border-top:1px solid var(--line);font-size:11.5px;color:var(--gris)}
+
+/* ===== TOPBAR (mobile) ===== */
+.topbar{display:none;position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;align-items:center;gap:12px}
+.topbar button{background:none;border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:18px;cursor:pointer;line-height:1}
+.topbar .t-title{font-weight:700;font-size:15px}
+
+/* ===== SECTIONS ===== */
+section.page{display:none;animation:fadeIn .25s ease}
+section.page.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--azul);font-weight:600;margin-bottom:8px}
+h2.page-title{font-size:clamp(24px,3.4vw,32px);font-weight:700;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+.page-lead{font-size:17px;color:var(--gris);max-width:64ch;margin-bottom:28px}
+h3{font-size:20px;font-weight:700;margin:34px 0 12px;letter-spacing:-.2px}
+h4{font-size:16px;font-weight:600;margin:22px 0 8px}
+p{margin-bottom:14px;max-width:72ch}
+ul.list,ol.list{margin:0 0 16px 22px;max-width:70ch}
+ul.list li,ol.list li{margin-bottom:7px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
+.card h4{margin-top:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* db-path chip: firma visual del cuaderno */
+.db-path{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;background:var(--azul-osc);color:#CBE7F7;padding:6px 12px;border-radius:7px 7px 0 0;font-weight:500}
+.db-path .sep{opacity:.45}
+.db-path .tbl{color:#fff;font-weight:600}
+.db-path svg{flex-shrink:0}
+
+/* SQL blocks */
+pre.sql{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:14px;line-height:1.7;padding:18px 20px;border-radius:0 var(--radius) var(--radius) var(--radius);overflow-x:auto;margin-bottom:18px}
+pre.sql.solo{border-radius:var(--radius)}
+.kw{color:var(--kw);font-weight:600}
+.str{color:var(--str)}
+.num{color:var(--num)}
+.cm{color:#7FA0B4;font-style:italic}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--azul-tinte);color:var(--azul-osc);padding:2px 6px;border-radius:5px;font-weight:500}
+
+/* data tables */
+.tbl-wrap{overflow-x:auto;margin-bottom:18px}
+table.data{border-collapse:collapse;width:100%;background:var(--surface);font-size:14px;border-radius:0 var(--radius) var(--radius) var(--radius);overflow:hidden;border:1px solid var(--line)}
+table.data th{background:#F5FAFD;font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid var(--line);color:var(--azul-osc)}
+table.data td{padding:9px 14px;border-bottom:1px solid var(--line)}
+table.data tr:last-child td{border-bottom:none}
+table.data tr.hl td{background:#FFF9E8}
+
+/* callouts */
+.callout{border-radius:var(--radius);padding:16px 18px 14px;margin-bottom:18px;border:1px solid;font-size:15px}
+.callout .c-title{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.info{background:var(--azul-tinte);border-color:#C3DFF0;color:var(--azul-osc)}
+.callout.warn{background:var(--amber-bg);border-color:#EDD9AE;color:var(--amber)}
+.callout.danger{background:var(--rojo-bg);border-color:#EFC9C2;color:var(--rojo)}
+.callout p{margin-bottom:6px;color:inherit}
+.callout p:last-child{margin-bottom:0}
+
+/* método 4 pasos */
+.metodo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 24px}
+.metodo .paso{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--azul);border-radius:8px;padding:14px}
+.metodo .paso .n{font-family:var(--mono);font-size:12px;color:var(--azul);font-weight:600;margin-bottom:4px}
+.metodo .paso .q{font-size:13.5px;font-weight:600;line-height:1.4}
+
+/* forms */
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+.field .hint{font-weight:400;color:var(--gris);font-size:13px;display:block;margin-top:2px}
+input[type=text],input[type=email],select,textarea{width:100%;border:1px solid #C2D5E2;border-radius:8px;padding:11px 13px;font-size:15px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical;line-height:1.6}
+textarea.sql-input{font-family:var(--mono);font-size:14px;background:#FAFCFE;min-height:130px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--azul);outline-offset:1px;border-color:var(--azul)}
+.radio-row{display:flex;flex-wrap:wrap;gap:10px}
+.radio-pill{display:flex;align-items:center;gap:8px;border:1px solid #C2D5E2;border-radius:8px;padding:9px 14px;cursor:pointer;background:#fff;font-size:14.5px}
+.radio-pill:has(input:checked){border-color:var(--azul);background:var(--azul-tinte);font-weight:600;color:var(--azul-osc)}
+.radio-pill input{accent-color:var(--azul)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--azul);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:15px;font-weight:600;font-family:var(--sans);cursor:pointer}
+.btn:hover{background:var(--azul-osc)}
+.btn.ghost{background:#fff;color:var(--azul-osc);border:1px solid #B6D3E6}
+.btn.ghost:hover{background:var(--azul-tinte)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.save-note{font-size:13px;color:var(--ok);margin-left:12px;opacity:0;transition:opacity .3s}
+.save-note.show{opacity:1}
+
+/* activity meta */
+.act-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;background:var(--azul-tinte);color:var(--azul-osc);border:1px solid #C3DFF0}
+.badge.pts{background:#EEF3FB;color:#27466E;border-color:#CCDCF0}
+
+/* evaluación */
+.score-hero{background:var(--azul-osc);color:#fff;border-radius:var(--radius);padding:28px;display:flex;align-items:center;gap:28px;margin-bottom:22px;flex-wrap:wrap}
+.score-num{font-size:54px;font-weight:700;font-family:var(--mono);line-height:1}
+.score-hero .detail{font-size:14px;opacity:.9}
+.rubrica td .fb{font-size:13px;color:var(--gris)}
+.fb-list{margin:6px 0 0 18px;font-size:13.5px}
+.fb-list li.ok{color:var(--ok)}
+.fb-list li.miss{color:var(--rojo)}
+
+/* retroalimentación de entrega */
+.fb-panel{display:none;margin-top:18px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.fb-panel.show{display:block;animation:fadeIn .25s ease}
+.fb-head{background:var(--azul-osc);color:#fff;padding:12px 18px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14.5px;gap:12px;flex-wrap:wrap}
+.fb-body{background:var(--surface);padding:16px 18px}
+.fb-body ul.fb-list{margin:0 0 0 18px;font-size:14px}
+.solucion{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.solucion h5{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--azul-osc);margin-bottom:10px}
+.fb-unlock{margin-top:14px;text-align:right}
+textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B78;cursor:not-allowed}
+.radio-pill:has(input:disabled){opacity:.6;cursor:not-allowed}
+
+/* simulador SQL */
+.sim-console{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.sim-console textarea{border:none;border-radius:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:140px;font-family:var(--mono);font-size:14px;background:#FAFCFE}
+.sim-console textarea:focus{outline:none;background:#fff}
+.sim-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px}
+.sim-status{font-size:13px;color:var(--gris);padding:0 14px 12px}
+.sim-result{border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+.sim-cmd{font-family:var(--mono);font-size:12.5px;background:#0A2233;color:#D6ECF8;padding:9px 14px;cursor:pointer;white-space:pre-wrap;word-break:break-word}
+.sim-cmd:hover{background:#103049}
+.sim-cmd::before{content:'sql> ';color:#5BC8F5;font-weight:600}
+.sim-body{padding:12px 14px;background:#fff;font-size:14px}
+.sim-ok{color:var(--ok);font-weight:600;font-size:13.5px}
+.sim-err{color:var(--rojo);font-family:var(--mono);font-size:13px;white-space:pre-wrap}
+.sim-body table.data{border-radius:8px;margin-bottom:6px}
+.reto{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.reto:last-child{border-bottom:none}
+.reto .r-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--azul);background:var(--azul-tinte);border-radius:6px;padding:3px 8px;flex-shrink:0;margin-top:1px}
+
+/* nav footer */
+.pager{display:flex;justify-content:space-between;margin-top:42px;gap:12px}
+
+/* registro: pantalla de bienvenida */
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(150deg,#063A57 0%,#0A5D8C 55%,#0E86C4 100%)}
+.gate::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 10%,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
+.gate-card{position:relative;background:#fff;border-radius:16px;max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden;box-shadow:0 30px 80px rgba(3,28,44,.5);max-height:94vh}
+.gate-brand{background:linear-gradient(165deg,#084F75,#0E86C4);color:#fff;padding:38px 34px 30px;display:flex;flex-direction:column}
+.gate-brand .logo-mark{width:52px;height:52px;font-size:18px;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35)}
+.gate-brand h2{font-size:26px;margin:16px 0 2px;letter-spacing:-.4px;line-height:1.15}
+.g-sub{font-size:14px;opacity:.85}
+.g-divider{height:1px;background:rgba(255,255,255,.28);margin:20px 0 16px}
+.g-mod{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600;opacity:.92;margin-bottom:14px}
+.g-list{list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.5}
+.g-list li{padding-left:24px;position:relative;opacity:.96}
+.g-list li::before{content:'✓';position:absolute;left:0;top:0;font-weight:700;color:#9FDCFF}
+.g-groups{margin-top:auto;padding-top:22px;font-family:var(--mono);font-size:12.5px;opacity:.8;letter-spacing:.5px}
+.gate-form{padding:36px 38px 30px;overflow-y:auto}
+.gate-form h3{margin:0 0 4px;font-size:21px;letter-spacing:-.3px}
+.gate-form>p{color:var(--gris);font-size:13.5px;margin-bottom:20px}
+.err{color:var(--rojo);background:var(--rojo-bg);border:1px solid #EFC9C2;border-radius:8px;padding:9px 12px;font-size:13px;margin:0 0 12px;display:none}
+@media(max-width:760px){.gate{padding:0}.gate-card{grid-template-columns:1fr;border-radius:0;max-height:100vh;overflow-y:auto}.gate-brand{padding:26px 24px 20px}.g-list{display:none}.g-divider{margin:14px 0 10px}.g-groups{margin-top:12px;padding-top:0}.gate-form{padding:24px 24px 28px}}
+
+@media(max-width:920px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-300px;width:292px;z-index:60;transition:left .25s ease;box-shadow:none}
+  .sidebar.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .topbar{display:flex}
+  .grid-2,.metodo{grid-template-columns:1fr}
+  .metodo{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{.sidebar,.topbar,.pager,.btn{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+
+<!-- ===== REGISTRO (gate) ===== -->
+<div class="gate" id="gate" style="display:none">
+  <div class="gate-card">
+    <aside class="gate-brand">
+      <div class="logo-mark">SQL</div>
+      <h2>COBD Classroom</h2>
+      <div class="g-sub">Cuaderno Digital de Aprendizaje</div>
+      <div class="g-divider"></div>
+      <div class="g-mod">Construcción de Bases de Datos · CONALEP</div>
+      <ul class="g-list">
+        <li>Unidad 2 · RA 2.1 · Evidencia 2.1.1 (15% del módulo)</li>
+        <li>Proyecto integrador: <strong>Sistema de Administración Estudiantil</strong></li>
+        <li>4 actividades prácticas con retroalimentación inmediata</li>
+        <li>Bitácora de aprendizaje y reporte descargable para tu docente</li>
+      </ul>
+      <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
+    </aside>
+    <div class="gate-form">
+      <h3>Registro del alumno</h3>
+      <p>Tus datos aparecerán en tu reporte de evaluación. Tu avance se guarda en este equipo y puedes continuar en otra sesión.</p>
+      <div class="field">
+        <label for="r_nombre">Nombre completo</label>
+        <input type="text" id="r_nombre" placeholder="Ej. María Fernanda López Torres" autocomplete="name">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="r_grupo">Grupo</label>
+          <select id="r_grupo">
+            <option value="">Selecciona…</option>
+            <option>410</option><option>411</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="r_turno">Turno</label>
+          <select id="r_turno">
+            <option value="">Selecciona…</option>
+            <option>Matutino</option><option>Vespertino</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="r_correo">Correo institucional</label>
+        <input type="email" id="r_correo" placeholder="nombre@tam.conalep.edu.mx" autocomplete="email">
+        <span class="hint">Usa tu correo institucional CONALEP: debe terminar en <strong>@tam.conalep.edu.mx</strong>.</span>
+      </div>
+      <p class="err" id="r_err"></p>
+      <button class="btn" style="width:100%;justify-content:center;margin-top:4px" onclick="registrar()">Comenzar mi cuaderno</button>
+      <button class="btn ghost" id="gateCancel" style="width:100%;justify-content:center;margin-top:8px;display:none" onclick="document.getElementById('gate').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOPBAR móvil ===== -->
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Abrir menú">☰</button>
+  <div class="t-title">COBD Classroom</div>
+</div>
+
+<div class="app">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <div class="logo-mark">SQL</div>
+      <div>
+        <h1>COBD Classroom</h1>
+        <div class="sub">Cuaderno Digital de Aprendizaje</div>
+      </div>
+    </div>
+    <div class="inst">CONALEP · Construcción de Bases de Datos</div>
+  </div>
+
+  <div class="student-chip" id="studentChip">
+    <strong id="sc_nombre"></strong>
+    <span id="sc_detalle"></span><br>
+    <button onclick="editarRegistro()">Editar mis datos</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+  </div>
+
+  <nav class="toc" id="toc">
+    <div class="toc-group">Inicio</div>
+    <a data-sec="intro" class="active"><span class="dot"></span>1 · Introducción</a>
+    <div class="toc-group">Repaso · RA 1.3</div>
+    <a data-sec="ddl"><span class="dot"></span>2 · Construcción de la base (DDL)</a>
+    <div class="toc-group">Unidad 2 · RA 2.1</div>
+    <a data-sec="conceptos"><span class="dot"></span>3 · Conceptos fundamentales</a>
+    <a data-sec="ejemplo"><span class="dot"></span>4 · Ejemplo guiado</a>
+    <div class="toc-group">Actividades prácticas</div>
+    <a data-sec="act1"><span class="dot"></span>5 · SELECT y WHERE</a>
+    <a data-sec="act2"><span class="dot"></span>6 · INSERT, UPDATE y DELETE</a>
+    <a data-sec="act3"><span class="dot"></span>7 · AND e INNER JOIN</a>
+    <a data-sec="act4"><span class="dot"></span>8 · Disparadores</a>
+    <div class="toc-group">Práctica libre</div>
+    <a data-sec="simulador"><span class="dot"></span>9 · Simulador SQL</a>
+    <div class="toc-group">Cierre</div>
+    <a data-sec="bitacora"><span class="dot"></span>10 · Bitácora del alumno</a>
+    <a data-sec="evaluacion"><span class="dot"></span>11 · Evaluación</a>
+  </nav>
+  <div class="sidebar-foot">Unidad 2 · Gestión y aprovechamiento de la información de las bases de datos<br>RA 2.1 · 25 horas · Evidencia 2.1.1 (15%)</div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<!-- 1. INTRODUCCIÓN -->
+<section class="page visible" id="sec-intro">
+  <div class="eyebrow">Sección 1 · Introducción</div>
+  <h2 class="page-title">El lenguaje de las bases de datos</h2>
+  <p class="page-lead">Bienvenido a tu Cuaderno Digital de Aprendizaje. En esta unidad aprenderás a comunicarte con una base de datos usando SQL, el mismo lenguaje que utilizan bancos, hospitales, empresas y sistemas escolares en todo el mundo.</p>
+
+  <div class="card">
+    <h4>¿Qué es SQL?</h4>
+    <p><strong>SQL</strong> (Structured Query Language, o Lenguaje Estructurado de Consultas) es el lenguaje estándar para trabajar con bases de datos relacionales. Con SQL puedes hacer cuatro cosas esenciales con la información:</p>
+    <ul class="list">
+      <li><strong>Insertar</strong> datos nuevos (<code class="inline">INSERT</code>) — por ejemplo, dar de alta a un alumno.</li>
+      <li><strong>Consultar</strong> datos existentes (<code class="inline">SELECT</code>) — por ejemplo, obtener la lista de un grupo.</li>
+      <li><strong>Actualizar</strong> datos (<code class="inline">UPDATE</code>) — por ejemplo, corregir un apellido mal capturado.</li>
+      <li><strong>Eliminar</strong> datos (<code class="inline">DELETE</code>) — por ejemplo, borrar un registro duplicado.</li>
+    </ul>
+    <p style="margin-bottom:0">A estas operaciones se les conoce como <strong>CRUD</strong> (Create, Read, Update, Delete) y son la base de prácticamente cualquier sistema de información.</p>
+  </div>
+
+  <div class="card">
+    <h4>¿Dónde se usa SQL en la vida real?</h4>
+    <p>Cada vez que interactúas con un sistema, hay una base de datos detrás respondiendo consultas SQL:</p>
+    <ul class="list" style="margin-bottom:0">
+      <li>Cuando el <strong>banco</strong> consulta tu saldo, ejecuta un <code class="inline">SELECT</code>.</li>
+      <li>Cuando una <strong>tienda en línea</strong> registra tu pedido, ejecuta un <code class="inline">INSERT</code>.</li>
+      <li>Cuando el <strong>IMSS</strong> actualiza tu clínica asignada, ejecuta un <code class="inline">UPDATE</code>.</li>
+      <li>Cuando <strong>control escolar</strong> de tu plantel genera tu boleta, ejecuta consultas con <code class="inline">SELECT</code> e <code class="inline">INNER JOIN</code> sobre varias tablas.</li>
+    </ul>
+  </div>
+
+  <h3>Tu proyecto integrador del semestre</h3>
+  <p>Durante toda la unidad trabajarás sobre un único caso real: el <strong>Sistema de Administración Estudiantil</strong> de un plantel. Todas las explicaciones, ejemplos y actividades usan la misma base de datos, para que veas cómo crece un sistema verdadero de principio a fin.</p>
+
+  <div class="db-path"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg> SistemaAdministracionEstudiantil</div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Tabla</th><th>¿Qué guarda?</th><th>Ejemplos de columnas</th></tr>
+    <tr><td><code class="inline">alumnos</code></td><td>Datos de cada estudiante</td><td>matricula, nombre, grupo, turno, promedio</td></tr>
+    <tr><td><code class="inline">grupos</code></td><td>Los grupos del plantel</td><td>id_grupo, nombre_grupo, semestre</td></tr>
+    <tr><td><code class="inline">materias</code></td><td>Los módulos que se imparten</td><td>id_materia, nombre_materia, semestre</td></tr>
+    <tr><td><code class="inline">docentes</code></td><td>Profesores del plantel</td><td>id_docente, nombre, especialidad</td></tr>
+    <tr><td><code class="inline">inscripciones</code></td><td>Qué alumno cursa qué materia</td><td>id_inscripcion, matricula, id_materia</td></tr>
+    <tr><td><code class="inline">calificaciones</code></td><td>Resultados de evaluaciones</td><td>id_calificacion, matricula, id_materia, calificacion</td></tr>
+  </table></div>
+
+  <div class="callout info">
+    <div class="c-title">Contexto del Resultado de Aprendizaje</div>
+    <p><strong>RA 2.1 (programa COBD-20):</strong> <em>"Estructura la consulta de información, mediante la selección, inserción, eliminación y actualización de datos en el sistema gestor de bases de datos"</em> (25 horas). Este cuaderno es tu <strong>Actividad de evaluación 2.1.1</strong>: la evidencia por recopilar son tus <strong>procedimientos de consulta y disparadores generados</strong>, con ponderación oficial del <strong>15%</strong> del módulo. Cubrirás los tres bloques de contenido: actualización de información (INSERT, UPDATE, DELETE), elaboración de consultas (SELECT, operadores aritméticos, de comparación y lógicos, combinación de tablas) y manejo de disparadores.</p>
+  </div>
+
+  <div class="pager"><span></span><button class="btn" onclick="go('ddl')">Continuar: Repaso DDL →</button></div>
+</section>
+
+<!-- 2. REPASO DDL (RA 1.3-B) -->
+<section class="page" id="sec-ddl">
+  <div class="eyebrow">Sección 2 · Repaso · RA 1.3, contenido B</div>
+  <h2 class="page-title">Antes de usar los datos, hay que construir la casa: el DDL</h2>
+  <p class="page-lead">En la Unidad 1 aprendiste a <strong>construir</strong> la estructura de una base de datos; en la Unidad 2 aprenderás a <strong>trabajar con sus datos</strong>. Este repaso del RA 1.3 te recuerda las herramientas de construcción, porque las vas a necesitar para entender todo lo que sigue.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <div class="card">
+    <h4>SQL tiene dos familias de comandos</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Familia</th><th>Significado</th><th>¿Sobre qué actúa?</th><th>Comandos</th></tr>
+      <tr><td><strong>DDL</strong></td><td>Lenguaje de Definición de Datos</td><td>La <strong>estructura</strong>: bases y tablas</td><td>CREATE, ALTER, DROP</td></tr>
+      <tr><td><strong>DML</strong></td><td>Lenguaje de Manipulación de Datos</td><td>Los <strong>datos</strong> dentro de las tablas</td><td>SELECT, INSERT, UPDATE, DELETE</td></tr>
+    </table></div>
+    <p style="margin-bottom:0">Piénsalo así: el DDL construye los estantes del archivero; el DML guarda, busca, corrige y saca los expedientes. Esta unidad (RA 2.1) es pura DML — pero sin estantes no hay dónde guardar nada.</p>
+  </div>
+
+  <h3>1 · Creación de la base de datos</h3>
+  <p>Todo empieza creando el "contenedor" general y diciéndole al gestor que vamos a trabajar dentro de él:</p>
+  <div class="db-path">🗄 Sistema gestor de bases de datos</div>
+  <pre class="sql">-- Crear el contenedor del proyecto integrador
+CREATE DATABASE SistemaAdministracionEstudiantil;
+
+-- Indicar al gestor que trabajaremos dentro de ella
+USE SistemaAdministracionEstudiantil;</pre>
+
+  <h3>2 · CREATE TABLE — crear tablas</h3>
+  <p>Al crear una tabla defines sus columnas, el <strong>tipo de dato</strong> de cada una y sus reglas. Así nació la tabla que ya conoces:</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">CREATE TABLE alumnos (
+    matricula        VARCHAR(10) PRIMARY KEY,
+    nombre           VARCHAR(40) NOT NULL,
+    apellido_paterno VARCHAR(40) NOT NULL,
+    grupo            VARCHAR(5),
+    turno            VARCHAR(12),
+    promedio         DECIMAL(4,2)
+);</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Elemento</th><th>¿Qué significa?</th></tr>
+      <tr><td><code class="inline">VARCHAR(40)</code></td><td>Texto de hasta 40 caracteres (nombres, grupos, turnos).</td></tr>
+      <tr><td><code class="inline">DECIMAL(4,2)</code></td><td>Número con decimales: 4 dígitos en total, 2 después del punto (ej. 9.45).</td></tr>
+      <tr><td><code class="inline">INT</code></td><td>Número entero (identificadores, parciales).</td></tr>
+      <tr><td><code class="inline">PRIMARY KEY</code></td><td>Llave primaria: identifica de forma <strong>única</strong> a cada fila. Por eso la matrícula no puede repetirse.</td></tr>
+      <tr><td><code class="inline">NOT NULL</code></td><td>La columna no puede quedar vacía al capturar.</td></tr>
+    </table></div>
+  </div>
+
+  <h3>3 · ALTER TABLE — editar o actualizar tablas</h3>
+  <p>Las necesidades cambian y la estructura también. <code class="inline">ALTER TABLE</code> modifica una tabla <strong>sin perder los datos que ya contiene</strong>:</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Agregar una columna nueva
+ALTER TABLE alumnos ADD apellido_materno VARCHAR(40);
+
+-- Cambiar el tipo o tamaño de una columna existente
+ALTER TABLE alumnos MODIFY grupo VARCHAR(8);
+
+-- Quitar una columna (¡y sus datos!)
+ALTER TABLE alumnos DROP COLUMN apellido_materno;</pre>
+  <div class="callout warn">
+    <div class="c-title">No confundas ALTER con UPDATE</div>
+    <p><code class="inline">ALTER TABLE</code> cambia la <strong>estructura</strong> (columnas, tipos). <code class="inline">UPDATE</code> — que verás en esta unidad — cambia los <strong>datos</strong> dentro de las filas. Son familias distintas: DDL vs DML.</p>
+  </div>
+
+  <h3>4 · DROP TABLE — eliminar tablas</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil</div>
+  <pre class="sql">-- Eliminar una tabla completa
+DROP TABLE tabla_de_pruebas;</pre>
+  <div class="callout danger">
+    <div class="c-title">⚠ DROP no es DELETE</div>
+    <p><code class="inline">DELETE</code> borra <strong>filas</strong> (datos) y la tabla sigue existiendo. <code class="inline">DROP TABLE</code> elimina la tabla <strong>completa</strong>: estructura y datos, sin vuelta atrás. En un sistema en producción, un DROP equivocado es catastrófico.</p>
+  </div>
+
+  <h3>5 · Relación de tablas — llaves foráneas</h3>
+  <p>Aquí está el secreto que hace funcionar todo el sistema: una <strong>llave foránea</strong> (<code class="inline">FOREIGN KEY</code>) es una columna que "apunta" a la llave primaria de otra tabla, conectándolas. Así se creó <code class="inline">calificaciones</code>, que se relaciona con <code class="inline">alumnos</code> y con <code class="inline">materias</code>:</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">calificaciones</span></div>
+  <pre class="sql">CREATE TABLE calificaciones (
+    id_calificacion INT AUTO_INCREMENT PRIMARY KEY,
+    matricula       VARCHAR(10) NOT NULL,
+    id_materia      INT NOT NULL,
+    calificacion    DECIMAL(4,2),
+    parcial         INT,
+    FOREIGN KEY (matricula)  REFERENCES alumnos(matricula),
+    FOREIGN KEY (id_materia) REFERENCES materias(id_materia)
+);</pre>
+  <div class="callout info">
+    <div class="c-title">Conexión con la Unidad 2</div>
+    <p>Estas llaves foráneas garantizan la <strong>integridad referencial</strong>: no puede existir una calificación de una matrícula que no exista en <code class="inline">alumnos</code>. Y son <strong>exactamente</strong> las columnas que usarás como "puente" en los <code class="inline">INNER JOIN ... ON</code> de la Actividad 3. Cuando llegues ahí, recuerda este momento.</p>
+  </div>
+
+  <h3>6 · Herramientas CASE para el diseño</h3>
+  <p>Las herramientas <strong>CASE</strong> (Computer-Aided Software Engineering, ingeniería de software asistida por computadora) te ayudan a <strong>diseñar visualmente</strong> la base de datos antes de escribir una sola línea de DDL — y muchas generan el código por ti:</p>
+  <ul class="list">
+    <li><strong>MySQL Workbench:</strong> dibujas el diagrama entidad-relación (EER) con tablas, llaves y relaciones, y con <em>Forward Engineering</em> genera automáticamente todos los CREATE TABLE.</li>
+    <li><strong>dbdiagram.io</strong> (en línea, gratuito): describes las tablas en texto sencillo y produce el diagrama y el SQL.</li>
+    <li><strong>draw.io / Lucidchart:</strong> para diagramar el modelo y los casos de uso del sistema en la etapa de análisis.</li>
+  </ul>
+  <p>El flujo profesional es: <strong>diseñar en la herramienta CASE → generar el DDL → ejecutarlo en el gestor → empezar a trabajar con DML</strong> (que es justo lo que harás en este cuaderno).</p>
+
+  <h3>Autoevaluación de repaso</h3>
+  <p style="font-size:14px;color:var(--gris)">Comprueba que el repaso quedó claro. <strong>No cuenta para tu calificación</strong> y puedes intentarlo las veces que quieras.</p>
+  <div class="card">
+    <div class="field">
+      <label>1. Necesitas agregar la columna <code class="inline">correo</code> a la tabla <code class="inline">alumnos</code>, que ya tiene datos. ¿Qué comando usas?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="q_ddl1" value="create">CREATE TABLE</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl1" value="alter">ALTER TABLE</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl1" value="update">UPDATE</label>
+      </div>
+      <span class="hint" id="out_ddl1"></span>
+    </div>
+    <div class="field">
+      <label>2. ¿Cuál es la diferencia entre DELETE y DROP TABLE?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="q_ddl2" value="igual">Ninguna, hacen lo mismo</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl2" value="drop">DELETE borra filas; DROP elimina la tabla completa</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl2" value="inverso">DROP borra filas; DELETE elimina la tabla</label>
+      </div>
+      <span class="hint" id="out_ddl2"></span>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>3. ¿Qué elemento conecta la tabla <code class="inline">calificaciones</code> con <code class="inline">alumnos</code>?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="q_ddl3" value="pk">Su PRIMARY KEY id_calificacion</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl3" value="fk">La FOREIGN KEY matricula</label>
+        <label class="radio-pill"><input type="radio" name="q_ddl3" value="join">El comando JOIN crea la relación</label>
+      </div>
+      <span class="hint" id="out_ddl3"></span>
+    </div>
+  </div>
+  <button class="btn ghost" onclick="comprobarDDL()">Comprobar mis respuestas</button>
+
+  <div class="pager"><button class="btn ghost" onclick="go('intro')">← Introducción</button><button class="btn" onclick="go('conceptos')">Continuar: Conceptos fundamentales →</button></div>
+</section>
+
+<!-- 2. CONCEPTOS -->
+<section class="page" id="sec-conceptos">
+  <div class="eyebrow">Sección 3 · Conceptos fundamentales</div>
+  <h2 class="page-title">Las siete herramientas que debes dominar</h2>
+  <p class="page-lead">Cada concepto se explica con su sintaxis general y un ejemplo real sobre la base de datos del proyecto. Observa que en todos los ejemplos se indica la base de datos y la tabla con la que se trabaja: ese hábito te acompañará todo el semestre.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>SELECT — consultar información</h3>
+  <p><code class="inline">SELECT</code> recupera información de una tabla. Indicas <strong>qué columnas</strong> quieres ver y <strong>de qué tabla</strong> provienen.</p>
+  <pre class="sql solo">-- Sintaxis general
+SELECT columna1, columna2
+FROM nombre_tabla;
+
+-- El asterisco (*) significa "todas las columnas"
+SELECT * FROM nombre_tabla;</pre>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Obtener nombre y grupo de todos los alumnos
+SELECT nombre, apellido_paterno, grupo
+FROM alumnos;</pre>
+
+  <h3>WHERE — filtrar resultados</h3>
+  <p><code class="inline">WHERE</code> establece una <strong>condición</strong>: solo se incluyen las filas que la cumplen. Sin <code class="inline">WHERE</code>, la instrucción afecta o muestra <em>todas</em> las filas de la tabla.</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Solo los alumnos del grupo 410
+SELECT nombre, apellido_paterno, promedio
+FROM alumnos
+WHERE grupo = '410';</pre>
+  <div class="card">
+    <h4>Operadores aritméticos, de comparación y lógicos</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Operador</th><th>Significado</th><th>Ejemplo</th></tr>
+      <tr><td><code class="inline">+ &minus; * /</code></td><td>Aritméticos: cálculos sobre columnas</td><td><code class="inline">promedio * 10</code> (escala 0–100)</td></tr>
+      <tr><td><code class="inline">=</code></td><td>Igual a</td><td><code class="inline">turno = 'Matutino'</code></td></tr>
+      <tr><td><code class="inline">&gt;</code> / <code class="inline">&lt;</code></td><td>Mayor que / menor que</td><td><code class="inline">promedio &gt; 8</code></td></tr>
+      <tr><td><code class="inline">&gt;=</code> / <code class="inline">&lt;=</code></td><td>Mayor o igual / menor o igual</td><td><code class="inline">promedio &gt;= 9.0</code></td></tr>
+      <tr><td><code class="inline">&lt;&gt;</code></td><td>Diferente de</td><td><code class="inline">grupo &lt;&gt; '611'</code></td></tr>
+      <tr><td><code class="inline">AND</code></td><td>Ambas condiciones deben cumplirse</td><td><code class="inline">grupo = '410' AND promedio &gt;= 9</code></td></tr>
+      <tr><td><code class="inline">OR</code></td><td>Basta con que una se cumpla</td><td><code class="inline">grupo = '410' OR grupo = '411'</code></td></tr>
+      <tr><td><code class="inline">NOT</code></td><td>Niega la condición</td><td><code class="inline">NOT turno = 'Vespertino'</code></td></tr>
+    </table></div>
+  </div>
+
+  <h3>INSERT — agregar registros</h3>
+  <p><code class="inline">INSERT INTO</code> agrega una fila nueva. Se indican las columnas y, en el mismo orden, los valores.</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Dar de alta a un alumno de nuevo ingreso
+INSERT INTO alumnos (matricula, nombre, apellido_paterno, grupo, turno, promedio)
+VALUES ('24100501', 'Diana', 'Cervantes', '410', 'Matutino', 0.0);</pre>
+
+  <h3>UPDATE — modificar registros</h3>
+  <p><code class="inline">UPDATE</code> cambia el valor de una o varias columnas en las filas que cumplan la condición del <code class="inline">WHERE</code>.</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Cambiar de turno a un alumno específico
+UPDATE alumnos
+SET turno = 'Vespertino'
+WHERE matricula = '23100459';</pre>
+
+  <h3>DELETE — eliminar registros</h3>
+  <p><code class="inline">DELETE FROM</code> borra filas completas. Igual que <code class="inline">UPDATE</code>, depende del <code class="inline">WHERE</code> para saber <em>cuáles</em>.</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">-- Eliminar el registro de un alumno dado de baja
+DELETE FROM alumnos
+WHERE matricula = '23100378';</pre>
+
+  <div class="callout danger">
+    <div class="c-title">⚠ Regla de oro del técnico en bases de datos</div>
+    <p>Un <code class="inline">UPDATE</code> o un <code class="inline">DELETE</code> <strong>sin WHERE</strong> modifica o borra <strong>TODAS las filas de la tabla</strong>. En un sistema real eso puede significar perder la información de cientos de alumnos en un segundo. Antes de ejecutar, verifica siempre tu condición — idealmente probándola primero con un <code class="inline">SELECT</code>.</p>
+  </div>
+
+  <h3>INNER JOIN — combinar tablas</h3>
+  <p>La información de un sistema real está repartida en varias tablas. <code class="inline">INNER JOIN</code> las <strong>une</strong> a través de una columna en común (normalmente una llave, como <code class="inline">matricula</code>), devolviendo solo las filas que coinciden en ambas.</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span> <span class="sep">+</span> <span class="tbl">calificaciones</span></div>
+  <pre class="sql">-- Nombre del alumno junto a sus calificaciones
+SELECT alumnos.nombre, calificaciones.calificacion
+FROM alumnos
+INNER JOIN calificaciones
+        ON alumnos.matricula = calificaciones.matricula;</pre>
+  <p>La cláusula <code class="inline">ON</code> es el "puente": le dice a la base de datos qué columna conecta una tabla con la otra. Si necesitas tres tablas, simplemente encadenas dos <code class="inline">INNER JOIN</code>.</p>
+
+
+  <h3>Disparadores (Triggers) — la base de datos reacciona sola</h3>
+  <p>Un <strong>disparador</strong> es un bloque de código que la base de datos ejecuta <em>automáticamente</em> cuando ocurre un evento sobre una tabla. Nadie lo llama: se "dispara" solo. Es la herramienta clásica para auditorías, validaciones y cálculos automáticos.</p>
+  <ul class="list">
+    <li><strong>Momento:</strong> <code class="inline">BEFORE</code> (antes de que el evento se aplique) o <code class="inline">AFTER</code> (después de aplicado).</li>
+    <li><strong>Evento que lo activa:</strong> un <code class="inline">INSERT</code>, un <code class="inline">UPDATE</code> o un <code class="inline">DELETE</code> sobre la tabla indicada.</li>
+    <li><strong>Acción:</strong> lo que el disparador ejecuta, una vez por cada fila afectada (<code class="inline">FOR EACH ROW</code>).</li>
+  </ul>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">calificaciones</span></div>
+  <pre class="sql">-- Cada calificación nueva queda registrada en una bitácora, automáticamente
+CREATE TRIGGER tr_calificacion_registrada
+AFTER INSERT ON calificaciones
+FOR EACH ROW
+INSERT INTO bitacora_capturas (id_materia, fecha_evento)
+VALUES (NEW.id_materia, NOW());</pre>
+  <div class="callout info">
+    <div class="c-title">OLD y NEW: las dos "fotografías" de la fila</div>
+    <p>Dentro de un disparador, <code class="inline">NEW</code> es la fila como queda después del evento (existe en INSERT y UPDATE) y <code class="inline">OLD</code> es la fila como estaba antes (existe en UPDATE y DELETE). Así puedes registrar qué cambió y de qué registro.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ddl')">← Repaso DDL</button><button class="btn" onclick="go('ejemplo')">Continuar: Ejemplo guiado →</button></div>
+</section>
+
+<!-- 3. EJEMPLO GUIADO -->
+<section class="page" id="sec-ejemplo">
+  <div class="eyebrow">Sección 4 · Ejemplo guiado</div>
+  <h2 class="page-title">Del requerimiento a la consulta, paso a paso</h2>
+  <p class="page-lead">Antes de escribir SQL, un técnico analiza. En COBD Classroom usarás siempre el mismo método de cuatro preguntas. Apréndelo: lo aplicarás en las tres actividades prácticas.</p>
+
+  <div class="metodo">
+    <div class="paso"><div class="n">PASO 1</div><div class="q">¿Qué información se solicita?</div></div>
+    <div class="paso"><div class="n">PASO 2</div><div class="q">¿En qué tabla se encuentra?</div></div>
+    <div class="paso"><div class="n">PASO 3</div><div class="q">¿Necesito una o varias tablas?</div></div>
+    <div class="paso"><div class="n">PASO 4</div><div class="q">¿Requiere JOIN?</div></div>
+  </div>
+
+  <div class="card">
+    <h4>📋 Requerimiento real</h4>
+    <p style="margin-bottom:0">La jefatura de proyecto de tu plantel solicita: <em>"Necesito el nombre, apellido y promedio de los alumnos del grupo 410 que tengan promedio igual o mayor a 8.5, para invitarlos a ser <strong>monitores</strong>: alumnos que apoyan a los compañeros que aún batallan con ciertos temas o actividades."</em></p>
+  </div>
+
+  <h3>La tabla con la que trabajaremos</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>matricula</th><th>nombre</th><th>apellido_paterno</th><th>grupo</th><th>turno</th><th>promedio</th></tr>
+    <tr><td>23100245</td><td>Luis</td><td>Hernandes</td><td>410</td><td>Matutino</td><td>8.7</td></tr>
+    <tr><td>23100311</td><td>María</td><td>López</td><td>410</td><td>Matutino</td><td>9.4</td></tr>
+    <tr><td>23100378</td><td>José</td><td>Ramírez</td><td>411</td><td>Vespertino</td><td>7.8</td></tr>
+    <tr><td>23100402</td><td>Ana</td><td>Martínez</td><td>410</td><td>Matutino</td><td>9.1</td></tr>
+    <tr><td>23100459</td><td>Carlos</td><td>Pérez</td><td>611</td><td>Matutino</td><td>8.2</td></tr>
+  </table></div>
+
+  <h3>Análisis con el método de 4 pasos</h3>
+  <ol class="list">
+    <li><strong>¿Qué información se solicita?</strong> Nombre, apellido y promedio. → Columnas <code class="inline">nombre</code>, <code class="inline">apellido_paterno</code>, <code class="inline">promedio</code>.</li>
+    <li><strong>¿En qué tabla se encuentra?</strong> Todos esos datos viven en la tabla <code class="inline">alumnos</code>.</li>
+    <li><strong>¿Una o varias tablas?</strong> Una sola: todo lo solicitado está en <code class="inline">alumnos</code>.</li>
+    <li><strong>¿Requiere JOIN?</strong> No, porque no necesitamos combinar información de otra tabla.</li>
+  </ol>
+
+  <h3>La consulta, línea por línea</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <pre class="sql">SELECT nombre, apellido_paterno, promedio
+FROM alumnos
+WHERE grupo = '410' AND promedio >= 8.5;</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Línea</th><th>¿Qué hace?</th></tr>
+      <tr><td><code class="inline">SELECT nombre, apellido_paterno, promedio</code></td><td>Elige las <strong>tres columnas</strong> que pidió la jefatura. No usamos <code class="inline">*</code> porque no solicitaron todo.</td></tr>
+      <tr><td><code class="inline">FROM alumnos</code></td><td>Indica la <strong>tabla de origen</strong> dentro de la base <code class="inline">SistemaAdministracionEstudiantil</code>.</td></tr>
+      <tr><td><code class="inline">WHERE grupo = '410' AND promedio &gt;= 8.5;</code></td><td>Filtra: la fila debe cumplir <strong>las dos condiciones a la vez</strong> (por eso <code class="inline">AND</code>): ser del grupo 410 <em>y</em> tener promedio de 8.5 en adelante.</td></tr>
+    </table></div>
+  </div>
+
+  <h3>Resultado de la consulta</h3>
+  <p>La base de datos revisa fila por fila y devuelve únicamente las que cumplen ambas condiciones:</p>
+  <div class="db-path">🗄 Resultado <span class="sep">·</span> 3 filas</div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>nombre</th><th>apellido_paterno</th><th>promedio</th></tr>
+    <tr><td>Luis</td><td>Hernandes</td><td>8.7</td></tr>
+    <tr><td>María</td><td>López</td><td>9.4</td></tr>
+    <tr><td>Ana</td><td>Martínez</td><td>9.1</td></tr>
+  </table></div>
+  <div class="callout info">
+    <div class="c-title">Observa</div>
+    <p>José (grupo 411) quedó fuera por la primera condición y Carlos (promedio 8.2) por la segunda. <code class="inline">AND</code> exige cumplir <strong>ambas</strong>. ¿Notaste también que el apellido de Luis dice "Hernandes"? Guarda ese detalle: lo corregirás en la Actividad 2.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('conceptos')">← Conceptos</button><button class="btn" onclick="go('act1')">Comenzar Actividad 1 →</button></div>
+</section>
+
+<!-- 4. ACTIVIDAD 1 -->
+<section class="page" id="sec-act1">
+  <div class="eyebrow">Sección 5 · Actividad práctica 1</div>
+  <h2 class="page-title">SELECT y WHERE · Reconocimiento académico</h2>
+  <div class="act-meta"><span class="badge">SELECT</span><span class="badge">WHERE</span><span class="badge">Operadores de comparación y aritméticos</span><span class="badge pts">20 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Requerimiento</h4>
+    <p style="margin-bottom:0">La dirección del plantel prepara el <strong>Cuadro de Honor</strong> del semestre. Te solicita: <em>"Necesito el nombre, apellido paterno, grupo y promedio de todos los alumnos cuyo promedio sea igual o mayor a 9.0, sin importar su grupo o turno."</em> También pide una <strong>columna calculada</strong> que muestre el promedio en escala de 0 a 100 — para eso existe el operador aritmético: <code class="inline">promedio * 10</code>.</p>
+  </div>
+
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>matricula</th><th>nombre</th><th>apellido_paterno</th><th>grupo</th><th>turno</th><th>promedio</th></tr>
+    <tr><td>23100245</td><td>Luis</td><td>Hernandes</td><td>410</td><td>Matutino</td><td>8.7</td></tr>
+    <tr><td>23100311</td><td>María</td><td>López</td><td>410</td><td>Matutino</td><td>9.4</td></tr>
+    <tr><td>23100378</td><td>José</td><td>Ramírez</td><td>411</td><td>Vespertino</td><td>7.8</td></tr>
+    <tr><td>23100402</td><td>Ana</td><td>Martínez</td><td>410</td><td>Matutino</td><td>9.1</td></tr>
+    <tr><td>23100459</td><td>Carlos</td><td>Pérez</td><td>611</td><td>Matutino</td><td>8.2</td></tr>
+  </table></div>
+
+  <h3>Parte A · Análisis del requerimiento <span class="badge pts" style="font-size:11px">6 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿En qué tabla se encuentra la información solicitada?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_tabla" value="alumnos" data-key="a1_tabla">alumnos</label>
+        <label class="radio-pill"><input type="radio" name="a1_tabla" value="materias" data-key="a1_tabla">materias</label>
+        <label class="radio-pill"><input type="radio" name="a1_tabla" value="calificaciones" data-key="a1_tabla">calificaciones</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Se requiere combinar tablas con INNER JOIN?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_join" value="si" data-key="a1_join">Sí, se necesitan varias tablas</label>
+        <label class="radio-pill"><input type="radio" name="a1_join" value="no" data-key="a1_join">No, una sola tabla es suficiente</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu consulta SQL <span class="badge pts" style="font-size:11px">10 pts</span></h3>
+  <div class="field">
+    <label for="a1_sql">Consulta SQL <span class="hint">Recuerda: SELECT columnas → FROM tabla → WHERE condición. Incluye la columna calculada promedio * 10. Termina con punto y coma.</span></label>
+    <textarea id="a1_sql" class="sql-input" data-key="a1_sql" spellcheck="false" placeholder="Escribe aquí tu consulta…"></textarea>
+  </div>
+
+  <h3>Parte C · Justifica tu respuesta <span class="badge pts" style="font-size:11px">4 pts</span></h3>
+  <div class="field">
+    <label for="a1_just">Explica con tus palabras por qué tu consulta resuelve el requerimiento <span class="hint">¿Por qué elegiste esas columnas, esa tabla y esa condición? Mínimo 3 líneas.</span></label>
+    <textarea id="a1_just" data-key="a1_just" placeholder="Mi consulta resuelve el requerimiento porque…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema calificará tus respuestas al instante y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act1" onclick="entregar('act1')">Entregar Actividad 1 · intento único</button><span class="save-note" id="save-act1">✓</span>
+  <div class="fb-panel" id="fb-act1"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ejemplo')">← Ejemplo guiado</button><button class="btn" onclick="go('act2')">Actividad 2 →</button></div>
+</section>
+
+<!-- 5. ACTIVIDAD 2 -->
+<section class="page" id="sec-act2">
+  <div class="eyebrow">Sección 6 · Actividad práctica 2</div>
+  <h2 class="page-title">UPDATE y DELETE · Corrección de información</h2>
+  <div class="act-meta"><span class="badge">INSERT</span><span class="badge">UPDATE</span><span class="badge">DELETE</span><span class="badge">WHERE obligatorio</span><span class="badge pts">25 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Requerimiento</h4>
+    <p>El departamento de servicios escolares tiene <strong>tres pendientes</strong> de mantenimiento en la tabla <code class="inline">alumnos</code>:</p>
+    <ul class="list" style="margin-bottom:0">
+      <li><strong>Pendiente 1 (alta):</strong> Llegó un alumno de nuevo ingreso: <strong>Jorge Ávalos</strong>, matrícula <code class="inline">24100777</code>, grupo 411, turno Vespertino, promedio inicial 0.0. Debe registrarse en la tabla.</li>
+      <li><strong>Pendiente 2 (corrección):</strong> El apellido del alumno con matrícula <code class="inline">23100245</code> se capturó mal: dice <em>"Hernandes"</em> y debe decir <em>"Hernández"</em>.</li>
+      <li><strong>Pendiente 3 (baja del duplicado):</strong> Existe un <strong>registro duplicado</strong> de la alumna María López, capturado por error con la matrícula <code class="inline">23100999</code>. Ese registro debe eliminarse.</li>
+    </ul>
+  </div>
+
+  <h3>Estado actual de la tabla</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>matricula</th><th>nombre</th><th>apellido_paterno</th><th>grupo</th><th>turno</th><th>promedio</th></tr>
+    <tr class="hl"><td>23100245</td><td>Luis</td><td><strong>Hernandes</strong> ⚠</td><td>410</td><td>Matutino</td><td>8.7</td></tr>
+    <tr><td>23100311</td><td>María</td><td>López</td><td>410</td><td>Matutino</td><td>9.4</td></tr>
+    <tr><td>23100378</td><td>José</td><td>Ramírez</td><td>411</td><td>Vespertino</td><td>7.8</td></tr>
+    <tr><td>23100402</td><td>Ana</td><td>Martínez</td><td>410</td><td>Matutino</td><td>9.1</td></tr>
+    <tr><td>23100459</td><td>Carlos</td><td>Pérez</td><td>611</td><td>Matutino</td><td>8.2</td></tr>
+    <tr class="hl"><td>23100999</td><td>María</td><td>López</td><td>410</td><td>Matutino</td><td>9.4 <strong>⚠ duplicado</strong></td></tr>
+  </table></div>
+
+  <div class="callout warn">
+    <div class="c-title">Antes de escribir, piensa como técnico</div>
+    <p>¿Qué columna identifica de forma <strong>única</strong> a cada alumno? Esa es la que debe ir en tu <code class="inline">WHERE</code>. Si filtraras por nombre, ¿cuántas "María López" afectarías?</p>
+  </div>
+
+  <h3>Parte A · Da de alta al alumno nuevo con INSERT <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="field">
+    <label for="a2_sqlI">Consulta SQL <span class="hint">Estructura: INSERT INTO tabla (columnas) VALUES (valores). Respeta el orden: matricula, nombre, apellido_paterno, grupo, turno, promedio.</span></label>
+    <textarea id="a2_sqlI" class="sql-input" data-key="a2_sqlI" spellcheck="false" placeholder="INSERT INTO …"></textarea>
+  </div>
+
+  <h3>Parte B · Corrige el apellido con UPDATE <span class="badge pts" style="font-size:11px">7 pts</span></h3>
+  <div class="field">
+    <label for="a2_sqlU">Consulta SQL <span class="hint">Estructura: UPDATE tabla → SET columna = nuevo_valor → WHERE condición.</span></label>
+    <textarea id="a2_sqlU" class="sql-input" data-key="a2_sqlU" spellcheck="false" placeholder="UPDATE …"></textarea>
+  </div>
+
+  <h3>Parte C · Elimina el registro duplicado con DELETE <span class="badge pts" style="font-size:11px">6 pts</span></h3>
+  <div class="field">
+    <label for="a2_sqlD">Consulta SQL <span class="hint">Estructura: DELETE FROM tabla → WHERE condición. Asegúrate de borrar SOLO el duplicado.</span></label>
+    <textarea id="a2_sqlD" class="sql-input" data-key="a2_sqlD" spellcheck="false" placeholder="DELETE FROM …"></textarea>
+  </div>
+
+  <h3>Parte D · Pregunta de reflexión <span class="badge pts" style="font-size:11px">4 pts</span></h3>
+  <div class="field">
+    <label for="a2_reflex">¿Qué habría ocurrido en la tabla si ejecutas tu DELETE <strong>sin la cláusula WHERE</strong>? ¿Por qué es la columna <code class="inline">matricula</code> la opción más segura para el filtro?</label>
+    <textarea id="a2_reflex" data-key="a2_reflex" placeholder="Si ejecutara el DELETE sin WHERE…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema calificará tus respuestas al instante y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act2" onclick="entregar('act2')">Entregar Actividad 2 · intento único</button><span class="save-note" id="save-act2">✓</span>
+  <div class="fb-panel" id="fb-act2"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act1')">← Actividad 1</button><button class="btn" onclick="go('act3')">Actividad 3 →</button></div>
+</section>
+
+<!-- 6. ACTIVIDAD 3 -->
+<section class="page" id="sec-act3">
+  <div class="eyebrow">Sección 7 · Actividad práctica 3</div>
+  <h2 class="page-title">AND e INNER JOIN · Reportes académicos</h2>
+  <div class="act-meta"><span class="badge">INNER JOIN</span><span class="badge">AND</span><span class="badge">Varias tablas</span><span class="badge pts">25 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Requerimiento</h4>
+    <p style="margin-bottom:0">La coordinación académica necesita un reporte del primer parcial: <em>"Quiero ver el nombre del alumno, el nombre de la materia y la calificación obtenida, pero únicamente de los alumnos del turno <strong>Matutino</strong> y con calificación <strong>igual o mayor a 8</strong>."</em> Observa que los datos solicitados están repartidos en <strong>tres tablas</strong>.</p>
+  </div>
+
+  <h3>Las tres tablas involucradas</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>matricula</th><th>nombre</th><th>apellido_paterno</th><th>grupo</th><th>turno</th><th>promedio</th></tr>
+    <tr><td>23100245</td><td>Luis</td><td>Hernández</td><td>410</td><td>Matutino</td><td>8.7</td></tr>
+    <tr><td>23100311</td><td>María</td><td>López</td><td>410</td><td>Matutino</td><td>9.4</td></tr>
+    <tr><td>23100378</td><td>José</td><td>Ramírez</td><td>411</td><td>Vespertino</td><td>7.8</td></tr>
+    <tr><td>23100402</td><td>Ana</td><td>Martínez</td><td>410</td><td>Matutino</td><td>9.1</td></tr>
+    <tr><td>23100459</td><td>Carlos</td><td>Pérez</td><td>611</td><td>Matutino</td><td>8.2</td></tr>
+  </table></div>
+
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">materias</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>id_materia</th><th>nombre_materia</th><th>semestre</th></tr>
+    <tr><td>1</td><td>Construcción de Bases de Datos</td><td>4</td></tr>
+    <tr><td>2</td><td>Manejo de Redes</td><td>4</td></tr>
+    <tr><td>3</td><td>Programación Orientada a Objetos</td><td>4</td></tr>
+  </table></div>
+
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">calificaciones</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>id_calificacion</th><th>matricula</th><th>id_materia</th><th>calificacion</th><th>parcial</th></tr>
+    <tr><td>1</td><td>23100245</td><td>1</td><td>8.5</td><td>1</td></tr>
+    <tr><td>2</td><td>23100311</td><td>1</td><td>9.6</td><td>1</td></tr>
+    <tr><td>3</td><td>23100402</td><td>2</td><td>9.0</td><td>1</td></tr>
+    <tr><td>4</td><td>23100378</td><td>1</td><td>7.5</td><td>1</td></tr>
+    <tr><td>5</td><td>23100459</td><td>3</td><td>8.0</td><td>1</td></tr>
+    <tr><td>6</td><td>23100311</td><td>2</td><td>9.2</td><td>1</td></tr>
+  </table></div>
+
+  <div class="callout info">
+    <div class="c-title">Pista de conexión entre tablas</div>
+    <p><code class="inline">calificaciones</code> se conecta con <code class="inline">alumnos</code> mediante <code class="inline">matricula</code>, y con <code class="inline">materias</code> mediante <code class="inline">id_materia</code>. Necesitarás <strong>dos</strong> INNER JOIN y un <code class="inline">WHERE</code> con <code class="inline">AND</code> para las dos condiciones.</p>
+  </div>
+
+  <h3>Parte A · Análisis del requerimiento <span class="badge pts" style="font-size:11px">6 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿Cuántas tablas necesitas para resolver el requerimiento?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_tablas" value="1" data-key="a3_tablas">Una</label>
+        <label class="radio-pill"><input type="radio" name="a3_tablas" value="2" data-key="a3_tablas">Dos</label>
+        <label class="radio-pill"><input type="radio" name="a3_tablas" value="3" data-key="a3_tablas">Tres</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Qué columna conecta <code class="inline">calificaciones</code> con <code class="inline">alumnos</code>?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_llave" value="id_materia" data-key="a3_llave">id_materia</label>
+        <label class="radio-pill"><input type="radio" name="a3_llave" value="matricula" data-key="a3_llave">matricula</label>
+        <label class="radio-pill"><input type="radio" name="a3_llave" value="nombre" data-key="a3_llave">nombre</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu consulta SQL <span class="badge pts" style="font-size:11px">14 pts</span></h3>
+  <div class="field">
+    <label for="a3_sql">Consulta SQL <span class="hint">Sugerencia: parte de FROM calificaciones, une alumnos y materias con INNER JOIN … ON …, y filtra con WHERE … AND …</span></label>
+    <textarea id="a3_sql" class="sql-input" data-key="a3_sql" spellcheck="false" style="min-height:170px" placeholder="SELECT …&#10;FROM calificaciones&#10;INNER JOIN …"></textarea>
+  </div>
+
+  <h3>Parte C · Justifica tu respuesta <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a3_just">Explica por qué se necesitan las tres tablas y qué papel juega cada INNER JOIN <span class="hint">Mínimo 3 líneas.</span></label>
+    <textarea id="a3_just" data-key="a3_just" placeholder="Se necesitan tres tablas porque…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema calificará tus respuestas al instante y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act3" onclick="entregar('act3')">Entregar Actividad 3 · intento único</button><span class="save-note" id="save-act3">✓</span>
+  <div class="fb-panel" id="fb-act3"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act2')">← Actividad 2</button><button class="btn" onclick="go('act4')">Actividad 4 →</button></div>
+</section>
+
+<!-- 7. ACTIVIDAD 4 -->
+<section class="page" id="sec-act4">
+  <div class="eyebrow">Sección 8 · Actividad práctica 4</div>
+  <h2 class="page-title">Disparadores · Auditoría automática de cambios</h2>
+  <div class="act-meta"><span class="badge">CREATE TRIGGER</span><span class="badge">AFTER / BEFORE</span><span class="badge">OLD y NEW</span><span class="badge pts">20 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Requerimiento</h4>
+    <p style="margin-bottom:0">Después del incidente del registro duplicado, servicios escolares pide <strong>rastrear los cambios</strong>: <em>"Cada vez que se actualice un registro de la tabla alumnos, debe quedar constancia automática en una bitácora de auditoría, sin que ninguna persona tenga que acordarse de registrarlo."</em> Ese es exactamente el trabajo de un disparador.</p>
+  </div>
+
+  <h3>La tabla de auditoría ya está creada</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">auditoria_alumnos</span></div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>id_evento</th><th>matricula</th><th>fecha_evento</th><th>descripcion</th></tr>
+    <tr><td>1</td><td>23100459</td><td>2026-05-28 10:14:02</td><td>Registro actualizado</td></tr>
+  </table></div>
+  <p>Tu disparador debe insertar una fila como esa cada vez que ocurra el evento. <code class="inline">id_evento</code> se genera solo (es autoincremental); tú solo insertas las otras tres columnas.</p>
+
+  <div class="callout info">
+    <div class="c-title">Estructura que necesitas</div>
+    <p><code class="inline">CREATE TRIGGER nombre</code> → <code class="inline">momento evento ON tabla</code> → <code class="inline">FOR EACH ROW</code> → acción. Para la fecha usa la función <code class="inline">NOW()</code> y para la matrícula del registro modificado usa <code class="inline">OLD.matricula</code>. Apóyate en el ejemplo de la sección de Conceptos, pero ojo: aquí el evento y la tabla son otros.</p>
+  </div>
+
+  <h3>Parte A · Análisis del disparador <span class="badge pts" style="font-size:11px">6 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿En qué momento debe ejecutarse el disparador?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a4_momento" value="before" data-key="a4_momento">BEFORE — antes de aplicar el cambio</label>
+        <label class="radio-pill"><input type="radio" name="a4_momento" value="after" data-key="a4_momento">AFTER — después de aplicado el cambio</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Qué evento sobre la tabla <code class="inline">alumnos</code> debe activarlo?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a4_evento" value="insert" data-key="a4_evento">INSERT</label>
+        <label class="radio-pill"><input type="radio" name="a4_evento" value="update" data-key="a4_evento">UPDATE</label>
+        <label class="radio-pill"><input type="radio" name="a4_evento" value="delete" data-key="a4_evento">DELETE</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu disparador <span class="badge pts" style="font-size:11px">10 pts</span></h3>
+  <div class="field">
+    <label for="a4_sql">CREATE TRIGGER <span class="hint">Nómbralo con el prefijo tr_, por ejemplo tr_auditoria_alumnos.</span></label>
+    <textarea id="a4_sql" class="sql-input" data-key="a4_sql" spellcheck="false" style="min-height:170px" placeholder="CREATE TRIGGER tr_auditoria_alumnos&#10;…"></textarea>
+  </div>
+
+  <h3>Parte C · Explica tu disparador <span class="badge pts" style="font-size:11px">4 pts</span></h3>
+  <div class="field">
+    <label for="a4_expl">¿Qué hace tu disparador, paso a paso, y qué otro uso le darías a los disparadores en el Sistema de Administración Estudiantil? <span class="hint">Mínimo 3 líneas.</span></label>
+    <textarea id="a4_expl" data-key="a4_expl" placeholder="Mi disparador se ejecuta cuando…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema calificará tus respuestas al instante y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act4" onclick="entregar('act4')">Entregar Actividad 4 · intento único</button><span class="save-note" id="save-act4">✓</span>
+  <div class="fb-panel" id="fb-act4"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act3')">← Actividad 3</button><button class="btn" onclick="go('simulador')">Simulador SQL →</button></div>
+</section>
+
+<!-- 9. SIMULADOR SQL -->
+<section class="page" id="sec-simulador">
+  <div class="eyebrow">Sección 9 · Práctica libre</div>
+  <h2 class="page-title">Simulador SQL · tu gestor en el navegador</h2>
+  <p class="page-lead">Esto no es una imitación: es un motor de bases de datos real (SQLite) corriendo dentro de tu navegador, con la base <code class="inline">SistemaAdministracionEstudiantil</code> ya cargada. Escribe SQL, ejecútalo y observa resultados y errores reales. Nada de lo que hagas aquí afecta tus actividades entregadas, y puedes reiniciar la base cuando quieras.</p>
+
+  <div class="callout warn">
+    <div class="c-title">El simulador usa SQLite: 3 pequeñas diferencias con MySQL</div>
+    <p>1) Para fechas usa <code class="inline">datetime('now')</code> en lugar de <code class="inline">NOW()</code>. 2) El autoincremental se escribe <code class="inline">AUTOINCREMENT</code> (sin guion bajo). 3) Los disparadores envuelven su acción entre <code class="inline">BEGIN</code> y <code class="inline">END;</code>. Todo lo demás de este cuaderno (SELECT, WHERE, INSERT, UPDATE, DELETE, INNER JOIN) funciona idéntico.</p>
+  </div>
+
+  <h3>Tablas disponibles</h3>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil</div>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Tabla</th><th>Columnas</th></tr>
+    <tr><td><code class="inline">alumnos</code></td><td>matricula, nombre, apellido_paterno, grupo, turno, promedio</td></tr>
+    <tr><td><code class="inline">materias</code></td><td>id_materia, nombre_materia, semestre</td></tr>
+    <tr><td><code class="inline">calificaciones</code></td><td>id_calificacion, matricula, id_materia, calificacion, parcial</td></tr>
+    <tr><td><code class="inline">auditoria_alumnos</code></td><td>id_evento, matricula, fecha_evento, descripcion (vacía: tu trigger la llenará)</td></tr>
+  </table></div>
+  <p style="font-size:14px;color:var(--gris)">La base inicia con el escenario completo del cuaderno: incluye el apellido mal capturado "Hernandes" y el registro duplicado 23100999, para que practiques las correcciones de verdad.</p>
+
+  <h3>Retos de práctica</h3>
+  <div class="card">
+    <div class="reto"><span class="r-num">R1</span><span>Calienta motores: muestra todos los alumnos con <code class="inline">SELECT * FROM alumnos;</code> y localiza el apellido mal escrito y el duplicado.</span></div>
+    <div class="reto"><span class="r-num">R2</span><span>Muestra solo nombre y promedio de los alumnos del turno Matutino.</span></div>
+    <div class="reto"><span class="r-num">R3</span><span>Da de alta con INSERT a un compañero inventado (usa una matrícula que no exista) y compruébalo con un SELECT.</span></div>
+    <div class="reto"><span class="r-num">R4</span><span>Corrige "Hernandes" → "Hernández" con UPDATE y verifica el cambio. ¿Qué pasa si ejecutas el UPDATE dos veces? Observa las "filas afectadas".</span></div>
+    <div class="reto"><span class="r-num">R5</span><span>Elimina el registro duplicado (matrícula 23100999) y confirma que María López quedó una sola vez.</span></div>
+    <div class="reto"><span class="r-num">R6</span><span>Genera el reporte académico: nombre del alumno, materia y calificación con doble INNER JOIN, filtrando turno Matutino y calificación ≥ 8.</span></div>
+    <div class="reto"><span class="r-num">R7</span><span>Nivel pro: crea el disparador de auditoría (versión SQLite, con BEGIN…END y datetime('now')), luego ejecuta un UPDATE sobre alumnos y consulta <code class="inline">auditoria_alumnos</code> para ver la magia.</span></div>
+    <div class="reto"><span class="r-num">R8</span><span>Rompe cosas a propósito: ejecuta un SELECT de una tabla que no existe o un INSERT con matrícula repetida, y lee el mensaje de error. Aprender a leer errores es de técnico profesional.</span></div>
+  </div>
+
+  <h3>Consola SQL</h3>
+  <div class="sim-console">
+    <div class="db-path" style="border-radius:0;display:flex;width:100%;box-sizing:border-box">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> consola</div>
+    <textarea id="sim_sql" spellcheck="false" placeholder="Escribe aquí tu SQL y presiona Ejecutar (o Ctrl + Enter)…&#10;Ejemplo:  SELECT * FROM alumnos;"></textarea>
+    <div class="sim-toolbar">
+      <button class="btn" onclick="ejecutarSim()">▶ Ejecutar</button>
+      <button class="btn ghost" onclick="document.getElementById('sim_out').innerHTML=''">Limpiar resultados</button>
+      <button class="btn ghost" onclick="reiniciarSim(true)">⟲ Reiniciar base de datos</button>
+    </div>
+    <div class="sim-status" id="sim_status">El motor SQL se cargará al entrar a esta sección…</div>
+  </div>
+  <div id="sim_out" style="margin-top:4px"></div>
+  <p style="font-size:13px;color:var(--gris);margin-top:14px">Consejo: cada comando ejecutado queda arriba como historial; haz clic sobre él para volver a cargarlo en la consola.</p>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act4')">← Actividad 4</button><button class="btn" onclick="go('bitacora')">Bitácora →</button></div>
+</section>
+
+<!-- 8. BITÁCORA -->
+<section class="page" id="sec-bitacora">
+  <div class="eyebrow">Sección 10 · Bitácora del alumno</div>
+  <h2 class="page-title">Reflexiona sobre tu aprendizaje</h2>
+  <p class="page-lead">La bitácora es tu espacio de metacognición: escribir lo que aprendiste consolida el conocimiento. Responde con honestidad y con tus propias palabras; forma parte de tu evaluación (10 puntos).</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="bit1">1. ¿Qué aprendí en este Resultado de Aprendizaje?</label>
+      <textarea id="bit1" data-key="bit1" placeholder="En este RA aprendí a…"></textarea>
+    </div>
+    <div class="field">
+      <label for="bit2">2. ¿Qué dificultades encontré y cómo las resolví?</label>
+      <textarea id="bit2" data-key="bit2" placeholder="Lo que más se me dificultó fue…"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label for="bit3">3. ¿Cómo puedo aplicar SQL en un Sistema de Administración Estudiantil real?</label>
+      <textarea id="bit3" data-key="bit3" placeholder="En un sistema escolar real, SQL serviría para…"></textarea>
+    </div>
+  </div>
+  <button class="btn" id="btn-bitacora" onclick="guardar('bitacora')">Guardar bitácora</button><span class="save-note" id="save-bitacora">✓ Avance guardado</span>
+
+  <div class="pager"><button class="btn ghost" onclick="go('simulador')">← Simulador SQL</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
+</section>
+
+<!-- 8. EVALUACIÓN -->
+<section class="page" id="sec-evaluacion">
+  <div class="eyebrow">Sección 11 · Evaluación</div>
+  <h2 class="page-title">Resultados de tu cuaderno</h2>
+  <p class="page-lead">Cada actividad se califica en el momento en que la entregas (intento único) y ahí mismo ves tu retroalimentación y la solución. Esta pantalla reúne los resultados de tus entregas, suma tu bitácora y genera el reporte final para tu docente.</p>
+
+  <button class="btn" onclick="calificarTodo()" style="margin-bottom:24px">Generar mi resultado final</button>
+
+  <div id="resultados" style="display:none">
+    <div class="score-hero">
+      <div><div class="score-num" id="scoreTotal">0</div><div style="font-size:13px;opacity:.85">de 100 puntos</div></div>
+      <div class="detail" id="scoreDetalle"></div>
+    </div>
+
+    <h3 style="margin-top:8px">Desglose por actividad</h3>
+    <div class="tbl-wrap"><table class="data rubrica" id="tablaRubrica">
+      <tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>
+    </table></div>
+
+    <div class="callout info">
+      <div class="c-title">Nota sobre la calificación automática</div>
+      <p>Esta revisión verifica la <strong>estructura</strong> de tus consultas (instrucciones, tablas y condiciones clave). Tu docente realizará la revisión final de la lógica completa, las justificaciones y la bitácora a partir del reporte que entregues. Este cuaderno corresponde a la <strong>Actividad de evaluación 2.1.1</strong> del programa COBD-20 (evidencia: procedimientos de consulta y disparadores generados), con ponderación oficial del <strong>15%</strong> del módulo.</p>
+    </div>
+
+    <h3>Entrega tu reporte</h3>
+    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el simulador <strong>seguirán disponibles para consulta</strong>.</p>
+    <div class="callout warn">
+      <div class="c-title">Antes de enviar, verifica</div>
+      <p>Que tus 4 actividades estén entregadas y tu bitácora guardada. Después del envío ya no podrás modificar nada que genere calificación. Tu docente recibe cada envío con folio y hora: los envíos duplicados desde otro equipo se detectan y <strong>solo cuenta el primero</strong>.</p>
+    </div>
+    <button class="btn" id="btnEnviar" onclick="enviarReporte()">📨 Enviar reporte a mi docente · envío único</button>
+    <button class="btn ghost" onclick="descargarPDF()">⬇ Descargar mi boleta (PDF · 1 hoja)</button>
+    <div class="sim-status" id="envio_status" style="padding:10px 0 0"></div>
+    <div id="envio_ok" class="callout info" style="display:none;margin-top:16px"></div>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('bitacora')">← Bitácora</button><span></span></div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* =========================================================
+   COBD Classroom · RA 2.1 · Lógica del cuaderno
+   Estado en localStorage (diseñado para migrar a Supabase:
+   usuarios, alumnos, actividades, respuestas, calificaciones, bitacoras)
+   ========================================================= */
+const LS_KEY = 'cobd_ra21_v1';
+let state = { alumno:null, respuestas:{}, visitadas:{}, guardadas:{}, entregas:{} };
+
+function load(){ try{ const raw = localStorage.getItem(LS_KEY); if(raw) state = Object.assign(state, JSON.parse(raw)); }catch(e){} }
+function persist(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+/* ---------- Registro ---------- */
+function registrar(){
+  const nombre = document.getElementById('r_nombre').value.trim();
+  const grupo  = document.getElementById('r_grupo').value;
+  const turno  = document.getElementById('r_turno').value;
+  const correo = document.getElementById('r_correo').value.trim().toLowerCase();
+  const err = document.getElementById('r_err');
+  if(!nombre || !grupo || !turno || !correo){
+    err.textContent='Completa todos los campos para comenzar.';
+    err.style.display='block'; return;
+  }
+  if(!/^[a-z0-9._%+-]+@tam\.conalep\.edu\.mx$/.test(correo)){
+    err.textContent='Ese correo no es válido. Debes usar tu correo institucional CONALEP, que termina en @tam.conalep.edu.mx';
+    err.style.display='block'; return;
+  }
+  err.style.display='none';
+  state.alumno = { nombre, grupo, turno, correo, registro:new Date().toLocaleString('es-MX') };
+  persist();
+  document.getElementById('gate').style.display='none';
+  pintarAlumno();
+}
+function editarRegistro(){
+  const a = state.alumno||{};
+  document.getElementById('r_nombre').value = a.nombre||'';
+  document.getElementById('r_grupo').value = a.grupo||'';
+  document.getElementById('r_turno').value = a.turno||'';
+  document.getElementById('r_correo').value = a.correo||'';
+  document.getElementById('gateCancel').style.display='block';
+  document.getElementById('gate').style.display='flex';
+}
+function pintarAlumno(){
+  if(!state.alumno) return;
+  const chip = document.getElementById('studentChip');
+  chip.style.display='block';
+  document.getElementById('sc_nombre').textContent = state.alumno.nombre;
+  document.getElementById('sc_detalle').textContent = 'Grupo '+state.alumno.grupo+' · Turno '+state.alumno.turno;
+}
+
+/* ---------- Navegación ---------- */
+const ORDEN = ['intro','ddl','conceptos','ejemplo','act1','act2','act3','act4','simulador','bitacora','evaluacion'];
+function go(sec){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+sec).classList.add('visible');
+  document.querySelectorAll('.toc a').forEach(a=>a.classList.toggle('active', a.dataset.sec===sec));
+  state.visitadas[sec]=true; persist(); actualizarProgreso();
+  document.querySelector('.sidebar').classList.remove('open');
+  if(sec==='simulador') asegurarSimulador();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.toc a').forEach(a=> a.addEventListener('click', ()=>go(a.dataset.sec)) );
+document.querySelector('.main').addEventListener('click', ()=>document.querySelector('.sidebar').classList.remove('open'));
+
+/* ---------- Auto-guardado de respuestas ---------- */
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const k = el.dataset.key;
+    if(el.type==='radio'){
+      if(state.respuestas[k]===el.value) el.checked=true;
+      el.addEventListener('change',()=>{ state.respuestas[k]=el.value; persist(); });
+    }else{
+      if(state.respuestas[k]) el.value=state.respuestas[k];
+      el.addEventListener('input',()=>{ state.respuestas[k]=el.value; persist(); });
+    }
+  });
+}
+const MINIMOS = {
+  act1:['a1_sql','a1_just'], act2:['a2_sqlI','a2_sqlU','a2_sqlD','a2_reflex'],
+  act3:['a3_sql','a3_just'], act4:['a4_sql','a4_expl'], bitacora:['bit1','bit2','bit3']
+};
+function guardar(act){
+  persist();
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  const note=document.getElementById('save-'+act);
+  if(faltan.length){
+    state.guardadas[act]=false; persist();
+    if(note){ note.textContent='✗ Para registrar la entrega, completa todas las respuestas de esta sección'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    actualizarProgreso(); marcarTOC(); return;
+  }
+  state.guardadas[act]=true; persist();
+  if(note){ note.textContent='✓ Avance guardado'; note.style.color='var(--ok)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),2200); }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Progreso ---------- */
+function actualizarProgreso(){
+  const visit = ORDEN.filter(s=>state.visitadas[s]).length;          // 8 secciones = 40%
+  const acts  = ['act1','act2','act3','act4','bitacora'].filter(a=>state.guardadas[a]).length; // 5 entregas = 60%
+  const pct = Math.round( (visit/ORDEN.length)*40 + (acts/5)*60 );
+  document.getElementById('progPct').textContent = pct+'%';
+  document.getElementById('progFill').style.width = pct+'%';
+}
+function marcarTOC(){
+  document.querySelectorAll('.toc a').forEach(a=>{
+    const s=a.dataset.sec;
+    const done = ['act1','act2','act3','act4','bitacora'].includes(s) ? state.guardadas[s] : state.visitadas[s];
+    a.classList.toggle('done', !!done);
+  });
+}
+
+/* ---------- Resaltado de sintaxis SQL ---------- */
+function highlightSQL(root){
+  const KW=/\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|INNER|JOIN|ON|AND|OR|NOT|CREATE|TRIGGER|AFTER|BEFORE|FOR|EACH|ROW|DATABASE|TABLE|ALTER|DROP|ADD|MODIFY|COLUMN|USE|PRIMARY|KEY|FOREIGN|REFERENCES|NULL|AUTO_INCREMENT|VARCHAR|INT|DECIMAL)\b/g;
+  (root||document).querySelectorAll('pre.sql:not([data-hl])').forEach(pre=>{
+    pre.dataset.hl='1';
+    const stash=[];
+    const keep=(html)=>{ stash.push(html); return '\u0001S'+(stash.length-1)+'\u0001'; };
+    let h = pre.textContent
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/--.*$/gm, m=>keep('<span class="cm">'+m+'</span>'))
+      .replace(/'[^']*'/g, m=>keep('<span class="str">'+m+'</span>'))
+      .replace(/\b\d+(\.\d+)?\b/g, m=>'<span class="num">'+m+'</span>')
+      .replace(KW, m=>'<span class="kw">'+m+'</span>');
+    h = h.replace(/\u0001S(\d+)\u0001/g,(m,i)=>stash[+i]);
+    pre.innerHTML = h;
+  });
+}
+
+/* ---------- Calificación ---------- */
+function norm(s){ return (s||'').toLowerCase().replace(/\s+/g,' '); }
+function checkSQL(sql, reglas){
+  const s = norm(sql); const det=[]; let pts=0;
+  reglas.forEach(r=>{ const ok = r.re.test(s); if(ok) pts+=r.pts; det.push({ok, label:r.label, pts:r.pts}); });
+  return {pts, det};
+}
+function lenOK(txt, min){ return (txt||'').trim().length >= min; }
+
+/* ---------- Simulador SQL (SQLite real vía sql.js) ---------- */
+let simDB = null; let __SQLLib = null; let __simCargando = false; const __simHist = [];
+const SIM_SEED = "PRAGMA foreign_keys=ON;" +
+"CREATE TABLE alumnos (matricula TEXT PRIMARY KEY, nombre TEXT NOT NULL, apellido_paterno TEXT NOT NULL, grupo TEXT, turno TEXT, promedio REAL);" +
+"INSERT INTO alumnos VALUES ('23100245','Luis','Hernandes','410','Matutino',8.7);" +
+"INSERT INTO alumnos VALUES ('23100311','María','López','410','Matutino',9.4);" +
+"INSERT INTO alumnos VALUES ('23100378','José','Ramírez','411','Vespertino',7.8);" +
+"INSERT INTO alumnos VALUES ('23100402','Ana','Martínez','410','Matutino',9.1);" +
+"INSERT INTO alumnos VALUES ('23100459','Carlos','Pérez','611','Matutino',8.2);" +
+"INSERT INTO alumnos VALUES ('23100999','María','López','410','Matutino',9.4);" +
+"CREATE TABLE materias (id_materia INTEGER PRIMARY KEY, nombre_materia TEXT, semestre INTEGER);" +
+"INSERT INTO materias VALUES (1,'Construcción de Bases de Datos',4),(2,'Manejo de Redes',4),(3,'Programación Orientada a Objetos',4);" +
+"CREATE TABLE calificaciones (id_calificacion INTEGER PRIMARY KEY AUTOINCREMENT, matricula TEXT NOT NULL, id_materia INTEGER NOT NULL, calificacion REAL, parcial INTEGER, FOREIGN KEY (matricula) REFERENCES alumnos(matricula), FOREIGN KEY (id_materia) REFERENCES materias(id_materia));" +
+"INSERT INTO calificaciones (matricula,id_materia,calificacion,parcial) VALUES ('23100245',1,8.5,1),('23100311',1,9.6,1),('23100402',2,9.0,1),('23100378',1,7.5,1),('23100459',3,8.0,1),('23100311',2,9.2,1);" +
+"CREATE TABLE auditoria_alumnos (id_evento INTEGER PRIMARY KEY AUTOINCREMENT, matricula TEXT, fecha_evento TEXT, descripcion TEXT);" +
+"CREATE TABLE bitacora_capturas (id_evento INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER, fecha_evento TEXT);";
+
+function asegurarSimulador(){
+  const st = document.getElementById('sim_status');
+  if(simDB){ return; }
+  if(__simCargando){ return; }
+  if(typeof initSqlJs === 'undefined'){
+    st.textContent = '⚠ No se pudo cargar el motor SQL. Este simulador necesita conexión a internet: verifica tu red y recarga la página.';
+    return;
+  }
+  __simCargando = true;
+  st.textContent = '⏳ Cargando motor SQL (solo la primera vez)…';
+  initSqlJs({ locateFile: f => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/' + f })
+    .then(SQL => { __SQLLib = SQL; reiniciarSim(false); st.textContent = '✓ Motor listo. Base SistemaAdministracionEstudiantil cargada con sus 4 tablas. ¡Toda tuya!'; })
+    .catch(e => { st.textContent = '⚠ Error al cargar el motor SQL: ' + e.message + '. Verifica tu conexión y recarga.'; })
+    .finally(()=>{ __simCargando = false; });
+}
+function reiniciarSim(avisar){
+  if(!__SQLLib){ asegurarSimulador(); return; }
+  if(simDB) simDB.close();
+  simDB = new __SQLLib.Database();
+  simDB.run(SIM_SEED);
+  if(avisar){
+    document.getElementById('sim_out').innerHTML = '';
+    document.getElementById('sim_status').textContent = '⟲ Base de datos restaurada al estado inicial (con "Hernandes" y el duplicado incluidos).';
+  }
+}
+function escSim(v){ return String(v===null?'NULL':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function simCargar(i){ const t=document.getElementById('sim_sql'); t.value = __simHist[i]; t.focus(); }
+function ejecutarSim(){
+  const st = document.getElementById('sim_status');
+  if(!simDB){ asegurarSimulador(); st.textContent = '⏳ El motor aún está cargando; espera un momento y vuelve a presionar Ejecutar.'; return; }
+  const sql = document.getElementById('sim_sql').value.trim();
+  if(!sql){ st.textContent = 'Escribe una instrucción SQL primero.'; return; }
+  __simHist.push(sql);
+  const idx = __simHist.length - 1;
+  let cuerpo = '';
+  try{
+    const res = simDB.exec(sql);
+    if(res.length){
+      res.forEach(r=>{
+        let t = '<div class="tbl-wrap"><table class="data"><tr>';
+        r.columns.forEach(c=> t += '<th>'+escSim(c)+'</th>');
+        t += '</tr>';
+        r.values.forEach(fila=>{
+          t += '<tr>';
+          fila.forEach(v=> t += '<td>'+escSim(v)+'</td>');
+          t += '</tr>';
+        });
+        t += '</table></div>';
+        cuerpo += t + '<div class="sim-ok">✓ ' + r.values.length + ' fila(s) en el resultado</div>';
+      });
+    }else{
+      cuerpo = '<div class="sim-ok">✓ Instrucción ejecutada correctamente · filas afectadas: ' + simDB.getRowsModified() + '</div>';
+    }
+    st.textContent = '';
+  }catch(e){
+    cuerpo = '<div class="sim-err">✗ Error del gestor:\n' + escSim(e.message) + '</div><div style="font-size:13px;color:var(--gris);margin-top:6px">Lee el mensaje con calma: casi siempre te dice exactamente qué corregir (tabla inexistente, coma faltante, llave duplicada…).</div>';
+    st.textContent = '';
+  }
+  const out = document.getElementById('sim_out');
+  const bloque = document.createElement('div');
+  bloque.className = 'sim-result';
+  bloque.innerHTML = '<div class="sim-cmd" onclick="simCargar('+idx+')">'+escSim(sql)+'</div><div class="sim-body">'+cuerpo+'</div>';
+  out.insertBefore(bloque, out.firstChild);
+  while(out.children.length > 10) out.removeChild(out.lastChild);
+}
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey && e.key==='Enter' && document.activeElement && document.activeElement.id==='sim_sql'){ e.preventDefault(); ejecutarSim(); }
+});
+
+/* ---------- Autoevaluación de repaso DDL (sin puntos) ---------- */
+function comprobarDDL(){
+  const Q = [
+    ['q_ddl1','alter','ALTER TABLE modifica la estructura de una tabla existente sin perder sus datos. CREATE la crearía de cero y UPDATE es DML: cambia datos, no columnas.'],
+    ['q_ddl2','drop','DELETE borra filas (datos) y la tabla sigue existiendo; DROP TABLE elimina la tabla completa con estructura y todo.'],
+    ['q_ddl3','fk','La FOREIGN KEY matricula de calificaciones apunta a la PRIMARY KEY de alumnos: esa es la relación. El JOIN no la crea, solo la aprovecha al consultar.']
+  ];
+  Q.forEach(([name,correcta,expl])=>{
+    const sel = document.querySelector('input[name='+name+']:checked');
+    const out = document.getElementById('out_'+name.replace('q_',''));
+    if(!sel){ out.textContent = 'Selecciona una opción.'; out.style.color = 'var(--amber)'; return; }
+    if(sel.value === correcta){ out.textContent = '✓ Correcto. '+expl; out.style.color = 'var(--ok)'; }
+    else { out.textContent = '✗ No es así. '+expl+' Cambia tu respuesta y vuelve a comprobar.'; out.style.color = 'var(--rojo)'; }
+  });
+}
+
+/* ---------- Entrega única con retroalimentación ---------- */
+const CLAVE_DOCENTE = 'TEC-COBD-2526'; // ← clave para liberar un nuevo intento (cámbiala aquí)
+
+const SOLUCIONES = {
+act1: '<p style="font-size:14px"><strong>Análisis:</strong> la información está en la tabla <code class="inline">alumnos</code> y NO se requiere JOIN (una sola tabla).</p>'+
+'<pre class="sql solo">SELECT nombre, apellido_paterno, grupo, promedio, promedio * 10 AS escala_100\nFROM alumnos\nWHERE promedio >= 9.0;</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Una buena justificación menciona: las columnas que pidió la dirección, que todas viven en la tabla alumnos, el filtro promedio &gt;= 9.0 y la columna calculada con el operador aritmético * para la escala de 0 a 100.</p>',
+
+act2: '<p style="font-size:14px"><strong>Alta (INSERT):</strong></p>'+
+'<pre class="sql solo">INSERT INTO alumnos (matricula, nombre, apellido_paterno, grupo, turno, promedio)\nVALUES (\'24100777\', \'Jorge\', \'Ávalos\', \'411\', \'Vespertino\', 0.0);</pre>'+
+'<p style="font-size:14px"><strong>Corrección (UPDATE):</strong></p>'+
+'<pre class="sql solo">UPDATE alumnos\nSET apellido_paterno = \'Hernández\'\nWHERE matricula = \'23100245\';</pre>'+
+'<p style="font-size:14px"><strong>Baja del duplicado (DELETE):</strong></p>'+
+'<pre class="sql solo">DELETE FROM alumnos\nWHERE matricula = \'23100999\';</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Reflexión esperada: un DELETE sin WHERE habría borrado TODAS las filas de la tabla. La matrícula es el filtro seguro porque identifica de forma única a cada alumno; filtrar por nombre habría afectado a las dos "María López".</p>',
+
+act3: '<p style="font-size:14px"><strong>Análisis:</strong> se requieren las 3 tablas; <code class="inline">calificaciones</code> se conecta con <code class="inline">alumnos</code> mediante la llave <code class="inline">matricula</code>.</p>'+
+'<pre class="sql solo">SELECT a.nombre, a.apellido_paterno, m.nombre_materia, c.calificacion\nFROM calificaciones c\nINNER JOIN alumnos a ON c.matricula = a.matricula\nINNER JOIN materias m ON c.id_materia = m.id_materia\nWHERE a.turno = \'Matutino\' AND c.calificacion >= 8;</pre>'+
+'<p style="font-size:13px;color:var(--gris)">También es válida sin alias (escribiendo los nombres completos de las tablas) o partiendo de FROM alumnos; lo esencial son los dos INNER JOIN con sus ON correctos y el WHERE con AND. Si la tuya estaba estructurada así y aun así perdiste puntos, coméntalo con tu docente al entregar el reporte.</p>',
+
+act4: '<p style="font-size:14px"><strong>Análisis:</strong> momento <code class="inline">AFTER</code> (la auditoría registra cambios ya aplicados) y evento <code class="inline">UPDATE</code> sobre alumnos.</p>'+
+'<pre class="sql solo">CREATE TRIGGER tr_auditoria_alumnos\nAFTER UPDATE ON alumnos\nFOR EACH ROW\nINSERT INTO auditoria_alumnos (matricula, fecha_evento, descripcion)\nVALUES (OLD.matricula, NOW(), \'Registro actualizado\');</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Otros usos válidos de disparadores en el sistema: avisar o registrar cuando se elimina un alumno, validar calificaciones fuera de rango antes de insertarlas, o recalcular el promedio al capturar una calificación nueva.</p>'
+};
+
+const GRADERS = {
+act1(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a1_tabla==='alumnos' ?3:0; fb.push({ok:R.a1_tabla==='alumnos', label:'Identificó la tabla correcta (alumnos)', pts:3});
+  p += R.a1_join==='no' ?3:0;       fb.push({ok:R.a1_join==='no', label:'Identificó que NO requiere JOIN', pts:3});
+  const c = checkSQL(R.a1_sql,[
+    {re:/select/, pts:2, label:'Usa SELECT'},
+    {re:/from\s+alumnos/, pts:2, label:'Consulta la tabla alumnos'},
+    {re:/where/, pts:2, label:'Filtra con WHERE'},
+    {re:/promedio\s*>=\s*9/, pts:2, label:'Condición promedio >= 9.0'},
+    {re:/promedio\s*\*\s*10/, pts:2, label:'Columna calculada promedio * 10 (operador aritmético)'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a1_just,80); p += j?4:0; fb.push({ok:j, label:'Justificación desarrollada (mín. 3 líneas)', pts:4});
+  return {pts:p, max:20, fb};
+},
+act2(){
+  const R = state.respuestas; let p=0; const fb=[];
+  const ci = checkSQL(R.a2_sqlI,[
+    {re:/insert\s+into\s+alumnos/, pts:3, label:'INSERT INTO alumnos'},
+    {re:/values/, pts:2, label:'Cláusula VALUES con los datos del alumno'},
+    {re:/24100777/, pts:3, label:'Registra la matrícula 24100777'}
+  ]);
+  p += ci.pts; fb.push(...ci.det);
+  const cu = checkSQL(R.a2_sqlU,[
+    {re:/update\s+alumnos/, pts:2, label:'UPDATE sobre la tabla alumnos'},
+    {re:/set\s+apellido_?paterno\s*=\s*'?hern[aá]ndez/, pts:2, label:'SET apellido_paterno = \u0027Hernández\u0027'},
+    {re:/where\s+matricula\s*=\s*'?23100245/, pts:3, label:'WHERE matricula = 23100245 (filtro único)'}
+  ]);
+  p += cu.pts; fb.push(...cu.det);
+  const cd = checkSQL(R.a2_sqlD,[
+    {re:/delete\s+from\s+alumnos/, pts:2, label:'DELETE FROM alumnos'},
+    {re:/where/, pts:2, label:'Incluye cláusula WHERE'},
+    {re:/matricula\s*=\s*'?23100999/, pts:2, label:'Elimina SOLO la matrícula 23100999'}
+  ]);
+  p += cd.pts; fb.push(...cd.det);
+  const j = lenOK(R.a2_reflex,60); p += j?4:0; fb.push({ok:j, label:'Reflexión sobre el riesgo de omitir WHERE', pts:4});
+  return {pts:p, max:25, fb};
+},
+act3(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a3_tablas==='3' ?3:0; fb.push({ok:R.a3_tablas==='3', label:'Identificó que se requieren 3 tablas', pts:3});
+  p += R.a3_llave==='matricula' ?3:0; fb.push({ok:R.a3_llave==='matricula', label:'Identificó la llave matricula', pts:3});
+  const s3 = norm(R.a3_sql);
+  const joins = (s3.match(/inner\s+join/g)||[]).length;
+  const jp = joins>=2?4:(joins===1?2:0);
+  p += jp; fb.push({ok:joins>=2, label:'Dos INNER JOIN encadenados ('+joins+' detectados)', pts:4});
+  const c = checkSQL(R.a3_sql,[
+    {re:/select/, pts:1, label:'Usa SELECT'},
+    {re:/calificaciones/, pts:2, label:'Incluye la tabla calificaciones'},
+    {re:/materias/, pts:2, label:'Incluye la tabla materias'},
+    {re:/\bon\b.*matricula/, pts:2, label:'Conecta por matricula en un ON'},
+    {re:/where[\s\S]*\band\b/, pts:1, label:'WHERE con operador AND'},
+    {re:/turno\s*=\s*'?matutino/, pts:1, label:'Condición turno = \u0027Matutino\u0027'},
+    {re:/calificacion\s*>=\s*8/, pts:1, label:'Condición calificacion >= 8'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a3_just,80); p += j?5:0; fb.push({ok:j, label:'Justificación del uso de JOIN', pts:5});
+  return {pts:p, max:25, fb};
+},
+act4(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a4_momento==='after' ?3:0; fb.push({ok:R.a4_momento==='after', label:'Momento correcto: AFTER (el cambio ya ocurrió)', pts:3});
+  p += R.a4_evento==='update' ?3:0; fb.push({ok:R.a4_evento==='update', label:'Evento correcto: UPDATE sobre alumnos', pts:3});
+  const c = checkSQL(R.a4_sql,[
+    {re:/create\s+trigger/, pts:3, label:'CREATE TRIGGER con nombre'},
+    {re:/after\s+update/, pts:2, label:'Momento y evento: AFTER UPDATE'},
+    {re:/on\s+alumnos/, pts:2, label:'Vigila la tabla alumnos (ON alumnos)'},
+    {re:/insert\s+into\s+auditoria_?alumnos/, pts:3, label:'Acción: INSERT INTO auditoria_alumnos'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a4_expl,60); p += j?4:0; fb.push({ok:j, label:'Explicación del funcionamiento y otro uso propuesto', pts:4});
+  return {pts:p, max:20, fb};
+}
+};
+
+function entregar(act){
+  if(state.entregas[act]) return;
+  const note = document.getElementById('save-'+act);
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  if(faltan.length){
+    if(note){ note.textContent='✗ Completa todas las respuestas de esta actividad antes de entregar'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    return;
+  }
+  if(!confirm('Vas a ENTREGAR esta actividad.\n\n• Solo tienes UN intento.\n• Verás tu calificación y la solución correcta.\n• Ya no podrás modificar tus respuestas.\n\n¿Deseas entregar ahora?')) return;
+  const g = GRADERS[act]();
+  state.entregas[act] = { pts:g.pts, max:g.max, fb:g.fb, fecha:new Date().toLocaleString('es-MX') };
+  state.guardadas[act] = true; persist();
+  lockAct(act); renderFB(act);
+  actualizarProgreso(); marcarTOC();
+}
+function lockAct(act){
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=true);
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=true; btn.textContent='✓ Actividad entregada'; }
+}
+function renderFB(act){
+  const e = state.entregas[act]; if(!e) return;
+  const panel = document.getElementById('fb-'+act); if(!panel) return;
+  const lista = e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
+  panel.innerHTML =
+    '<div class="fb-head"><span>Resultado de tu entrega</span><span>'+e.pts+' / '+e.max+' pts · '+e.fecha+'</span></div>'+
+    '<div class="fb-body"><ul class="fb-list">'+lista+'</ul>'+
+    '<div class="solucion"><h5>Solución correcta</h5>'+SOLUCIONES[act]+'</div>'+
+    '<div class="fb-unlock"><button class="btn ghost" style="padding:6px 12px;font-size:12px" onclick="desbloquear(\''+act+'\')">Docente: liberar nuevo intento</button></div></div>';
+  panel.classList.add('show');
+  highlightSQL(panel);
+}
+function desbloquear(act){
+  const clave = prompt('Clave del docente para liberar un nuevo intento:');
+  if(clave === null) return;
+  if(clave.trim() !== CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
+  if(state.enviado && !confirm('OJO: este cuaderno ya fue ENVIADO al docente (folio '+state.enviado.folio+'). ¿Liberar el intento de todos modos?')) return;
+  delete state.entregas[act]; state.guardadas[act]=false; persist();
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=false);
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3',act4:'Actividad 4'};
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=false; btn.textContent='Entregar '+nombres[act]+' · intento único'; }
+  const panel = document.getElementById('fb-'+act);
+  if(panel){ panel.classList.remove('show'); panel.innerHTML=''; }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Resultado final ---------- */
+const ACTS_META = [
+  ['act1','Actividad 1 · SELECT y WHERE',20],
+  ['act2','Actividad 2 · INSERT, UPDATE y DELETE',25],
+  ['act3','Actividad 3 · AND e INNER JOIN',25],
+  ['act4','Actividad 4 · Disparadores',20]
+];
+function calificarTodo(){
+  const R = state.respuestas;
+  const filas=[]; let total=0; const pendientes=[];
+  ACTS_META.forEach(([a,nombre,max])=>{
+    const e = state.entregas[a];
+    if(e){ filas.push({nombre:nombre+' (entregada '+e.fecha+')', pts:e.pts, max:max, fb:e.fb}); total+=e.pts; }
+    else{ filas.push({nombre:nombre, pts:0, max:max, fb:[{ok:false, label:'Actividad sin entregar — entra a la sección y entrégala', pts:max}]}); pendientes.push(nombre.split(' ·')[0]); }
+  });
+  let b=0; const bfb=[];
+  [['bit1','¿Qué aprendí?',3],['bit2','Dificultades y solución',3],['bit3','Aplicación de SQL en el sistema',4]].forEach(([k,l,p])=>{
+    const ok = lenOK(R[k],60); b += ok?p:0; bfb.push({ok, label:l+' respondida con desarrollo', pts:p});
+  });
+  filas.push({nombre:'Bitácora del alumno', pts:b, max:10, fb:bfb}); total+=b;
+
+  state.evaluacion = { total, filas, fecha:new Date().toLocaleString('es-MX') };
+  persist();
+  document.getElementById('resultados').style.display='block';
+  document.getElementById('scoreTotal').textContent = total;
+  const nivel = pendientes.length
+    ? '⚠ Tienes actividades sin entregar: '+pendientes.join(', ')+'. Entrégalas para completar tu calificación.'
+    : (total>=90?'Excelente dominio del RA 2.1.':total>=70?'Buen desempeño. Revisa la retroalimentación de cada entrega.':'Resultado en proceso: revisa la retroalimentación y coméntala con tu docente.');
+  document.getElementById('scoreDetalle').innerHTML = '<strong>'+(state.alumno?state.alumno.nombre:'Alumno')+'</strong> · Grupo '+(state.alumno?state.alumno.grupo:'—')+'<br>'+nivel+'<br><span style="opacity:.75">Evidencia 2.1.1 · ponderación oficial 15% del módulo · Generado: '+state.evaluacion.fecha+'</span>';
+  const tabla = document.getElementById('tablaRubrica');
+  tabla.innerHTML = '<tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>';
+  filas.forEach(f=>{
+    const fb = '<ul class="fb-list">'+f.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('')+'</ul>';
+    tabla.insertAdjacentHTML('beforeend','<tr><td><strong>'+f.nombre+'</strong></td><td><strong>'+f.pts+'</strong> / '+f.max+'</td><td>'+fb+'</td></tr>');
+  });
+  window.scrollTo({top:0});
+}
+
+/* ---------- Envío al docente (FormSubmit) y sellado ---------- */
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com';
+
+function sellarCuaderno(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const bb = document.getElementById('btn-bitacora');
+  if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
+  const be = document.getElementById('btnEnviar');
+  if(be){ be.disabled=true; be.textContent='✓ Reporte enviado'; }
+  const ok = document.getElementById('envio_ok');
+  if(ok && state.enviado){
+    ok.style.display='block';
+    ok.innerHTML = '<div class="c-title">✓ Cuaderno enviado y sellado</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · Enviado: '+state.enviado.fecha+' · Calificación enviada: <strong>'+state.enviado.total+' / 100</strong>.<br>Conserva tu copia descargable como comprobante. Los apuntes, instrucciones y el simulador siguen disponibles para consulta.</p>';
+  }
+}
+
+async function enviarReporte(){
+  const st = document.getElementById('envio_status');
+  if(state.enviado){ st.style.color='var(--gris)'; st.textContent='Este cuaderno ya fue enviado (folio '+state.enviado.folio+').'; return; }
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3',act4:'Actividad 4'};
+  const faltan = ACTS_META.filter(([a])=>!state.entregas[a]).map(([a])=>nombres[a]);
+  const bitOk = ['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length >= 10);
+  if(!bitOk) faltan.push('Bitácora (responde y guarda sus 3 preguntas)');
+  if(faltan.length){
+    st.style.color='var(--rojo)';
+    st.textContent='✗ Antes de enviar debes completar: '+faltan.join(', ')+'.';
+    return;
+  }
+  if(!confirm('Vas a ENVIAR tu reporte al docente.\n\n• El envío es ÚNICO y definitivo.\n• Tu calificación llegará al correo del docente con fecha, hora y folio.\n• Las actividades y la bitácora quedarán selladas (solo lectura).\n• Los apuntes, instrucciones y el simulador seguirán disponibles.\n\n¿Enviar ahora?')) return;
+  calificarTodo();
+  const ev = state.evaluacion, a = state.alumno||{}, R = state.respuestas;
+  const folio = 'COBD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  const btn = document.getElementById('btnEnviar'); if(btn) btn.disabled = true;
+  st.style.color='var(--gris)'; st.textContent='⏳ Enviando reporte al docente…';
+  const E = state.entregas;
+  const payload = {
+    _subject: 'COBD RA2.1 · '+(a.nombre||'Alumno')+' · Grupo '+(a.grupo||'?')+' · '+ev.total+'/100',
+    _captcha: 'false', _template: 'table',
+    Folio: folio,
+    Fecha_de_envio: new Date().toLocaleString('es-MX'),
+    Alumno: a.nombre||'', Grupo: a.grupo||'', Turno: a.turno||'', Correo_institucional: a.correo||'',
+    CALIFICACION_TOTAL: ev.total + ' / 100',
+    Actividad_1_SELECT_WHERE: E.act1.pts+' / 20 · entregada: '+E.act1.fecha,
+    Actividad_2_INSERT_UPDATE_DELETE: E.act2.pts+' / 25 · entregada: '+E.act2.fecha,
+    Actividad_3_INNER_JOIN: E.act3.pts+' / 25 · entregada: '+E.act3.fecha,
+    Actividad_4_Disparadores: E.act4.pts+' / 20 · entregada: '+E.act4.fecha,
+    Bitacora_puntos: (ev.filas[4]?ev.filas[4].pts:0)+' / 10',
+    A1_analisis: 'tabla: '+(R.a1_tabla||'—')+' · ¿JOIN?: '+(R.a1_join||'—'),
+    A1_consulta_SQL: R.a1_sql||'', A1_justificacion: R.a1_just||'',
+    A2_INSERT: R.a2_sqlI||'', A2_UPDATE: R.a2_sqlU||'', A2_DELETE: R.a2_sqlD||'', A2_reflexion: R.a2_reflex||'',
+    A3_analisis: 'tablas: '+(R.a3_tablas||'—')+' · llave: '+(R.a3_llave||'—'),
+    A3_consulta_SQL: R.a3_sql||'', A3_justificacion: R.a3_just||'',
+    A4_analisis: 'momento: '+(R.a4_momento||'—')+' · evento: '+(R.a4_evento||'—'),
+    A4_trigger: R.a4_sql||'', A4_explicacion: R.a4_expl||'',
+    Bitacora_que_aprendi: R.bit1||'', Bitacora_dificultades: R.bit2||'', Bitacora_aplicacion: R.bit3||'',
+    Navegador: navigator.userAgent
+  };
+  try{
+    const r = await fetch(FORMSUBMIT_ENDPOINT, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' },
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    await r.json();
+    state.enviado = { folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+    persist();
+    st.textContent='';
+    sellarCuaderno();
+    window.scrollTo({top:0});
+  }catch(e){
+    if(btn) btn.disabled = false;
+    st.style.color='var(--rojo)';
+    st.textContent='✗ No se pudo enviar ('+e.message+'). Revisa tu conexión a internet e inténtalo de nuevo — tu cuaderno NO se ha sellado y tus respuestas están a salvo.';
+  }
+}
+
+/* ---------- Boleta PDF de UNA hoja (jsPDF) ---------- */
+function descargarPDF(){
+  if(!state.evaluacion) calificarTodo();
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 14, W = 188;
+  const a = state.alumno||{}, ev = state.evaluacion;
+  let y = 16;
+
+  /* Encabezado */
+  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(21,34,48);
+  doc.text('COBD Classroom · Boleta de Resultados', M, y); y += 5.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text('Construcción de Bases de Datos (COBD-20) · Unidad 2 · RA 2.1 · Actividad de evaluación 2.1.1 (15% del módulo) · CONALEP', M, y); y += 3.8;
+  doc.text('Proyecto integrador: Sistema de Administración Estudiantil · BD: SistemaAdministracionEstudiantil', M, y); y += 3;
+  doc.setDrawColor(14,134,196); doc.setLineWidth(0.7); doc.line(M, y, M+W, y); y += 6;
+
+  /* Datos del alumno */
+  doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(21,34,48);
+  doc.text((a.nombre||'—'), M, y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Grupo '+(a.grupo||'—')+' · Turno '+(a.turno||'—'), M+W, y, {align:'right'}); y += 4.5;
+  doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text((a.correo||'—')+' · Generado: '+new Date().toLocaleString('es-MX'), M, y); y += 6;
+
+  /* Banda de calificación */
+  doc.setFillColor(8,79,117); doc.roundedRect(M, y, W, 13, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+  doc.text('CALIFICACIÓN: '+ev.total+' / 100', M+5, y+8.7);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  const sello = state.enviado ? ('ENVIADO · Folio '+state.enviado.folio+' · '+state.enviado.fecha) : 'AÚN NO ENVIADO AL DOCENTE';
+  doc.text(sello, M+W-4, y+8.2, {align:'right'}); y += 19;
+
+  /* Tabla de componentes */
+  const comp = ev.filas.map(f=>[f.nombre.replace(/ \(entregada.*$/,''), f.pts+' / '+f.max, (f.nombre.match(/entregada (.+)\)$/)||[,'—'])[1]]);
+  doc.setFillColor(229,243,251); doc.rect(M, y, W, 6.2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(8,79,117);
+  doc.text('Componente', M+2, y+4.2); doc.text('Puntos', M+106, y+4.2); doc.text('Fecha de entrega', M+130, y+4.2); y += 6.2;
+  doc.setFont('helvetica','normal'); doc.setTextColor(21,34,48);
+  comp.forEach(c=>{
+    doc.setDrawColor(216,229,238); doc.setLineWidth(0.2); doc.line(M, y+5.6, M+W, y+5.6);
+    doc.setFont('helvetica','bold'); doc.text(String(c[0]).slice(0,62), M+2, y+4);
+    doc.setFont('helvetica','normal'); doc.text(String(c[1]), M+106, y+4); doc.text(String(c[2]), M+130, y+4);
+    y += 5.8;
+  });
+  y += 5;
+
+  /* Detalle de criterios en dos columnas */
+  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(8,79,117);
+  doc.text('Detalle de criterios', M, y); y += 4.5;
+  const colW = 91, colX = [M, M+colW+6], topD = y, bottomD = 243;
+  let col = 0; let yy = topD;
+  const item = (txt, bold, ok) => {
+    doc.setFont('helvetica', bold?'bold':'normal'); doc.setFontSize(6.8);
+    if(bold) doc.setTextColor(21,34,48); else doc.setTextColor(ok?11:163, ok?107:59, ok?58:46);
+    const lines = doc.splitTextToSize(txt, colW - (bold?0:3));
+    const h = lines.length*2.7 + (bold?1.2:0.6);
+    if(yy + h > bottomD){ if(col===0){ col=1; yy=topD; } else { return false; } }
+    doc.text(lines, colX[col] + (bold?0:3), yy + 2.2);
+    yy += h; return true;
+  };
+  let completo = true;
+  ev.filas.forEach(f=>{
+    if(!item(f.nombre.replace(/ \(entregada.*$/,'')+'  ·  '+f.pts+'/'+f.max, true)) { completo=false; return; }
+    f.fb.forEach(x=>{ if(!item((x.ok?'[OK] ':'[ X ] ')+x.label+' ('+x.pts+')', false, x.ok)) completo=false; });
+  });
+  if(!completo){ doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(90,107,120); doc.text('(detalle completo disponible en la plataforma)', colX[1], bottomD+2); }
+
+  /* Pie: firmas y leyenda */
+  let yf = 252;
+  doc.setDrawColor(21,34,48); doc.setLineWidth(0.3);
+  doc.line(M+8, yf, M+78, yf); doc.line(M+110, yf, M+180, yf);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(21,34,48);
+  doc.text('Firma del alumno', M+30, yf+3.8); doc.text('Firma del docente', M+132, yf+3.8);
+  doc.setFontSize(6.8); doc.setTextColor(90,107,120);
+  doc.text(doc.splitTextToSize('Boleta generada por COBD Classroom · Cuaderno Digital de Aprendizaje. La calificación automática es estructural; la revisión final corresponde al docente. Las respuestas completas del alumno se conservan en la plataforma y en el correo de entrega.', W), M, yf+9);
+
+  const safe = (a.nombre||'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  doc.save('Boleta_COBD_RA2-1_'+safe+'.pdf');
+}
+
+/* ---------- Apuntes imprimibles a dos columnas (jsPDF) ---------- */
+const APUNTES_DATA = [
+ ['h1','BLOQUE 1 · CONSTRUIR LA BASE (DDL) — Repaso RA 1.3'],
+ ['p','DDL (Lenguaje de Definición) crea y modifica la ESTRUCTURA: bases y tablas. DML (Manipulación) trabaja con los DATOS: SELECT, INSERT, UPDATE, DELETE. Regla mental: el DDL construye los estantes del archivero; el DML guarda, busca, corrige y saca los expedientes.'],
+ ['h2','Crear la base de datos'],
+ ['code','CREATE DATABASE SistemaAdministracionEstudiantil;\nUSE SistemaAdministracionEstudiantil;'],
+ ['h2','CREATE TABLE — crear tablas'],
+ ['code','CREATE TABLE alumnos (\n  matricula VARCHAR(10) PRIMARY KEY,\n  nombre VARCHAR(40) NOT NULL,\n  apellido_paterno VARCHAR(40) NOT NULL,\n  grupo VARCHAR(5),\n  turno VARCHAR(12),\n  promedio DECIMAL(4,2)\n);'],
+ ['li','VARCHAR(n): texto de hasta n caracteres · INT: número entero · DECIMAL(4,2): 4 dígitos, 2 decimales (ej. 9.45)'],
+ ['li','PRIMARY KEY: identifica de forma única cada fila · NOT NULL: la columna no puede quedar vacía'],
+ ['h2','ALTER TABLE — editar la estructura (sin perder datos)'],
+ ['code','ALTER TABLE alumnos ADD apellido_materno VARCHAR(40);\nALTER TABLE alumnos MODIFY grupo VARCHAR(8);\nALTER TABLE alumnos DROP COLUMN apellido_materno;'],
+ ['warn','ALTER cambia ESTRUCTURA (columnas, tipos). UPDATE cambia DATOS dentro de las filas. No los confundas: son familias distintas.'],
+ ['h2','DROP TABLE — eliminar una tabla completa'],
+ ['code','DROP TABLE tabla_de_pruebas;'],
+ ['warn','DELETE borra filas y la tabla sigue existiendo; DROP TABLE elimina la tabla completa (estructura + datos), sin vuelta atrás.'],
+ ['h2','Relación de tablas — FOREIGN KEY'],
+ ['code','CREATE TABLE calificaciones (\n  id_calificacion INT AUTO_INCREMENT PRIMARY KEY,\n  matricula VARCHAR(10) NOT NULL,\n  id_materia INT NOT NULL,\n  calificacion DECIMAL(4,2),\n  parcial INT,\n  FOREIGN KEY (matricula) REFERENCES alumnos(matricula),\n  FOREIGN KEY (id_materia) REFERENCES materias(id_materia)\n);'],
+ ['p','La llave foránea (FK) apunta a la llave primaria (PK) de otra tabla: garantiza la integridad referencial (no puede existir calificación de una matrícula inexistente) y es el "puente" que usan los INNER JOIN.'],
+ ['h2','Herramientas CASE'],
+ ['p','Diseño visual que genera el DDL por ti: MySQL Workbench (diagrama EER + Forward Engineering), dbdiagram.io, draw.io. Flujo profesional: diseñar -> generar DDL -> ejecutar en el gestor -> trabajar con DML.'],
+ ['h1','BLOQUE 2 · USAR LOS DATOS (DML) — RA 2.1'],
+ ['h2','Método de 4 pasos antes de escribir SQL'],
+ ['li','1) ¿Qué información se pide? (columnas)   2) ¿En qué tabla está?   3) ¿Una o varias tablas?   4) ¿Requiere JOIN?'],
+ ['h2','SELECT — consultar información'],
+ ['code','SELECT nombre, apellido_paterno, promedio FROM alumnos;\nSELECT * FROM alumnos;   -- * = todas las columnas'],
+ ['h2','WHERE — filtrar filas'],
+ ['code','SELECT nombre, promedio FROM alumnos\nWHERE grupo = \'410\' AND promedio >= 8.5;'],
+ ['li','Comparación:  =   >   <   >=   <=   <> (diferente de)'],
+ ['li','Lógicos: AND (ambas condiciones) · OR (al menos una) · NOT (niega)'],
+ ['li','Aritméticos: + - * /  ->  SELECT nombre, promedio * 10 FROM alumnos;'],
+ ['h2','INSERT — agregar registros'],
+ ['code','INSERT INTO alumnos (matricula, nombre, apellido_paterno, grupo, turno, promedio)\nVALUES (\'24100501\', \'Diana\', \'Cervantes\', \'410\', \'Matutino\', 0.0);'],
+ ['h2','UPDATE — modificar registros'],
+ ['code','UPDATE alumnos\nSET turno = \'Vespertino\'\nWHERE matricula = \'23100459\';'],
+ ['h2','DELETE — eliminar registros'],
+ ['code','DELETE FROM alumnos\nWHERE matricula = \'23100378\';'],
+ ['warn','REGLA DE ORO: UPDATE y DELETE siempre con WHERE. Sin WHERE afectas TODAS las filas. Prueba primero la condición con un SELECT y filtra por la llave (matricula).'],
+ ['h2','INNER JOIN — combinar tablas'],
+ ['code','SELECT a.nombre, m.nombre_materia, c.calificacion\nFROM calificaciones c\nINNER JOIN alumnos  a ON c.matricula  = a.matricula\nINNER JOIN materias m ON c.id_materia = m.id_materia\nWHERE a.turno = \'Matutino\' AND c.calificacion >= 8;'],
+ ['p','ON indica la columna puente (la FK que apunta a la PK). Para tres tablas se encadenan dos INNER JOIN. Solo devuelve filas que coinciden en ambas tablas.'],
+ ['h2','Disparadores (Triggers)'],
+ ['p','Código que el gestor ejecuta AUTOMÁTICAMENTE al ocurrir un evento (INSERT, UPDATE o DELETE), en momento BEFORE o AFTER. NEW = la fila después del evento (INSERT/UPDATE); OLD = la fila antes (UPDATE/DELETE). Usos: auditoría de cambios, validaciones, cálculos automáticos.'],
+ ['code','CREATE TRIGGER tr_auditoria_alumnos\nAFTER UPDATE ON alumnos\nFOR EACH ROW\nINSERT INTO auditoria_alumnos (matricula, fecha_evento, descripcion)\nVALUES (OLD.matricula, NOW(), \'Registro actualizado\');'],
+ ['p','En el simulador (SQLite): usa datetime(\'now\') en vez de NOW(), AUTOINCREMENT sin guion bajo, y el cuerpo del trigger va entre BEGIN ... END;']
+];
+
+function descargarApuntes(){
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 12, gut = 7, colW = (216 - 2*M - gut)/2, top = 26, bottom = 266;
+  const colX = [M, M + colW + gut];
+  let col = 0, y = top;
+
+  const deco = () => {
+    /* Encabezado tipográfico, sin rellenos */
+    doc.setFont('helvetica','bold'); doc.setFontSize(12.5); doc.setTextColor(0,0,0);
+    doc.text('COBD · APUNTES DE BOLSILLO', M, 12.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    doc.text('SQL · Bases de Datos', 216-M, 12.5, {align:'right'});
+    doc.setFontSize(6.8);
+    doc.text('CONALEP · COBD-20 · Repaso RA 1.3 + RA 2.1 · Proyecto integrador: SistemaAdministracionEstudiantil', M, 16.5);
+    doc.setDrawColor(0,0,0); doc.setLineWidth(0.8); doc.line(M, 19, 216-M, 19);
+    doc.setLineWidth(0.2); doc.line(M, 20.1, 216-M, 20.1);
+    /* Pie con firma */
+    doc.setLineWidth(0.2); doc.setDrawColor(120,120,120); doc.line(M, 270, 216-M, 270);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(100,100,100);
+    doc.text('COBD Classroom · Cuaderno Digital de Aprendizaje · pág. '+doc.getNumberOfPages(), M, 274);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(0,0,0);
+    doc.text('Ing. Santiago Martínez González', 216-M, 274, {align:'right'});
+  };
+  deco();
+
+  const ensure = h => {
+    if(y + h > bottom){
+      if(col === 0){ col = 1; y = top; }
+      else { doc.addPage(); deco(); col = 0; y = top; }
+    }
+  };
+  APUNTES_DATA.forEach(([tipo, txt]) => {
+    if(tipo === 'h1'){
+      ensure(10);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-3.2, colW, 6.6);
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.6); doc.setTextColor(0,0,0);
+      doc.text(doc.splitTextToSize(txt, colW-4)[0], colX[col]+2.2, y+1);
+      y += 8.8;
+    } else if(tipo === 'h2'){
+      ensure(16); /* keep-with-next: el título nunca queda huérfano */
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.4); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW);
+      doc.text(lines, colX[col], y); y += lines.length*3.5;
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.3);
+      doc.line(colX[col], y-2.1, colX[col]+colW, y-2.1); y += 1.4;
+    } else if(tipo === 'p'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW);
+      ensure(lines.length*3.05 + 1);
+      doc.text(lines, colX[col], y); y += lines.length*3.05 + 1.8;
+    } else if(tipo === 'li'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW-4);
+      ensure(lines.length*3.05 + 1);
+      doc.text('–', colX[col]+0.6, y); doc.text(lines, colX[col]+4, y);
+      y += lines.length*3.05 + 1.3;
+    } else if(tipo === 'code'){
+      doc.setFont('courier','bold'); doc.setFontSize(6.9); doc.setTextColor(0,0,0);
+      const raw = txt.split('\n'); let lines = [];
+      raw.forEach(r => { lines = lines.concat(doc.splitTextToSize(r, colW-6)); });
+      const h = lines.length*2.9;
+      ensure(h + 4);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.7);
+      doc.line(colX[col]+0.6, y-2.2, colX[col]+0.6, y + h - 1.6);
+      doc.text(lines, colX[col]+4, y);
+      y += h + 2.6;
+    } else if(tipo === 'warn'){
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.2); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW-13);
+      const h = lines.length*3 + 3.4;
+      ensure(h + 2);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-2.6, colW, h);
+      doc.setFontSize(8.5); doc.text('¡!', colX[col]+2.6, y+1.4);
+      doc.setLineWidth(0.3); doc.line(colX[col]+8.2, y-2.6, colX[col]+8.2, y-2.6+h);
+      doc.setFontSize(7.2); doc.text(lines, colX[col]+10.6, y);
+      y += h + 1.6;
+    }
+  });
+  doc.save('Apuntes_COBD_SQL.pdf');
+}
+
+/* ---------- Inicio ---------- */
+load();
+state.entregas = state.entregas || {};
+highlightSQL();
+bindInputs();
+if(state.alumno){ pintarAlumno(); } else { document.getElementById('gate').style.display='flex'; }
+state.visitadas['intro']=true; persist();
+marcarTOC(); actualizarProgreso();
+Object.keys(state.entregas).forEach(a=>{ lockAct(a); renderFB(a); });
+if(state.evaluacion){ /* restaurar el resultado final al volver */ calificarTodo(); go('intro'); }
+if(state.enviado){ sellarCuaderno(); }
+</script>
+</body>
+</html>
