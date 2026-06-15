@@ -247,8 +247,9 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
       <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
     </aside>
     <div class="gate-form">
-      <h3>Registro del alumno</h3>
-      <p>Tus datos aparecerán en tu reporte de evaluación. Tu avance se guarda en este equipo y puedes continuar en otra sesión.</p>
+      <h3 id="gateTitulo">Iniciar sesión</h3>
+      <p id="gateSub">Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.</p>
+      <div id="camposRegistro">
       <div class="field">
         <label for="r_nombre">Nombre completo</label>
         <input type="text" id="r_nombre" placeholder="Ej. María Fernanda López Torres" autocomplete="name">
@@ -269,14 +270,19 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
           </select>
         </div>
       </div>
+      </div>
       <div class="field">
         <label for="r_correo">Correo institucional</label>
         <input type="email" id="r_correo" placeholder="nombre@tam.conalep.edu.mx" autocomplete="email">
-        <span class="hint">Usa tu correo institucional CONALEP: debe terminar en <strong>@tam.conalep.edu.mx</strong>.</span>
+        <span class="hint">Debe terminar en <strong>@tam.conalep.edu.mx</strong>.</span>
+      </div>
+      <div class="field">
+        <label for="r_pass">Tu matrícula <span class="hint" style="display:inline">(es tu contraseña de acceso)</span></label>
+        <input type="text" id="r_pass" placeholder="Ej. 23100245" autocomplete="off" inputmode="numeric">
       </div>
       <p class="err" id="r_err"></p>
-      <button class="btn" style="width:100%;justify-content:center;margin-top:4px" onclick="registrar()">Comenzar mi cuaderno</button>
-      <button class="btn ghost" id="gateCancel" style="width:100%;justify-content:center;margin-top:8px;display:none" onclick="document.getElementById('gate').style.display='none'">Cancelar</button>
+      <button class="btn" id="btnEntrar" style="width:100%;justify-content:center;margin-top:4px" onclick="autenticar()">Entrar a mi cuaderno</button>
+      <p style="font-size:12.5px;color:var(--gris);text-align:center;margin-top:12px">¿Primera vez? <a id="toggleModo" style="color:var(--azul-osc);font-weight:600;cursor:pointer;text-decoration:underline">Crear mi cuenta</a></p>
     </div>
   </div>
 </div>
@@ -304,12 +310,19 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
   <div class="student-chip" id="studentChip">
     <strong id="sc_nombre"></strong>
     <span id="sc_detalle"></span><br>
-    <button onclick="editarRegistro()">Editar mis datos</button>
+    <span id="syncBadge" style="font-size:11px;color:var(--ok);display:block;margin-top:4px">☁ Guardado en la nube</span>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
 
   <div class="progress-wrap">
     <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance para llevarlo a otra computadora">⬇ Respaldo</button>
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="document.getElementById('impFile').click()" title="Carga un respaldo descargado en otra computadora">⬆ Restaurar</button>
+      <input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importarAvance(this.files[0]);this.value=''">
+    </div>
+    <div style="font-size:10.5px;color:var(--gris);margin-top:6px;line-height:1.4">Tu avance se guarda solo en ESTA computadora. Si trabajarás en otra (o en casa), descarga tu respaldo antes de irte y restáuralo allá.</div>
   </div>
 
   <nav class="toc" id="toc">
@@ -563,6 +576,13 @@ WHERE grupo = '410';</pre>
       <tr><td><code class="inline">OR</code></td><td>Basta con que una se cumpla</td><td><code class="inline">grupo = '410' OR grupo = '411'</code></td></tr>
       <tr><td><code class="inline">NOT</code></td><td>Niega la condición</td><td><code class="inline">NOT turno = 'Vespertino'</code></td></tr>
     </table></div>
+    <h4>Columnas calculadas con operadores aritméticos</h4>
+    <p>Los operadores aritméticos no solo sirven en el WHERE: también puedes usarlos <strong>dentro del SELECT</strong> para crear una <strong>columna calculada</strong> — una columna nueva que el gestor calcula al vuelo, sin modificar la tabla:</p>
+    <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span></div>
+    <pre class="sql">-- Tercera columna calculada: el promedio en escala de 0 a 100
+SELECT nombre, promedio, promedio * 10
+FROM alumnos;</pre>
+    <p style="margin-bottom:0">El resultado muestra tres columnas: para María (promedio 9.4), la calculada vale 94. La tabla <code class="inline">alumnos</code> no cambia: el cálculo solo existe en el resultado de la consulta.</p>
   </div>
 
   <h3>INSERT — agregar registros</h3>
@@ -600,7 +620,15 @@ SELECT alumnos.nombre, calificaciones.calificacion
 FROM alumnos
 INNER JOIN calificaciones
         ON alumnos.matricula = calificaciones.matricula;</pre>
-  <p>La cláusula <code class="inline">ON</code> es el "puente": le dice a la base de datos qué columna conecta una tabla con la otra. Si necesitas tres tablas, simplemente encadenas dos <code class="inline">INNER JOIN</code>.</p>
+  <p>La cláusula <code class="inline">ON</code> es el "puente": le dice a la base de datos qué columna conecta una tabla con la otra.</p>
+  <h4>¿Y si necesito TRES tablas? Se encadenan dos INNER JOIN</h4>
+  <p>Cada <code class="inline">INNER JOIN</code> trae una tabla nueva a la consulta, con su propio <code class="inline">ON</code> indicando el puente que la conecta. Observa cómo <code class="inline">calificaciones</code> se une con <code class="inline">alumnos</code> (por matricula) y con <code class="inline">materias</code> (por id_materia):</p>
+  <div class="db-path">🗄 SistemaAdministracionEstudiantil <span class="sep">›</span> <span class="tbl">alumnos</span> <span class="sep">+</span> <span class="tbl">materias</span> <span class="sep">+</span> <span class="tbl">calificaciones</span></div>
+  <pre class="sql">SELECT alumnos.nombre, materias.nombre_materia, calificaciones.calificacion
+FROM calificaciones
+INNER JOIN alumnos  ON calificaciones.matricula  = alumnos.matricula
+INNER JOIN materias ON calificaciones.id_materia = materias.id_materia;</pre>
+  <p>Fíjate que cada columna lleva el nombre de su tabla (<code class="inline">alumnos.nombre</code>): cuando hay varias tablas en juego, así el gestor sabe exactamente de cuál hablas. Este patrón de dos JOIN encadenados es el que usarás en la Actividad 3.</p>
 
 
   <h3>Disparadores (Triggers) — la base de datos reacciona sola</h3>
@@ -1077,6 +1105,7 @@ WHERE grupo = '410' AND promedio >= 8.5;</pre>
 </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -1086,41 +1115,142 @@ WHERE grupo = '410' AND promedio >= 8.5;</pre>
    usuarios, alumnos, actividades, respuestas, calificaciones, bitacoras)
    ========================================================= */
 const LS_KEY = 'cobd_ra21_v1';
+const CUADERNO = 'ra21';
 let state = { alumno:null, respuestas:{}, visitadas:{}, guardadas:{}, entregas:{} };
 
-function load(){ try{ const raw = localStorage.getItem(LS_KEY); if(raw) state = Object.assign(state, JSON.parse(raw)); }catch(e){} }
-function persist(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+/* ---------- Supabase ---------- */
+const SUPABASE_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
+let sb = null, modoRegistro = false, syncTimer = null;
+function initSB(){
+  try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); return true; }
+  catch(e){ return false; }
+}
 
-/* ---------- Registro ---------- */
-function registrar(){
-  const nombre = document.getElementById('r_nombre').value.trim();
-  const grupo  = document.getElementById('r_grupo').value;
-  const turno  = document.getElementById('r_turno').value;
-  const correo = document.getElementById('r_correo').value.trim().toLowerCase();
+/* Caché local: guardado instantáneo a cada tecla (sin esperar a la nube) */
+function load(){ try{ const raw = localStorage.getItem(LS_KEY+'_'+(state.alumno?state.alumno.correo:'tmp')); if(raw) state = Object.assign(state, JSON.parse(raw)); }catch(e){} }
+function persist(){
+  if(state.alumno){ localStorage.setItem(LS_KEY+'_'+state.alumno.correo, JSON.stringify(state)); }
+  programarSync();
+}
+
+/* Sincronización con la nube (debounce de 1.5 s para no saturar) */
+function programarSync(){
+  if(!sb || !state.alumno) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(subirAvance, 1500);
+}
+async function subirAvance(){
+  if(!sb || !state.alumno) return;
+  try{
+    await sb.from('avances').upsert({
+      user_id: state.alumno.id, cuaderno: CUADERNO,
+      estado: { respuestas:state.respuestas, visitadas:state.visitadas, guardadas:state.guardadas, evaluacion:state.evaluacion||null },
+      actualizado: new Date().toISOString()
+    }, { onConflict:'user_id,cuaderno' });
+    setSyncBadge('ok');
+  }catch(e){ setSyncBadge('err'); }
+}
+function setSyncBadge(estado){
+  const b = document.getElementById('syncBadge'); if(!b) return;
+  if(estado==='ok'){ b.textContent='☁ Guardado en la nube'; b.style.color='var(--ok)'; }
+  else if(estado==='err'){ b.textContent='⚠ Sin conexión — se reintentará'; b.style.color='var(--amber)'; }
+  else { b.textContent='☁ Sincronizando…'; b.style.color='var(--gris)'; }
+}
+
+/* ---------- Autenticación ---------- */
+function toggleModoUI(){
+  modoRegistro = !modoRegistro;
+  document.getElementById('camposRegistro').style.display = modoRegistro ? 'block' : 'none';
+  document.getElementById('gateTitulo').textContent = modoRegistro ? 'Crear mi cuenta' : 'Iniciar sesión';
+  document.getElementById('gateSub').textContent = modoRegistro
+    ? 'Regístrate una sola vez con tus datos. Después entrarás solo con tu correo y tu matrícula.'
+    : 'Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.';
+  document.getElementById('btnEntrar').textContent = modoRegistro ? 'Crear cuenta y comenzar' : 'Entrar a mi cuaderno';
+  document.getElementById('toggleModo').textContent = modoRegistro ? 'Ya tengo cuenta, iniciar sesión' : 'Crear mi cuenta';
+  document.querySelector('#gate p[style*="text-align:center"]').firstChild.textContent = modoRegistro ? '¿Ya te registraste? ' : '¿Primera vez? ';
+  document.getElementById('r_err').style.display='none';
+}
+
+async function autenticar(){
   const err = document.getElementById('r_err');
-  if(!nombre || !grupo || !turno || !correo){
-    err.textContent='Completa todos los campos para comenzar.';
-    err.style.display='block'; return;
+  const correo = document.getElementById('r_correo').value.trim().toLowerCase();
+  const pass   = document.getElementById('r_pass').value.trim();
+  const btn = document.getElementById('btnEntrar');
+  const mostrarErr = m => { err.textContent=m; err.style.display='block'; btn.disabled=false; btn.textContent = modoRegistro?'Crear cuenta y comenzar':'Entrar a mi cuaderno'; };
+
+  if(!/^[a-z0-9._%+-]+@tam\.conalep\.edu\.mx$/.test(correo)) return mostrarErr('Usa tu correo institucional CONALEP (termina en @tam.conalep.edu.mx).');
+  if(pass.length < 6) return mostrarErr('Tu matrícula debe tener al menos 6 caracteres.');
+  if(!sb && !initSB()) return mostrarErr('No se pudo conectar al servidor. Revisa tu conexión a internet.');
+
+  err.style.display='none'; btn.disabled=true; btn.textContent='Conectando…';
+
+  if(modoRegistro){
+    const nombre = document.getElementById('r_nombre').value.trim();
+    const grupo  = document.getElementById('r_grupo').value;
+    const turno  = document.getElementById('r_turno').value;
+    if(!nombre || !grupo || !turno) return mostrarErr('Completa nombre, grupo y turno para registrarte.');
+    const { data, error } = await sb.auth.signUp({ email:correo, password:pass });
+    if(error){
+      if((error.message||'').toLowerCase().includes('already')) return mostrarErr('Ese correo ya tiene cuenta. Cambia a "Iniciar sesión".');
+      return mostrarErr('No se pudo crear la cuenta: '+error.message);
+    }
+    const uid = data.user.id;
+    const { error: perr } = await sb.from('perfiles').insert({ id:uid, correo, nombre, grupo, turno, matricula:pass });
+    if(perr && !(perr.message||'').includes('duplicate')) return mostrarErr('Cuenta creada, pero falló el perfil: '+perr.message);
+    state.alumno = { id:uid, nombre, grupo, turno, correo, matricula:pass, registro:new Date().toLocaleString('es-MX') };
+    persist(); await subirAvance();
+    entrarApp();
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(error) return mostrarErr('Correo o matrícula incorrectos. Si es tu primera vez, crea tu cuenta.');
+    const uid = data.user.id;
+    const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+    state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:correo, grupo:'', turno:'', correo };
+    await descargarAvance(uid);
+    entrarApp();
   }
-  if(!/^[a-z0-9._%+-]+@tam\.conalep\.edu\.mx$/.test(correo)){
-    err.textContent='Ese correo no es válido. Debes usar tu correo institucional CONALEP, que termina en @tam.conalep.edu.mx';
-    err.style.display='block'; return;
-  }
-  err.style.display='none';
-  state.alumno = { nombre, grupo, turno, correo, registro:new Date().toLocaleString('es-MX') };
+}
+
+async function descargarAvance(uid){
+  load(); /* primero la caché local de este equipo, por si la nube falla */
+  try{
+    const { data: av } = await sb.from('avances').select('estado').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(av && av.estado){
+      state.respuestas = av.estado.respuestas || state.respuestas || {};
+      state.visitadas  = av.estado.visitadas  || state.visitadas  || {};
+      state.guardadas  = av.estado.guardadas  || state.guardadas  || {};
+      if(av.estado.evaluacion) state.evaluacion = av.estado.evaluacion;
+    }
+    const { data: ents } = await sb.from('entregas').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO);
+    state.entregas = {};
+    (ents||[]).forEach(e=>{ state.entregas[e.actividad] = { pts:e.pts, max:e.max, fb:e.fb, fecha:new Date(e.fecha).toLocaleString('es-MX') }; });
+    const { data: env } = await sb.from('envios').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(env) state.enviado = { folio:env.folio, total:env.total, fecha:new Date(env.fecha).toLocaleString('es-MX') };
+  }catch(e){}
   persist();
+}
+
+function entrarApp(){
   document.getElementById('gate').style.display='none';
   pintarAlumno();
+  bindInputs();
+  highlightSQL();
+  state.visitadas['intro']=true; persist();
+  Object.keys(state.entregas||{}).forEach(a=>{ lockAct(a); renderFB(a); });
+  if(state.enviado){ sellarCuaderno(); }
+  if(state.evaluacion){ calificarTodo(); }
+  marcarTOC(); actualizarProgreso();
+  go('intro');
+  setSyncBadge('ok');
 }
-function editarRegistro(){
-  const a = state.alumno||{};
-  document.getElementById('r_nombre').value = a.nombre||'';
-  document.getElementById('r_grupo').value = a.grupo||'';
-  document.getElementById('r_turno').value = a.turno||'';
-  document.getElementById('r_correo').value = a.correo||'';
-  document.getElementById('gateCancel').style.display='block';
-  document.getElementById('gate').style.display='flex';
+
+async function cerrarSesion(){
+  if(!confirm('¿Cerrar sesión? Tu avance ya está guardado en la nube.')) return;
+  if(sb) await sb.auth.signOut();
+  location.reload();
 }
+
 function pintarAlumno(){
   if(!state.alumno) return;
   const chip = document.getElementById('studentChip');
@@ -1324,7 +1454,7 @@ const CLAVE_DOCENTE = 'TEC-COBD-2526'; // ← clave para liberar un nuevo intent
 
 const SOLUCIONES = {
 act1: '<p style="font-size:14px"><strong>Análisis:</strong> la información está en la tabla <code class="inline">alumnos</code> y NO se requiere JOIN (una sola tabla).</p>'+
-'<pre class="sql solo">SELECT nombre, apellido_paterno, grupo, promedio, promedio * 10 AS escala_100\nFROM alumnos\nWHERE promedio >= 9.0;</pre>'+
+'<pre class="sql solo">SELECT nombre, apellido_paterno, grupo, promedio, promedio * 10\nFROM alumnos\nWHERE promedio >= 9.0;</pre>'+
 '<p style="font-size:13px;color:var(--gris)">Una buena justificación menciona: las columnas que pidió la dirección, que todas viven en la tabla alumnos, el filtro promedio &gt;= 9.0 y la columna calculada con el operador aritmético * para la escala de 0 a 100.</p>',
 
 act2: '<p style="font-size:14px"><strong>Alta (INSERT):</strong></p>'+
@@ -1336,8 +1466,8 @@ act2: '<p style="font-size:14px"><strong>Alta (INSERT):</strong></p>'+
 '<p style="font-size:13px;color:var(--gris)">Reflexión esperada: un DELETE sin WHERE habría borrado TODAS las filas de la tabla. La matrícula es el filtro seguro porque identifica de forma única a cada alumno; filtrar por nombre habría afectado a las dos "María López".</p>',
 
 act3: '<p style="font-size:14px"><strong>Análisis:</strong> se requieren las 3 tablas; <code class="inline">calificaciones</code> se conecta con <code class="inline">alumnos</code> mediante la llave <code class="inline">matricula</code>.</p>'+
-'<pre class="sql solo">SELECT a.nombre, a.apellido_paterno, m.nombre_materia, c.calificacion\nFROM calificaciones c\nINNER JOIN alumnos a ON c.matricula = a.matricula\nINNER JOIN materias m ON c.id_materia = m.id_materia\nWHERE a.turno = \'Matutino\' AND c.calificacion >= 8;</pre>'+
-'<p style="font-size:13px;color:var(--gris)">También es válida sin alias (escribiendo los nombres completos de las tablas) o partiendo de FROM alumnos; lo esencial son los dos INNER JOIN con sus ON correctos y el WHERE con AND. Si la tuya estaba estructurada así y aun así perdiste puntos, coméntalo con tu docente al entregar el reporte.</p>',
+'<pre class="sql solo">SELECT alumnos.nombre, alumnos.apellido_paterno, materias.nombre_materia, calificaciones.calificacion\nFROM calificaciones\nINNER JOIN alumnos  ON calificaciones.matricula  = alumnos.matricula\nINNER JOIN materias ON calificaciones.id_materia = materias.id_materia\nWHERE alumnos.turno = \'Matutino\' AND calificaciones.calificacion >= 8;</pre>'+
+'<p style="font-size:13px;color:var(--gris)">También es válida partiendo de FROM alumnos, o usando alias de tabla (apodos cortos como c, a, m — los conocerás en el siguiente RA); lo esencial son los dos INNER JOIN con sus ON correctos y el WHERE con AND. Si la tuya estaba estructurada así y aun así perdiste puntos, coméntalo con tu docente al entregar el reporte.</p>',
 
 act4: '<p style="font-size:14px"><strong>Análisis:</strong> momento <code class="inline">AFTER</code> (la auditoría registra cambios ya aplicados) y evento <code class="inline">UPDATE</code> sobre alumnos.</p>'+
 '<pre class="sql solo">CREATE TRIGGER tr_auditoria_alumnos\nAFTER UPDATE ON alumnos\nFOR EACH ROW\nINSERT INTO auditoria_alumnos (matricula, fecha_evento, descripcion)\nVALUES (OLD.matricula, NOW(), \'Registro actualizado\');</pre>'+
@@ -1430,7 +1560,19 @@ function entregar(act){
   }
   if(!confirm('Vas a ENTREGAR esta actividad.\n\n• Solo tienes UN intento.\n• Verás tu calificación y la solución correcta.\n• Ya no podrás modificar tus respuestas.\n\n¿Deseas entregar ahora?')) return;
   const g = GRADERS[act]();
-  state.entregas[act] = { pts:g.pts, max:g.max, fb:g.fb, fecha:new Date().toLocaleString('es-MX') };
+  const fecha = new Date();
+  if(sb && state.alumno){
+    const R = state.respuestas;
+    const resp = {act1:['a1_tabla','a1_join','a1_sql','a1_just'],act2:['a2_sqlI','a2_sqlU','a2_sqlD','a2_reflex'],act3:['a3_tablas','a3_llave','a3_sql','a3_just'],act4:['a4_momento','a4_evento','a4_sql','a4_expl']}[act] || [];
+    const soloAct = {}; resp.forEach(k=> soloAct[k]=R[k]);
+    sb.from('entregas').insert({
+      user_id:state.alumno.id, cuaderno:CUADERNO, actividad:act,
+      pts:g.pts, max:g.max, fb:g.fb, respuestas:soloAct, fecha:fecha.toISOString()
+    }).then(({error})=>{
+      if(error && error.code==='23505'){ alert('Esta actividad ya fue entregada antes (registrada en el servidor). No es posible entregarla de nuevo.'); }
+    });
+  }
+  state.entregas[act] = { pts:g.pts, max:g.max, fb:g.fb, fecha:fecha.toLocaleString('es-MX') };
   state.guardadas[act] = true; persist();
   lockAct(act); renderFB(act);
   actualizarProgreso(); marcarTOC();
@@ -1457,6 +1599,7 @@ function desbloquear(act){
   if(clave === null) return;
   if(clave.trim() !== CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
   if(state.enviado && !confirm('OJO: este cuaderno ya fue ENVIADO al docente (folio '+state.enviado.folio+'). ¿Liberar el intento de todos modos?')) return;
+  if(sb && state.alumno){ sb.from('entregas').delete().eq('user_id',state.alumno.id).eq('cuaderno',CUADERNO).eq('actividad',act); }
   delete state.entregas[act]; state.guardadas[act]=false; persist();
   document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=false);
   const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3',act4:'Actividad 4'};
@@ -1571,7 +1714,10 @@ async function enviarReporte(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     await r.json();
     state.enviado = { folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
-    persist();
+    if(sb && state.alumno){
+      try{ await sb.from('envios').insert({ user_id:state.alumno.id, cuaderno:CUADERNO, folio, total:ev.total, fecha:new Date().toISOString() }); }catch(e){}
+    }
+    persist(); await subirAvance();
     st.textContent='';
     sellarCuaderno();
     window.scrollTo({top:0});
@@ -1703,7 +1849,7 @@ const APUNTES_DATA = [
  ['code','DELETE FROM alumnos\nWHERE matricula = \'23100378\';'],
  ['warn','REGLA DE ORO: UPDATE y DELETE siempre con WHERE. Sin WHERE afectas TODAS las filas. Prueba primero la condición con un SELECT y filtra por la llave (matricula).'],
  ['h2','INNER JOIN — combinar tablas'],
- ['code','SELECT a.nombre, m.nombre_materia, c.calificacion\nFROM calificaciones c\nINNER JOIN alumnos  a ON c.matricula  = a.matricula\nINNER JOIN materias m ON c.id_materia = m.id_materia\nWHERE a.turno = \'Matutino\' AND c.calificacion >= 8;'],
+ ['code','SELECT alumnos.nombre, materias.nombre_materia, calificaciones.calificacion\nFROM calificaciones\nINNER JOIN alumnos  ON calificaciones.matricula  = alumnos.matricula\nINNER JOIN materias ON calificaciones.id_materia = materias.id_materia\nWHERE alumnos.turno = \'Matutino\' AND calificaciones.calificacion >= 8;'],
  ['p','ON indica la columna puente (la FK que apunta a la PK). Para tres tablas se encadenan dos INNER JOIN. Solo devuelve filas que coinciden en ambas tablas.'],
  ['h2','Disparadores (Triggers)'],
  ['p','Código que el gestor ejecuta AUTOMÁTICAMENTE al ocurrir un evento (INSERT, UPDATE o DELETE), en momento BEFORE o AFTER. NEW = la fila después del evento (INSERT/UPDATE); OLD = la fila antes (UPDATE/DELETE). Usos: auditoría de cambios, validaciones, cálculos automáticos.'],
@@ -1796,17 +1942,60 @@ function descargarApuntes(){
   doc.save('Apuntes_COBD_SQL.pdf');
 }
 
+/* ---------- Respaldo portátil del avance ---------- */
+function exportarAvance(){
+  persist();
+  const data = { app: LS_KEY, fecha: new Date().toISOString(), state: state };
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safe = ((state.alumno && state.alumno.nombre) || 'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  a.download = 'Respaldo_' + LS_KEY + '_' + safe + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function importarAvance(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const data = JSON.parse(r.result);
+      if(!data || data.app !== LS_KEY || !data.state){
+        alert('Este archivo no es un respaldo de ESTE cuaderno (revisa que sea el RA correcto).');
+        return;
+      }
+      const quien = (data.state.alumno && data.state.alumno.nombre) || '(sin registro)';
+      const cuando = new Date(data.fecha).toLocaleString('es-MX');
+      if(!confirm('Se restaurará el avance de:\n\n' + quien + '\nguardado el ' + cuando + '\n\nEl avance actual en esta computadora será REEMPLAZADO. ¿Continuar?')) return;
+      localStorage.setItem(LS_KEY, JSON.stringify(data.state));
+      location.reload();
+    }catch(e){
+      alert('Archivo de respaldo inválido o dañado.');
+    }
+  };
+  r.readAsText(file);
+}
+
 /* ---------- Inicio ---------- */
-load();
-state.entregas = state.entregas || {};
-highlightSQL();
-bindInputs();
-if(state.alumno){ pintarAlumno(); } else { document.getElementById('gate').style.display='flex'; }
-state.visitadas['intro']=true; persist();
-marcarTOC(); actualizarProgreso();
-Object.keys(state.entregas).forEach(a=>{ lockAct(a); renderFB(a); });
-if(state.evaluacion){ /* restaurar el resultado final al volver */ calificarTodo(); go('intro'); }
-if(state.enviado){ sellarCuaderno(); }
+document.getElementById('toggleModo').addEventListener('click', toggleModoUI);
+document.getElementById('r_pass').addEventListener('keydown', e=>{ if(e.key==='Enter') autenticar(); });
+
+async function arranque(){
+  highlightSQL();
+  if(!initSB()){ document.getElementById('gate').style.display='flex'; return; }
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session && session.user){
+      const uid = session.user.id;
+      const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+      state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:session.user.email, grupo:'', turno:'', correo:session.user.email };
+      await descargarAvance(uid);
+      entrarApp();
+      return;
+    }
+  }catch(e){}
+  document.getElementById('gate').style.display='flex';
+}
+arranque();
 </script>
 </body>
 </html>
